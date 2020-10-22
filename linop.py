@@ -161,11 +161,11 @@ def foo():
 def linop_free(op):
     return _linop.linop_free(op)
 
-def linop_forward(op, DN, ddims, dst, SN, sdims, src):
-    return _linop.linop_forward(op, DN, ddims, dst, SN, sdims, src)
+def linop_forward(op):
+    return _linop.linop_forward(op)
 
-def linop_adjoint(op, DN, ddims, dst, SN, sdims, src):
-    return _linop.linop_adjoint(op, DN, ddims, dst, SN, sdims, src)
+def linop_adjoint(op):
+    return _linop.linop_adjoint(op)
 
 def linop_normal(op, N, dims, dst, src):
     return _linop.linop_normal(op, N, dims, dst, src)

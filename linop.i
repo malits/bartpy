@@ -90,8 +90,6 @@ extern void linop_free(const struct linop_s* op);
 		$result = (PyObject*)out$argnum;
 	}
 
-// %apply()
-
 extern void linop_forward(const struct linop_s* op, unsigned int DN, const long ddims[__VLA(DN)], complex float* dst,
 			unsigned int SN, const long sdims[__VLA(SN)], const complex float* src);
 
