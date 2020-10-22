@@ -30,8 +30,6 @@
 	}
 %}
 
-
-
 // Linop
 extern struct linop_s* linop_create(unsigned int ON, const long odims[ON], unsigned int IN, const long idims[IN], linop_data_t* data,
 				lop_fun_t forward, lop_fun_t adjoint, lop_fun_t normal, lop_p_fun_t norm_inv, del_fun_t);
@@ -42,22 +40,6 @@ extern struct linop_s* linop_create2(unsigned int ON, const long odims[ON], cons
 
 extern const linop_data_t* linop_get_data(const struct linop_s* ptr);
 
-%typemap(in, numinputs = 0) int *out (int temp) {
-	$1 = &temp;
-}
-
-%typemap(argout) int *out {
-	$result = (PyObject *) PyLong_FromDouble(5);
-}
-
-%apply(int * out) {(int * x)}
-
-%inline %{
-	extern void foo(int *x) {
-		*x = *x + 1;
-	}
-%}
-
 extern void linop_free(const struct linop_s* op);
 
 
@@ -65,7 +47,9 @@ extern void linop_free(const struct linop_s* op);
 // TODO: create a separate typemaps file and just import them all
 
 %typemap(in, fragment="NumPy_Fragments")
-	(const struct linop_s* op, unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
+	//(const struct linop_s* op, unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
+	//unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
+	(unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
 	unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
 	(PyArrayObject* in = NULL, int is_new_object = 0, PyObject* out = NULL)
 	{
@@ -84,7 +68,8 @@ extern void linop_free(const struct linop_s* op);
 	} 
 
 %typemap(argout)
-	(const struct linop_s* op, unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
+	//(const struct linop_s* op, 
+	(unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
 	unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
 	{
 		$result = (PyObject*)out$argnum;
@@ -100,8 +85,6 @@ extern void linop_normal(const struct linop_s* op, unsigned int N, const long di
 
 extern void linop_pseudo_inv(const struct linop_s* op, float lambda, unsigned int DN, const long ddims[__VLA(DN)], complex float* dst, 
 			unsigned int SN, const long sdims[__VLA(SN)], const complex float* src);
-
-
 
 extern void linop_forward_unchecked(const struct linop_s* op, complex float* dst, const complex float* src);
 extern void linop_adjoint_unchecked(const struct linop_s* op, complex float* dst, const complex float* src);

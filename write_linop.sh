@@ -9,4 +9,4 @@
 # cd ..
 
 swig -python linop.i
-python3 setup_linop.py build_ext
+python3 setup_linop.py install
