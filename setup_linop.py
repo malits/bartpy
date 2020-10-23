@@ -2,6 +2,7 @@
 from distutils.core import setup, Extension
 import os
 import re
+import sys
 
 import numpy as np
 
@@ -9,9 +10,13 @@ import numpy as np
 
 BART_PATH = os.environ['TOOLBOX_PATH']
 
+omp = 'gomp'
+if sys.platform == 'darwin':
+       omp = 'omp'
+
 module = Extension('_linop',
                      extra_compile_args=['-fopenmp'],
-                     extra_link_args=['-lomp'],
+                     extra_link_args=[f'-l{omp}'],
                      include_dirs=[f'{BART_PATH}/src/', '/opt/local/include/', '/opt/local/lib/',
                                    np.get_include()],
                      sources=[f'{BART_PATH}/src/linops/linop.c',

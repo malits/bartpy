@@ -155,17 +155,14 @@ def linop_create2(ON, odims, ostr, IN, idims, istrs, data, forward, adjoint, nor
 def linop_get_data(ptr):
     return _linop.linop_get_data(ptr)
 
-def foo():
-    return _linop.foo()
-
 def linop_free(op):
     return _linop.linop_free(op)
 
-def linop_forward(op):
-    return _linop.linop_forward(op)
+def linop_forward(op, DN, ddims, dst, SN, sdims, src):
+    return _linop.linop_forward(op, DN, ddims, dst, SN, sdims, src)
 
-def linop_adjoint(op):
-    return _linop.linop_adjoint(op)
+def linop_adjoint(op, DN, ddims, dst, SN, sdims, src):
+    return _linop.linop_adjoint(op, DN, ddims, dst, SN, sdims, src)
 
 def linop_normal(op, N, dims, dst, src):
     return _linop.linop_normal(op, N, dims, dst, src)
