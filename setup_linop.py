@@ -28,7 +28,7 @@ module = Extension('_linop',
                                    'misc', 'moba', 'nlops', 'noir', 'noncart',
                                    'num', 'sake', 'sense', 'simu', 'wavelet',
                                    'openblas', 'fftw3f', 'fftw3', 'fftw3f_threads',],
-                     library_dirs=['/Users/malits/bart_work/bart/lib/', '/opt/local/include/', '/opt/local/lib/'],
+                     library_dirs=[f'{BART_PATH}/lib/', '/opt/local/include/', '/opt/local/lib/'],
                      )
 
 setup (name = 'linop',

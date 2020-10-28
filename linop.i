@@ -2,19 +2,25 @@
 %include "carrays.i"
 %include "complex.i"
 %include "cpointer.i"
-%include "numpy.i"
 %array_class(long, long_arr)
 %pointer_class(float, floatp)
 %pointer_class(complex float, complexp)
-%numpy_typemaps(complex float, NPY_CFLOAT, int)
+// %numpy_typemaps(complex float, NPY_CFLOAT, int)
 
 %{
+		#define SWIG_FILE_WITH_INIT
 		#include <complex.h>
 		#include <stdbool.h>
 
 		#include "/Users/malits/bart_work/bart/src/linops/linop.h"
 		#include "/Users/malits/bart_work/bart/src/linops/grad.h"
 		#include "/Users/malits/bart_work/bart/src/linops/someops.h"
+%}
+
+%include "numpy.i"
+
+%init %{
+	import_array();
 %}
 
 
@@ -46,34 +52,80 @@ extern void linop_free(const struct linop_s* op);
 // typemap for forward and adjoint linear operator
 // TODO: create a separate typemaps file and just import them all
 
-%typemap(in, fragment="NumPy_Fragments")
-	//(const struct linop_s* op, unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
-	//unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
-	(unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
-	unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
-	(PyArrayObject* in = NULL, int is_new_object = 0, PyObject* out = NULL)
+// %typemap(in, fragment="NumPy_Fragments")
+// 	//(const struct linop_s* op, unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
+// 	//unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
+// 	(unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
+// 	unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
+// 	(PyArrayObject* in = NULL, int is_new_object = 0, PyObject* out = NULL)
+// 	{
+// 		linop_s* op;
+// 		int dst_n;
+// 		const long * dst_dims;
+
+// 		npy_intp size[dst_n] = dst_dims;
+// 		array = obj_to_array_contiguous_allow_conversions($2, NPY_COMPLEX64,
+// 															&is_new_object);
+// 		if (!array) SWIG_fail;
+
+// 		out = PyArray_SimpleNewFromData(dst_n, size, PyArray_Type(array),
+// 										src);
+// 		if (!out) SWIG_fail;
+// 	} 
+
+// %typemap(argout)
+// 	//(const struct linop_s* op, 
+// 	(unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
+// 	unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
+// 	{
+// 		$result = (PyObject*)out$argnum;
+// 	}
+
+// input array, shape, and dimensions
+%typemap(in, fragment="NumPy_Fragments") 
+	(unsigned int src_n, const long sdims[__VLA(src_n)], const complex float *src)
+	(PyArrayObject* array=NULL, int is_new_object=0) 
 	{
-		linop_s* op;
-		int dst_n;
-		const long * dst_dims;
+		array = obj_to_array_contiguous_allow_conversion($input, NPY_COMPLEX64,
+														 &is_new_object);
+		
+		int ndims = array_numdims(array);
 
-		npy_intp size[dst_n] = dst_dims;
-		array = obj_to_array_contiguous_allow_conversions($2, NPY_COMPLEX64,
-															&is_new_object);
-		if (!array) SWIG_fail;
+		npy_intp* size = array_dimensions(array); // ddims
 
-		out = PyArray_SimpleNewFromData(dst_n, size, PyArray_Type(array),
-										src);
+		long sdims[ndims];
+		for (int i = 0; i < ndims; i++) {
+			sdims[i] = (int) size[i];
+		}
+
+		$1 = ndims;
+		$2 = sdims;
+		$3 = (complex float *) array_data(array);
+	}
+
+%typemap(in, fragment="NumPy_Fragments", numinputs=1)
+	(unsigned int DN, const long ddims[__VLA(DN)], complex float *dst)
+	(PyObject *out=NULL, npy_intp * ddims=NULL)
+	{
+		ddims = $input;
+		int ndims = array_numdims($input);
+
+		out = PyArray_SimpleNew(ndims, ddims, NPY_COMPLEX64);
 		if (!out) SWIG_fail;
-	} 
+
+		$1 = ndims;
+		$2 = ddims;
+		$3 = (complex float *) array_data(out);
+	}
 
 %typemap(argout)
-	//(const struct linop_s* op, 
-	(unsigned int dst_n, const long dst_dims[__VLA(dst_n)], complex float * dst,
-	unsigned int src_n, const long src_dims[__VLA(SN)], const complex float* src)
+	(unsigned int DN, const long ddims[__VLA(DN)], complex float *dst)
 	{
 		$result = (PyObject*)out$argnum;
 	}
+
+%apply(unsigned int src_n, const long sdims[__VLA(src_n)], const complex float *src) {(unsigned int SN, const long sdims[__VLA(SN)], const complex float *src)}
+%apply(unsigned int DN, const long ddims[__VLA(DN)], complex float *dst) {(unsigned int DN, const long ddims[__VLA(DN)], complex float *dst)}
 
 extern void linop_forward(const struct linop_s* op, unsigned int DN, const long ddims[__VLA(DN)], complex float* dst,
 			unsigned int SN, const long sdims[__VLA(SN)], const complex float* src);
