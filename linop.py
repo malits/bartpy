@@ -146,6 +146,9 @@ def complexp_frompointer(t):
 def create_complex_array(re, im, n):
     return _linop.create_complex_array(re, im, n)
 
+def np_foo(arr, index):
+    return _linop.np_foo(arr, index)
+
 def linop_create(ON, odims, IN, idims, data, forward, adjoint, normal, norm_inv, arg10):
     return _linop.linop_create(ON, odims, IN, idims, data, forward, adjoint, normal, norm_inv, arg10)
 
@@ -158,17 +161,17 @@ def linop_get_data(ptr):
 def linop_free(op):
     return _linop.linop_free(op)
 
-def linop_forward(op, DN, ddims, dst, SN, sdims, src):
-    return _linop.linop_forward(op, DN, ddims, dst, SN, sdims, src)
+def linop_forward(op, DN, SN):
+    return _linop.linop_forward(op, DN, SN)
 
-def linop_adjoint(op, DN, ddims, dst, SN, sdims, src):
-    return _linop.linop_adjoint(op, DN, ddims, dst, SN, sdims, src)
+def linop_adjoint(op, DN, SN):
+    return _linop.linop_adjoint(op, DN, SN)
 
 def linop_normal(op, N, dims, dst, src):
     return _linop.linop_normal(op, N, dims, dst, src)
 
-def linop_pseudo_inv(op, _lambda, DN, ddims, dst, SN, sdims, src):
-    return _linop.linop_pseudo_inv(op, _lambda, DN, ddims, dst, SN, sdims, src)
+def linop_pseudo_inv(op, _lambda, DN, SN):
+    return _linop.linop_pseudo_inv(op, _lambda, DN, SN)
 
 def linop_forward_unchecked(op, dst, src):
     return _linop.linop_forward_unchecked(op, dst, src)
