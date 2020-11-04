@@ -114,12 +114,17 @@
     if (py_obj == NULL          ) return "C NULL value";
     if (py_obj == Py_None       ) return "Python None" ;
     if (PyCallable_Check(py_obj)) return "callable"    ;
-    if (PyBytes_Check(   py_obj)) return "string"      ;
+    if (PyString_Check(  py_obj)) return "string"      ;
     if (PyInt_Check(     py_obj)) return "int"         ;
     if (PyFloat_Check(   py_obj)) return "float"       ;
     if (PyDict_Check(    py_obj)) return "dict"        ;
     if (PyList_Check(    py_obj)) return "list"        ;
     if (PyTuple_Check(   py_obj)) return "tuple"       ;
+%#if PY_MAJOR_VERSION < 3
+    if (PyFile_Check(    py_obj)) return "file"        ;
+    if (PyModule_Check(  py_obj)) return "module"      ;
+    if (PyInstance_Check(py_obj)) return "instance"    ;
+%#endif
 
     return "unknown type";
   }
@@ -540,7 +545,7 @@
     const npy_intp *dims = array_dimensions(ary);
     for (i=0; i < nd; ++i)
       n_non_one += (dims[i] != 1) ? 1 : 0;
-    if (n_non_one > 1)
+    if (n_non_one > 1)    
       array_clearflags(ary,NPY_ARRAY_CARRAY);
     array_enableflags(ary,NPY_ARRAY_FARRAY);
     /* Recompute the strides */
@@ -2492,9 +2497,9 @@
   if (!array) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$2), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$2), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -2562,9 +2567,9 @@
   if (!array) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$3), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$3), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -2632,9 +2637,9 @@
   if (!array || !require_fortran(array)) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$3), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$3), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -2706,9 +2711,9 @@
   if (!array) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$4), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$4), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -2780,9 +2785,9 @@
   if (!array || !require_fortran(array)) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$4), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$4), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -2856,9 +2861,9 @@
   if (!array) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$5), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$5), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -2932,9 +2937,9 @@
   if (!array || !require_fortran(array)) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$5), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$5), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -3008,9 +3013,9 @@
   if (!array) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$5), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$5), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007
@@ -3084,9 +3089,9 @@
   if (!array || !require_fortran(array)) SWIG_fail;
 
 %#ifdef SWIGPY_USE_CAPSULE
-    PyObject* cap = PyCapsule_New((void*)(*$5), SWIGPY_CAPSULE_NAME, free_cap);
+    PyObject* cap = PyCapsule_New((void*)(*$1), SWIGPY_CAPSULE_NAME, free_cap);
 %#else
-    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$5), free);
+    PyObject* cap = PyCObject_FromVoidPtr((void*)(*$1), free);
 %#endif
 
 %#if NPY_API_VERSION < 0x00000007

@@ -23,21 +23,64 @@
 	import_array();
 %}
 
-// turn numpy item to array
+//------------------------
+%typemap(in, fragment="NumPy_Fragments")
+  (float* arr, int dim1, int dim2, float* res)
+  (PyArrayObject* array=NULL, int is_new_object=0, PyObject* out=NULL)
+{
+  npy_intp size[2] = { -1, -1 };
+  array = obj_to_array_contiguous_allow_conversion($input, NPY_CFLOAT,
+                                                   &is_new_object);
+  if (!array || !require_dimensions(array, 2) ||
+      !require_size(array, size, 2)) SWIG_fail;
+ 
+  size[0] = PyArray_DIM(array, 0);
+  size[1] = PyArray_DIM(array, 1);
+   
+  out = PyArray_SimpleNew(2, size, PyArray_TYPE(array));
+  if (!out) SWIG_fail;
+   
+  $1 = (float*) array_data(array);
+  $2 = (int) array_size(array,0);
+  $3 = (int) array_size(array,1);
+  $4 = (float*) array_data((PyArrayObject*)out);
+}
+
+%typemap(argout)
+  (float* arr, int dim1, int dim2, float* res)
+{
+  $result = (PyObject*)out$argnum;
+}
+
+%apply(float* arr, int dim1, int dim2, float* res) {
+  (const float* array, int m, int n, float* result)
+}
+
+%inline %{
+	void lin_trans(const float* array, int m, int n, float* result) {
+		int x = 1 + 2;
+	}
+%}
+//------------------------
+
+
+// Test function
 %typemap(in, fragment="NumPy_Fragments") 
 	(complex float* arr) 
-	(PyArrayObject* array = NULL, int is_new_object=0)
+	(PyObject* array = NULL, int is_new_object=0)
 	{
-		array = obj_to_array_contiguous_allow_conversion($input, 
-														NPY_CFLOAT, 
-														&is_new_object);
+
+		array = obj_to_array_fortran_allow_conversion($input, 
+													NPY_CFLOAT,
+													&is_new_object);
 		$1 = (complex float *) array_data(array);
 	}
 
 %typemap(argout)
 	(complex float* arr)
 	{
-		$result = SWIG_Python_AppendOutput($result, (PyObject*)array$argnum);
+		//cast array to Python object and append it to the result
+		$result = SWIG_Python_AppendOutput($result, (PyObject*)array$argnum); 
 	}
 
 %apply(complex float * arr) {(complex float * arr)}
@@ -58,7 +101,115 @@
 	}
 %}
 
-// Linop
+// Typemaps
+// Convert n-dimensional python array to (int NDIM, long [dims]) TODO: ensure robust type-checking
+%typemap(in, fragment="NumPy_Fragments")
+	(unsigned int N, const long dims[__VLA(N)])
+	(PyArrayObject* array = NULL, int is_new_object = 0)
+	{
+		array = (PyArrayObject*) obj_to_array_contiguous_allow_conversion($input, 
+													NPY_LONG, 
+													&is_new_object);
+
+		$1 = (unsigned int) array_size(array, 0);
+		$2 = (long *) array_data(array);
+	}
+
+// Convert Numpy array to complex float 
+%typemap(in, fragment="NumPy_Fragments")
+	(complex float* array)
+	(PyArrayObject* array = NULL, int is_new_object = 0) 
+	{
+		array = (PyArrayObject*) obj_to_array_contiguous_allow_conversion($input,
+													NPY_CFLOAT,
+													&is_new_object);
+		
+		$1 = (complex float *) array_data(array);
+	}
+
+// Extract information from src
+%typemap(in, fragment="NumPy_Fragments")
+	(unsigned int N, const long dims[__VLA(N)], complex float* arr)
+	(PyArrayObject * out = NULL, int is_new_object = 0)
+	{
+		array = (PyArrayObject*) obj_to_array_contiguous_allow_conversion($input,
+													NPY_CFLOAT,
+													&is_new_object);
+
+		$1 = (unsigned int) array_numdims(array);
+		$2 = (long *) array_dimensions(array);
+		$3 = (complex float *) array_data(array);
+		// npy_intp size[2] = {2, 2};
+		// out = obj_to_array_fortran_allow_conversion($input,
+		// 											NPY_CFLOAT,
+		// 											&is_new_object);
+
+		// $1 = 2;
+		// $2 = size;
+		// $3 = (complex float *) array_data(out);
+	}
+
+// Take dst dims and set up dst
+%typemap(in, fragment="NumPy_Fragments", numinputs=0)
+	(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
+	(PyObject* out = NULL, int is_new_object = 0)
+	{
+		npy_intp size[2] = {2, 2};
+		out = PyArray_SimpleNew(2, size, NPY_CFLOAT);
+
+		$1 = 2;
+		$2 = size;
+		$3 = (complex float *) array_data(out);
+	}
+
+%typemap(in, fragment="NumPy_Fragments", numinputs=0)
+	(const struct linop_s * op)
+	()
+	{
+		long dims[2] = {2, 2};
+		complex float * diag = (complex float *) malloc(2 * sizeof(complex float));
+		diag[0] = 1;
+		diag[1] = 1;
+		$1 = linop_rdiag_create(2, dims, 0, diag);
+	}
+
+%typemap(argout)
+	(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
+	{
+		$result = SWIG_Python_AppendOutput($result, (PyObject*)out$argnum);
+	}
+
+//apply typemaps
+%apply(unsigned int N, const long dims[__VLA(N)])
+	{
+		(unsigned int N, const long dims[__VLA(N)]),
+		(int N, const long dims[__VLA(N)]),
+		(unsigned int SN, const long sdims[__VLA(SN)])
+	};
+
+// %apply(unsigned int N, const long dims[__VLA(N)], complex float* arr)
+// 	{
+// 		(unsigned int SN, const long sdims[__VLA(SN)], complex float* src)
+// 	};
+
+%apply(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
+	{
+		(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
+	};
+
+//TODO: Currently, need to specify output dimensions
+%apply(unsigned int N, const long dims[__VLA(N)])
+	{
+		(unsigned int ON, const long odims[ON])
+		(unsigned int SN, const long sdims[__VLA(SN)])
+	}; 
+
+%apply(complex float* array)
+	{
+		(const complex float* diag)
+		(const complex float* dst)
+	};
+
 extern struct linop_s* linop_create(unsigned int ON, const long odims[ON], unsigned int IN, const long idims[IN], linop_data_t* data,
 				lop_fun_t forward, lop_fun_t adjoint, lop_fun_t normal, lop_p_fun_t norm_inv, del_fun_t);
 
@@ -105,13 +256,12 @@ extern struct linop_s* linop_loop(unsigned int D, const long dims[D], struct lin
 extern struct linop_s* linop_copy_wrapper(unsigned int D, const long istrs[D], const long ostrs[D], struct linop_s* op);
 
 
-
-
 extern struct linop_s* linop_null_create2(unsigned int NO, const long odims[NO], const long ostrs[NO], unsigned int NI, const long idims[NI], const long istrs[NI]);
 extern struct linop_s* linop_null_create(unsigned int NO, const long odims[NO], unsigned int NI, const long idims[NI]);
 
 extern struct linop_s* linop_plus(const struct linop_s* a, const struct linop_s* b);
 extern struct linop_s* linop_plus_FF(const struct linop_s* a, const struct linop_s* b);
+
 
 
 // Grad
