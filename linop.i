@@ -5,7 +5,6 @@
 %array_class(long, long_arr)
 %pointer_class(float, floatp)
 %pointer_class(complex float, complexp)
-// %numpy_typemaps(complex float, NPY_CFLOAT, int)
 
 %{
 		#define SWIG_FILE_WITH_INIT
@@ -18,6 +17,8 @@
 %}
 
 %include "numpy.i"
+
+// %numpy_typemaps(complex float, NPY_CFLOAT, int)
 
 %init %{
 	import_array();
@@ -95,120 +96,22 @@
 
 		return out;
 	}
-
-	void * np_foo(complex float * arr, int index) {
-		arr[index] += 1;
-	}
 %}
 
-// Typemaps
-// Convert n-dimensional python array to (int NDIM, long [dims]) TODO: ensure robust type-checking
-%typemap(in, fragment="NumPy_Fragments")
+// take linop dimensions as an array (numpy or otherwise)
+%apply(int DIM1, long * IN_ARRAY1) {
+	(int N, const long dims[__VLA(N)]),
 	(unsigned int N, const long dims[__VLA(N)])
-	(PyArrayObject* array = NULL, int is_new_object = 0)
-	{
-		array = (PyArrayObject*) obj_to_array_contiguous_allow_conversion($input, 
-													NPY_LONG, 
-													&is_new_object);
+}
 
-		$1 = (unsigned int) array_size(array, 0);
-		$2 = (long *) array_data(array);
-	}
+// take linop diagonal as a numpy array
+// TODO: make sure dimensions (N in the above typemap) are correctly checked
+%apply(complex float ARGOUT_ARRAY1[ANY]) {
+	(const complex float * diag)
+}
 
-// Convert Numpy array to complex float 
-%typemap(in, fragment="NumPy_Fragments")
-	(complex float* array)
-	(PyArrayObject* array = NULL, int is_new_object = 0) 
-	{
-		array = (PyArrayObject*) obj_to_array_contiguous_allow_conversion($input,
-													NPY_CFLOAT,
-													&is_new_object);
-		
-		$1 = (complex float *) array_data(array);
-	}
-
-// Extract information from src
-%typemap(in, fragment="NumPy_Fragments")
-	(unsigned int N, const long dims[__VLA(N)], complex float* arr)
-	(PyArrayObject * out = NULL, int is_new_object = 0)
-	{
-		array = (PyArrayObject*) obj_to_array_contiguous_allow_conversion($input,
-													NPY_CFLOAT,
-													&is_new_object);
-
-		$1 = (unsigned int) array_numdims(array);
-		$2 = (long *) array_dimensions(array);
-		$3 = (complex float *) array_data(array);
-		// npy_intp size[2] = {2, 2};
-		// out = obj_to_array_fortran_allow_conversion($input,
-		// 											NPY_CFLOAT,
-		// 											&is_new_object);
-
-		// $1 = 2;
-		// $2 = size;
-		// $3 = (complex float *) array_data(out);
-	}
-
-// Take dst dims and set up dst
-%typemap(in, fragment="NumPy_Fragments", numinputs=0)
-	(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
-	(PyObject* out = NULL, int is_new_object = 0)
-	{
-		npy_intp size[2] = {2, 2};
-		out = PyArray_SimpleNew(2, size, NPY_CFLOAT);
-
-		$1 = 2;
-		$2 = size;
-		$3 = (complex float *) array_data(out);
-	}
-
-%typemap(in, fragment="NumPy_Fragments", numinputs=0)
-	(const struct linop_s * op)
-	()
-	{
-		long dims[2] = {2, 2};
-		complex float * diag = (complex float *) malloc(2 * sizeof(complex float));
-		diag[0] = 1;
-		diag[1] = 1;
-		$1 = linop_rdiag_create(2, dims, 0, diag);
-	}
-
-%typemap(argout)
-	(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
-	{
-		$result = SWIG_Python_AppendOutput($result, (PyObject*)out$argnum);
-	}
-
-//apply typemaps
-%apply(unsigned int N, const long dims[__VLA(N)])
-	{
-		(unsigned int N, const long dims[__VLA(N)]),
-		(int N, const long dims[__VLA(N)]),
-		(unsigned int SN, const long sdims[__VLA(SN)])
-	};
-
-// %apply(unsigned int N, const long dims[__VLA(N)], complex float* arr)
-// 	{
-// 		(unsigned int SN, const long sdims[__VLA(SN)], complex float* src)
-// 	};
-
-%apply(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
-	{
-		(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
-	};
-
-//TODO: Currently, need to specify output dimensions
-%apply(unsigned int N, const long dims[__VLA(N)])
-	{
-		(unsigned int ON, const long odims[ON])
-		(unsigned int SN, const long sdims[__VLA(SN)])
-	}; 
-
-%apply(complex float* array)
-	{
-		(const complex float* diag)
-		(const complex float* dst)
-	};
+// rename linop_[name] to [name]
+%rename("%(strip:[linop_])s") "";
 
 extern struct linop_s* linop_create(unsigned int ON, const long odims[ON], unsigned int IN, const long idims[IN], linop_data_t* data,
 				lop_fun_t forward, lop_fun_t adjoint, lop_fun_t normal, lop_p_fun_t norm_inv, del_fun_t);
