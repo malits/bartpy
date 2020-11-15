@@ -98,16 +98,39 @@
 	}
 %}
 
+// Get input array
+%typemap(in, fragment="NumPy_Fragments")
+	(unsigned int num_dims, long dims[num_dims], complex float * data)
+	(PyArrayObject * arr = NULL, long * dims = NULL, int is_new_object = 0)
+	{
+		arr = obj_to_array_fortran_allow_conversion($input,
+													NPY_CFLOAT,
+													&is_new_object);
+
+		unsigned int N = (unsigned int) array_numdims(arr);
+		
+		npy_intp * npy_dims = array_dimensions(arr);
+		// TODO: cleanup memory here
+		dims = (long *) malloc(N * sizeof(long));
+
+		for (unsigned int i = 0; i < N; i++) {
+			dims[i] = (int) npy_dims[i];
+		}
+
+		$1 = N;
+		$2 = dims;
+		$3 = (complex float *) array_data(arr);
+	}
+
 // take linop dimensions as an array (numpy or otherwise)
 %apply(int DIM1, long * IN_ARRAY1) {
 	(int N, const long dims[__VLA(N)]),
 	(unsigned int N, const long dims[__VLA(N)])
 }
 
-// take linop diagonal as a numpy array
-// TODO: make sure dimensions (N in the above typemap) are correctly checked
-%apply(complex float ARGOUT_ARRAY1[ANY]) {
-	(const complex float * diag)
+// Input array typemap
+%apply(unsigned int num_dims, long dims[num_dims], complex float * data) {
+	(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
 }
 
 // rename linop_[name] to [name]
