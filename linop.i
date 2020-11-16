@@ -98,7 +98,7 @@
 	}
 %}
 
-// Get input array
+// Transfer input numpy array to BART arguments
 %typemap(in, fragment="NumPy_Fragments")
 	(unsigned int num_dims, long dims[num_dims], complex float * data)
 	(PyArrayObject * arr = NULL, long * dims = NULL, int is_new_object = 0)
@@ -122,6 +122,39 @@
 		$3 = (complex float *) array_data(arr);
 	}
 
+// Allocate data for output array based on dimensions array
+%typemap(in, fragments="NumPy_Fragments")
+	(unsigned int out_dims, long dims[out_dims], complex float * data)
+	(PyObject * out = NULL, PyArrayObject * in_dims = NULL, int dims_is_new = 0)
+	{
+		in_dims = obj_to_array_contiguous_allow_conversion($input,
+															NPY_LONG,
+															&dims_is_new);
+
+		unsigned int N = (unsigned int) array_numdims(in_dims);
+		
+		npy_intp * npy_dims = malloc(N * sizeof(npy_intp));
+		long * ddims = malloc(N * sizeof(long));
+
+		ddims = (long *) array_data(in_dims);
+
+		for (unsigned int i = 0; i < N; i++) {
+			npy_dims[i] = ddims[i];
+		}
+
+		out = PyArray_Empty(N, npy_dims, PyArray_DescrFromType(NPY_CFLOAT), 1);
+
+		$1 = N;
+		$2 = ddims;
+		$3 = (complex float *) array_data(out);
+	}
+
+%typemap(argout) 
+	(unsigned int out_dims, long dims[out_dims], complex float * data)
+	{
+		$result = SWIG_Python_AppendOutput($result, (PyObject*)out$argnum);
+	}
+
 // take linop dimensions as an array (numpy or otherwise)
 %apply(int DIM1, long * IN_ARRAY1) {
 	(int N, const long dims[__VLA(N)]),
@@ -130,6 +163,11 @@
 
 // Input array typemap
 %apply(unsigned int num_dims, long dims[num_dims], complex float * data) {
+	(unsigned int SN, const long sdims[__VLA(SN)], const complex float* src)
+}
+
+// output array typemap
+%apply(unsigned int out_dims, long dims[out_dims], complex float * data) {
 	(unsigned int DN, const long ddims[__VLA(DN)], complex float* dst)
 }
 
