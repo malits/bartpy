@@ -1,0 +1,8 @@
+# Dimensions
+128 128 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+# Command
+fft -i 3 logo logo_recon 
+# Files
+ >logo_recon <logo
+# Creator
+BART v0.6.00-6-g225c648-dirty
