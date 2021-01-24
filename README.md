@@ -36,6 +36,7 @@ Ensure that the environment variable `TOOLBOX_PATH` is set to your BART installa
 From this directory, run `python setup.py install`
 
 ### Current Coverage
+#### _TODO: Update_
 
 #### `bartpy.simu.phantom`
 
@@ -70,5 +71,5 @@ These are my current tasks:
 - [ ] Simple tutorials
 
 ### Known Bugs
-- There is an issue where the Python interpreter will hang after executing some functions with numpy data (e.g., calling `phantom` on a numpy array of dimensions). This is either GIL related or has to do with the way that I parse dimensions from the dimension array in the SWIG bindings. I suspect it's the latter, because the issue does not persist when `fft` is called on a numpy array. 
+- ~~There is an issue where the Python interpreter will hang after executing some functions with numpy data (e.g., calling `phantom` on a numpy array of dimensions). This is either GIL related or has to do with the way that I parse dimensions from the dimension array in the SWIG bindings. I suspect it's the latter, because the issue does not persist when `fft` is called on a numpy array.~~
 - Data not quite parsed correctly - see FFT recon of BART logo
