@@ -3380,7 +3380,7 @@ SWIGINTERN PyObject *_wrap_calc_sens(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3398,11 +3398,9 @@ SWIGINTERN PyObject *_wrap_calc_sens(PyObject *SWIGUNUSEDPARM(self), PyObject *a
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   {
     SWIG_PYTHON_THREAD_BEGIN_ALLOW;
@@ -3447,7 +3445,7 @@ SWIGINTERN PyObject *_wrap_calc_geo_phantom(PyObject *SWIGUNUSEDPARM(self), PyOb
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3465,11 +3463,9 @@ SWIGINTERN PyObject *_wrap_calc_geo_phantom(PyObject *SWIGUNUSEDPARM(self), PyOb
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   {
     bool_var3 = PyObject_IsTrue(swig_obj[1]);
@@ -3522,7 +3518,7 @@ SWIGINTERN PyObject *_wrap_calc_phantom(PyObject *SWIGUNUSEDPARM(self), PyObject
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3540,11 +3536,9 @@ SWIGINTERN PyObject *_wrap_calc_phantom(PyObject *SWIGUNUSEDPARM(self), PyObject
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   {
     bool_var3 = PyObject_IsTrue(swig_obj[1]);
@@ -3596,7 +3590,7 @@ SWIGINTERN PyObject *_wrap_calc_circ(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3614,11 +3608,9 @@ SWIGINTERN PyObject *_wrap_calc_circ(PyObject *SWIGUNUSEDPARM(self), PyObject *a
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   {
     bool_var3 = PyObject_IsTrue(swig_obj[1]);
@@ -3668,7 +3660,7 @@ SWIGINTERN PyObject *_wrap_calc_ring(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3686,11 +3678,9 @@ SWIGINTERN PyObject *_wrap_calc_ring(PyObject *SWIGUNUSEDPARM(self), PyObject *a
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   {
     bool_var3 = PyObject_IsTrue(swig_obj[1]);
@@ -3736,7 +3726,7 @@ SWIGINTERN PyObject *_wrap_calc_moving_circ(PyObject *SWIGUNUSEDPARM(self), PyOb
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3754,11 +3744,9 @@ SWIGINTERN PyObject *_wrap_calc_moving_circ(PyObject *SWIGUNUSEDPARM(self), PyOb
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   {
     bool_var3 = PyObject_IsTrue(swig_obj[1]);
@@ -3805,7 +3793,7 @@ SWIGINTERN PyObject *_wrap_calc_phantom_tubes(PyObject *SWIGUNUSEDPARM(self), Py
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3823,11 +3811,9 @@ SWIGINTERN PyObject *_wrap_calc_phantom_tubes(PyObject *SWIGUNUSEDPARM(self), Py
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   ecode3 = SWIG_AsVal_bool(swig_obj[1], &val3);
   if (!SWIG_IsOK(ecode3)) {
@@ -3891,7 +3877,7 @@ SWIGINTERN PyObject *_wrap_calc_phantom_arb(PyObject *SWIGUNUSEDPARM(self), PyOb
   {
     npy_intp dims[16];
     
-    in_dims3 = obj_to_array_contiguous_allow_conversion(swig_obj[2], 
+    in_dims3 = obj_to_array_fortran_allow_conversion(swig_obj[2], 
       NPY_LONG,
       &is_new_object3);
     
@@ -3909,11 +3895,9 @@ SWIGINTERN PyObject *_wrap_calc_phantom_arb(PyObject *SWIGUNUSEDPARM(self), PyOb
     dims[i] = 1;
     
     out3 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out3 = md_alloc(16, dims, sizeof(complex float));
     
     arg3 = (long *) array_data(in_dims3);
     arg4 = (complex float *) array_data(out3);
-    //arg4 = out3;
   }
   ecode5 = SWIG_AsVal_bool(swig_obj[3], &val5);
   if (!SWIG_IsOK(ecode5)) {
@@ -3961,7 +3945,7 @@ SWIGINTERN PyObject *_wrap_calc_star(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3979,11 +3963,9 @@ SWIGINTERN PyObject *_wrap_calc_star(PyObject *SWIGUNUSEDPARM(self), PyObject *a
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   ecode3 = SWIG_AsVal_bool(swig_obj[1], &val3);
   if (!SWIG_IsOK(ecode3)) {
@@ -4031,7 +4013,7 @@ SWIGINTERN PyObject *_wrap_calc_bart(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -4049,11 +4031,9 @@ SWIGINTERN PyObject *_wrap_calc_bart(PyObject *SWIGUNUSEDPARM(self), PyObject *a
     dims[i] = 1;
     
     out1 = PyArray_SimpleNew(16, dims, NPY_CFLOAT);
-    //complex float * out1 = md_alloc(16, dims, sizeof(complex float));
     
     arg1 = (long *) array_data(in_dims1);
     arg2 = (complex float *) array_data(out1);
-    //arg2 = out1;
   }
   ecode3 = SWIG_AsVal_bool(swig_obj[1], &val3);
   if (!SWIG_IsOK(ecode3)) {

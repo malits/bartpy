@@ -2718,6 +2718,7 @@ static swig_module_info swig_module = {swig_types, 10, 0, 0, 0, 0};
 		#include "/Users/malits/bart_work/bart/src/linops/linop.h"
         #include "/Users/malits/bart_work/bart/src/linops/someops.h"
         #include "/Users/malits/bart_work/bart/src/num/init.h"
+        #include "/Users/malits/bart_work/bart/src/num/ops.h"
 
 
 #ifndef SWIG_FILE_WITH_INIT
@@ -3546,7 +3547,7 @@ SWIGINTERN PyObject *_wrap_forward(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   {
     npy_intp dims[16];
     
-    in_dims2 = obj_to_array_contiguous_allow_conversion(swig_obj[1], 
+    in_dims2 = obj_to_array_fortran_allow_conversion(swig_obj[1], 
       NPY_LONG,
       &is_new_object2);
     
@@ -3571,7 +3572,7 @@ SWIGINTERN PyObject *_wrap_forward(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   {
     long dims[16];
     
-    arr4 = object_to_array_fortran_allow_conversion(swig_obj[2],
+    arr4 = obj_to_array_fortran_allow_conversion(swig_obj[2],
       NPY_COMPLEX64,
       &is_new_object4);
     
@@ -3622,7 +3623,7 @@ SWIGINTERN PyObject *_wrap_adjoint(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   {
     npy_intp dims[16];
     
-    in_dims2 = obj_to_array_contiguous_allow_conversion(swig_obj[1], 
+    in_dims2 = obj_to_array_fortran_allow_conversion(swig_obj[1], 
       NPY_LONG,
       &is_new_object2);
     
@@ -3647,7 +3648,7 @@ SWIGINTERN PyObject *_wrap_adjoint(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   {
     long dims[16];
     
-    arr4 = object_to_array_fortran_allow_conversion(swig_obj[2],
+    arr4 = obj_to_array_fortran_allow_conversion(swig_obj[2],
       NPY_COMPLEX64,
       &is_new_object4);
     
@@ -3697,7 +3698,7 @@ SWIGINTERN PyObject *_wrap_normal(PyObject *SWIGUNUSEDPARM(self), PyObject *args
   {
     npy_intp dims[16];
     
-    in_dims2 = obj_to_array_contiguous_allow_conversion(swig_obj[1], 
+    in_dims2 = obj_to_array_fortran_allow_conversion(swig_obj[1], 
       NPY_LONG,
       &is_new_object2);
     
@@ -3776,7 +3777,7 @@ SWIGINTERN PyObject *_wrap_pseudo_inv(PyObject *SWIGUNUSEDPARM(self), PyObject *
   {
     npy_intp dims[16];
     
-    in_dims3 = obj_to_array_contiguous_allow_conversion(swig_obj[2], 
+    in_dims3 = obj_to_array_fortran_allow_conversion(swig_obj[2], 
       NPY_LONG,
       &is_new_object3);
     
@@ -3801,7 +3802,7 @@ SWIGINTERN PyObject *_wrap_pseudo_inv(PyObject *SWIGUNUSEDPARM(self), PyObject *
   {
     long dims[16];
     
-    arr5 = object_to_array_fortran_allow_conversion(swig_obj[3],
+    arr5 = obj_to_array_fortran_allow_conversion(swig_obj[3],
       NPY_COMPLEX64,
       &is_new_object5);
     
@@ -4859,8 +4860,8 @@ SWIGINTERN PyObject *_wrap_cdiag_create(PyObject *SWIGUNUSEDPARM(self), PyObject
   int is_new_object1 = 0 ;
   unsigned int val3 ;
   int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
+  PyObject *arr4 = NULL ;
+  int is_new_object4 = 0 ;
   PyObject *swig_obj[3] ;
   struct linop_s *result = 0 ;
   
@@ -4882,11 +4883,15 @@ SWIGINTERN PyObject *_wrap_cdiag_create(PyObject *SWIGUNUSEDPARM(self), PyObject
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "cdiag_create" "', argument " "3"" of type '" "unsigned int""'");
   } 
   arg3 = (unsigned int)(val3);
-  res4 = SWIG_ConvertPtr(swig_obj[2], &argp4,SWIGTYPE_p_float_complex, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "cdiag_create" "', argument " "4"" of type '" "float complex const *""'"); 
+  {
+    arr4 = obj_to_array_fortran_allow_conversion(swig_obj[2],
+      NPY_COMPLEX64,
+      &is_new_object4);
+    
+    if (!arr4) SWIG_fail; // TODO: More robust check here
+    
+    arg4 = (complex float *) array_data(arr4);
   }
-  arg4 = (float complex *)(argp4);
   {
     SWIG_PYTHON_THREAD_BEGIN_ALLOW;
     result = (struct linop_s *)linop_cdiag_create(arg1,(long const (*))arg2,arg3,(float complex const *)arg4);
@@ -4921,8 +4926,8 @@ SWIGINTERN PyObject *_wrap_rdiag_create(PyObject *SWIGUNUSEDPARM(self), PyObject
   int is_new_object1 = 0 ;
   unsigned int val3 ;
   int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
+  PyObject *arr4 = NULL ;
+  int is_new_object4 = 0 ;
   PyObject *swig_obj[3] ;
   struct linop_s *result = 0 ;
   
@@ -4944,11 +4949,15 @@ SWIGINTERN PyObject *_wrap_rdiag_create(PyObject *SWIGUNUSEDPARM(self), PyObject
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "rdiag_create" "', argument " "3"" of type '" "unsigned int""'");
   } 
   arg3 = (unsigned int)(val3);
-  res4 = SWIG_ConvertPtr(swig_obj[2], &argp4,SWIGTYPE_p_float_complex, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "rdiag_create" "', argument " "4"" of type '" "float complex const *""'"); 
+  {
+    arr4 = obj_to_array_fortran_allow_conversion(swig_obj[2],
+      NPY_COMPLEX64,
+      &is_new_object4);
+    
+    if (!arr4) SWIG_fail; // TODO: More robust check here
+    
+    arg4 = (complex float *) array_data(arr4);
   }
-  arg4 = (float complex *)(argp4);
   {
     SWIG_PYTHON_THREAD_BEGIN_ALLOW;
     result = (struct linop_s *)linop_rdiag_create(arg1,(long const (*))arg2,arg3,(float complex const *)arg4);

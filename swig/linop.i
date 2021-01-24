@@ -14,6 +14,7 @@
 		#include "/Users/malits/bart_work/bart/src/linops/linop.h"
         #include "/Users/malits/bart_work/bart/src/linops/someops.h"
         #include "/Users/malits/bart_work/bart/src/num/init.h"
+        #include "/Users/malits/bart_work/bart/src/num/ops.h"
 %}
 
 %include "numpy.i"
@@ -52,7 +53,8 @@
 // Typemaps to apply to wrappers
 %apply(long dims[16], complex float* data) {(long ddims[16], complex float* dst),
                                             (long dims[16], complex float* dst)}
-%apply(complex float *src){(complex float* src)}
+%apply(complex float *src){(complex float* src),
+                           (complex float* diag)}
 %apply(long dims[16], complex float* src) {(long sdims[16], complex float* src)}
 
 // NumPy Typemaps for specifying operator dims

@@ -2,7 +2,7 @@ import numpy as np
 
 from .simu_swig import calc_bart, calc_phantom, calc_geo_phantom, calc_circ, calc_ring, calc_star
 
-# TODO: Need to revise the object structure
+# TODO: Add support for multiple channels
 def phantom(dims, ksp=False, d3=False, ptype="shepp"):
     """
     Calculate numerical phantom of specified dimensions
@@ -10,10 +10,10 @@ def phantom(dims, ksp=False, d3=False, ptype="shepp"):
     :param dims: Array of dimensions. Cannot exceed 16.
     :param ksp: Toggles K-Space
     :param d3: Toggles 3D
-    :param type: 'shepp', 'geo', 'circ', 'ring', 'star', 'bart'
+    :param ptype: 'shepp', 'geo', 'circ', 'ring', 'star', 'bart'
     """
 
-    # Holdover solution while I figure out GIL issue
+    # Stopgap solution while I figure out GIL issue
     dims = list(dims)
 
     if len(dims) > 16 or len(dims) < 0:

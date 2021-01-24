@@ -27,7 +27,7 @@
     {
         long dims[16];
         
-        arr = object_to_array_fortran_allow_conversion($input,
+        arr = obj_to_array_fortran_allow_conversion($input,
                                                         NPY_COMPLEX64,
                                                         &is_new_object);
 
@@ -47,9 +47,9 @@
     {
         npy_intp dims[16];
 
-        in_dims = obj_to_array_contiguous_allow_conversion($input, 
-                                                            NPY_LONG,
-                                                            &is_new_object);
+        in_dims = obj_to_array_fortran_allow_conversion($input, 
+                                                        NPY_LONG,
+                                                        &is_new_object);
         
 
         if (!in_dims || !require_dimensions(in_dims, 1)) SWIG_fail; // check dims not greater than 16

@@ -3424,7 +3424,6 @@ SWIGINTERN PyObject *_wrap_fftmod(PyObject *SWIGUNUSEDPARM(self), PyObject *args
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -3486,7 +3485,6 @@ SWIGINTERN PyObject *_wrap_ifftmod(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -3548,7 +3546,6 @@ SWIGINTERN PyObject *_wrap_fftscale(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -3610,7 +3607,6 @@ SWIGINTERN PyObject *_wrap_fftshift(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -3672,7 +3668,6 @@ SWIGINTERN PyObject *_wrap_ifftshift(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -3730,7 +3725,6 @@ SWIGINTERN PyObject *_wrap_fft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   long val3 ;
   int ecode3 = 0 ;
   PyObject *arr4 = NULL ;
-  PyArrayObject *in_dims4 = NULL ;
   int is_new_object4 = 0 ;
   PyObject *swig_obj[3] ;
   
@@ -3738,7 +3732,7 @@ SWIGINTERN PyObject *_wrap_fft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3801,7 +3795,6 @@ SWIGINTERN PyObject *_wrap_ifft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) 
   long val3 ;
   int ecode3 = 0 ;
   PyObject *arr4 = NULL ;
-  PyArrayObject *in_dims4 = NULL ;
   int is_new_object4 = 0 ;
   PyObject *swig_obj[3] ;
   
@@ -3809,7 +3802,7 @@ SWIGINTERN PyObject *_wrap_ifft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) 
   {
     npy_intp dims[16];
     
-    in_dims1 = obj_to_array_contiguous_allow_conversion(swig_obj[0], 
+    in_dims1 = obj_to_array_fortran_allow_conversion(swig_obj[0], 
       NPY_LONG,
       &is_new_object1);
     
@@ -3876,7 +3869,6 @@ SWIGINTERN PyObject *_wrap_fftc(PyObject *SWIGUNUSEDPARM(self), PyObject *args) 
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -3938,7 +3930,6 @@ SWIGINTERN PyObject *_wrap_ifftc(PyObject *SWIGUNUSEDPARM(self), PyObject *args)
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -4000,7 +3991,6 @@ SWIGINTERN PyObject *_wrap_fftu(PyObject *SWIGUNUSEDPARM(self), PyObject *args) 
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -4062,7 +4052,6 @@ SWIGINTERN PyObject *_wrap_ifftu(PyObject *SWIGUNUSEDPARM(self), PyObject *args)
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -4124,7 +4113,6 @@ SWIGINTERN PyObject *_wrap_fftuc(PyObject *SWIGUNUSEDPARM(self), PyObject *args)
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
@@ -4186,7 +4174,6 @@ SWIGINTERN PyObject *_wrap_ifftuc(PyObject *SWIGUNUSEDPARM(self), PyObject *args
   void *argp4 = 0 ;
   int res4 = 0 ;
   PyObject *arr5 = NULL ;
-  PyArrayObject *in_dims5 = NULL ;
   int is_new_object5 = 0 ;
   PyObject *swig_obj[5] ;
   
