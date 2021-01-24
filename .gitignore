@@ -4,3 +4,5 @@ build/
 dist/
 bartpy.egg-info/
 .vscode/
+
+demos/.ipynb_checkpoints/
