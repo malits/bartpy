@@ -70,4 +70,4 @@ These are my current tasks:
 
 ### Known Bugs
 - ~~There is an issue where the Python interpreter will hang after executing some functions with numpy data (e.g., calling `phantom` on a numpy array of dimensions). This is either GIL related or has to do with the way that I parse dimensions from the dimension array in the SWIG bindings. I suspect it's the latter, because the issue does not persist when `fft` is called on a numpy array.~~
-- Data not quite parsed correctly - see FFT recon of BART logo
+- Dimension ordering for FFT/Phantom not quite correct - see FFT recon of BART logo
