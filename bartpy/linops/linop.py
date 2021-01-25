@@ -1,6 +1,9 @@
 import numpy as np
 
 from .linop_swig import forward as _forward
+from .linop_swig import plus as _plus
+
+from ..utils.md_utils import expand_array, expand_dims
 
 def forward(op, dest_dims, src_arr):
     """
@@ -10,11 +13,18 @@ def forward(op, dest_dims, src_arr):
     :param op: Linear operator
     :src_arr: source_numpy_array
     """
-    dst_dim = dest_dims + [1] * (16 - len(dest_dims))
-    src = np.asfortranarray(src_arr, dtype=np.complex64)
-    ndims = len(dest_dims)
-    
-    if ndims < 16: 
-        src = np.expand_dims(src, axis=list(range(ndims, 16)))
+    dst_dim = expand_dims(dest_dims)
+    src = expand_array(src_arr)
 
     return _forward(op, dst_dim, src).squeeze()
+
+def plus(op_a, op_b):
+    """
+    Add two linear operators
+
+    :param op_a: First operator
+    :param op_b: Second operator
+
+    :returns the sum of the two operators:
+    """
+    return _plus(op_a, op_b)
