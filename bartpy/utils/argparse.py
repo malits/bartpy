@@ -4,6 +4,7 @@ import subprocess
 
 
 TOOLS_PATH = '../tools/tools.py'
+BART_PATH = os.environ['TOOLBOX_PATH']
 
 ARG_MAP = {}
 
@@ -23,7 +24,7 @@ def get_tools():
     """
     Gets a list of BART tools that the user has installed
     """
-    process = subprocess.Popen([f'{TOOLS_PATH}/bart'], stdout=subprocess.PIPE)
+    process = subprocess.Popen([f'{BART_PATH}/bart'], stdout=subprocess.PIPE)
     bart_out = process.communicate()[0].split()
     return bart_out
 
