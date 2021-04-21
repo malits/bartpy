@@ -57,6 +57,19 @@ linops = Extension('_linop_swig',
                                    'openblas', 'fftw3f', 'fftw3', 'fftw3f_threads',],
                      library_dirs=[f'{BART_PATH}/lib/', '/opt/local/include/', '/opt/local/lib/'],)
 
+iter_module = Extension('_italgos',
+                     extra_compile_args=['-fopenmp'],
+                     extra_link_args=[f'-l{omp}'],
+                     include_dirs=[f'{BART_PATH}/src/', '/opt/local/include/', '/opt/local/lib/',
+                                   np.get_include()],
+                     sources=[f'{BART_PATH}/src/iter/italgos.c', 'bartpy/italgos/iter_wrap.c'],
+                     libraries=['box', 'calib', 'dfwavelet', 'geom',
+                                   'grecon', 'iter', 'linops', 'lowrank', 
+                                   'misc', 'moba', 'nlops', 'noir', 'noncart',
+                                   'num', 'sake', 'sense', 'simu', 'wavelet',
+                                   'openblas', 'fftw3f', 'fftw3', 'fftw3f_threads',],
+                     library_dirs=[f'{BART_PATH}/lib/', '/opt/local/include/', '/opt/local/lib/'],)
+
 setup(
     name="bartpy",
     version="0.0",
@@ -70,7 +83,7 @@ setup(
         "Operating System :: OS X",
         "Operating System :: Linux"
     ],
-    ext_modules = [simu, fft, linops],
+    ext_modules = [simu, fft, linops, iter_module],
     package_dir = {},
-    packages = ["bartpy", "bartpy.utils", "bartpy.simu", "bartpy.num", "bartpy.linops"],
+    packages = ["bartpy", "bartpy.utils", "bartpy.simu", "bartpy.num", "bartpy.linops", "bartpy.tools"],
 )
