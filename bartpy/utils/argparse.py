@@ -33,7 +33,7 @@ def get_help_string(tool: str):
     """
     Get a usage string for a tool
     """
-    process = subprocess.Popen(['bart', f'{tool}', '-h'], stdout=subprocess.PIPE)
+    process = subprocess.Popen([f'{BART_PATH}/bart', f'{tool}', '-h'], stdout=subprocess.PIPE)
     help_string = process.communicate()[0].decode('utf-8').split('\n')[0]
     help_string = " ".join(help_string.split()[1:])
     return help_string
@@ -78,7 +78,7 @@ def get_args_docstring(tool: str):
 
     returns: triplet of (docstring, arglist, kwargs)
     """
-    docs_out = subprocess.Popen(['bart', tool, '-h'], stdout=subprocess.PIPE).communicate()
+    docs_out = subprocess.Popen([f'{BART_PATH}/bart', tool, '-h'], stdout=subprocess.PIPE).communicate()
     docs = docs_out[0].decode('utf-8').split('\n')
     # docs[0] contains usage, docs[2] contains description
     doc = docs[0]
