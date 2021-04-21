@@ -23,7 +23,7 @@ def get_tools():
     """
     Gets a list of BART tools that the user has installed
     """
-    process = subprocess.Popen(['bart'], stdout=subprocess.PIPE)
+    process = subprocess.Popen([f'{TOOLS_PATH}/bart'], stdout=subprocess.PIPE)
     bart_out = process.communicate()[0].split()
     return bart_out
 
