@@ -5,1759 +5,3384 @@ import os
 BART_PATH=os.environ['TOOLBOX_PATH'] + '/bart'
 
 
-def avg(bitmask, input_, w=None, ):
+def avg(bitmask, input, w=None):
     """
     Calculates (weighted) average along dimensions specified by bitmask.
 
-    :param bitmask:
-    :param input_:
-    :param w: weighted; average
-    :param h: help; 
+	:param bitmask int:
+	:param input array:
+	:param w bool: weighted average 
 
     """
-    help_string = "avg [-w] <bitmask> <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "vg [-w] bitmask input output"
 
-def bench(T=None, S=None, s=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'avg '
+    if w:
+        cmd_str += f'-w '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def bench(T=None, S=None, s=None):
     """
     Performs a series of micro-benchmarks.
 
-    :param T: varying; number of threads
-    :param S: varying; problem size
-    :param s: flags; select benchmarks
-    :param h: help; 
+	:param T bool: varying number of threads 
+	:param S bool: varying problem size 
+	:param s LONG: select benchmarks 
 
     """
-    help_string = "bench [-T] [-S] [-s d] [<output>]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "bench [-T] [-S] [-s d] [output]"
 
-def bin(label, src, dst, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=None, x=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'bench '
+    if T:
+        cmd_str += f'-T '
+    if S:
+        cmd_str += f'-S '
+    if s:
+        cmd_str += f'-s {s} '
+    cmd_str += " "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return
+
+def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=None):
     """
     Binning
 
-    :param label:
-    :param src:
-    :param dst:
-    :param l: dim; Bin according to labels: Specify cluster dimension
-    :param o: Reorder; according to labels
-    :param R: n_resp; Quadrature Binning: Number of respiratory labels
-    :param C: n_card; Quadrature Binning: Number of cardiac labels
-    :param r: x:y; (Respiration: Eigenvector index)
-    :param c: x:y; (Cardiac motion: Eigenvector index)
-    :param a: window; Quadrature Binning: Moving average
-    :param A: window; (Quadrature Binning: Cardiac moving average window)
-    :param x: file; (Output filtered cardiac EOFs)
-    :param h: help; 
+	:param label array:
+	:param src array:
+	:param l int: Bin according to labels: Specify cluster dimension 
+	:param o bool: Reorder according to labels 
+	:param R int: Quadrature Binning: Number of respiratory labels 
+	:param C int: Quadrature Binning: Number of cardiac labels 
+	:param r VEC2: (Respiration: Eigenvector index) 
+	:param c VEC2: (Cardiac motion: Eigenvector index) 
+	:param a int: Quadrature Binning: Moving average 
+	:param A int: (Quadrature Binning: Cardiac moving average window) 
 
     """
-    help_string = "bin [-l d] [-o] [-R d] [-C d] [-r ...] [-c ...] [-a d] [-A d] [-x <string>] <label> <src> <dst>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "bin [-l d] [-o] [-R d] [-C d] [-a d] label src dst"
 
-def bitmask(bitmask, dim_arr, b=None, ):
-    """
-    Convert between a bitmask and set of dimensions.
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'bin '
+    if l:
+        cmd_str += f'-l {l} '
+    if o:
+        cmd_str += f'-o '
+    if R:
+        cmd_str += f'-R {R} '
+    if C:
+        cmd_str += f'-C {C} '
+    if r:
+        cmd_str += f'-r {r} '
+    if c:
+        cmd_str += f'-c {c} '
+    if a:
+        cmd_str += f'-a {a} '
+    if A:
+        cmd_str += f'-A {A} '
+    cmd_str += "label src dst "
+    cfl.writecfl('label', label)
+    cfl.writecfl('src', src)
 
-    :param bitmask:
-    :param dim1:
-    :param ...:
-    :param dimN:
-    :param b: dimensions; from bitmask
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "bitmask [-b] -b <bitmask> | <dim1> ... <dimN>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def cabs(input_, ):
+    return cfl.readcfl('dst')
+
+ 
+
+def cabs(input):
     """
     Absolute value of array (|<input>|).
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "cabs <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "cabs input output"
 
-def caldir(cal_size, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'cabs '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def caldir(cal_size, input):
     """
     Estimates coil sensitivities from the k-space center using
+a direct method (McKenzie et al.). The size of the fully-sampled
+calibration region is automatically determined but limited by
+{cal_size} (e.g. in the readout direction).
 
-    :param cal_size:
-    :param input_:
-    :param h: help; 
+	:param cal_size int:
+	:param input array:
 
     """
-    help_string = "caldir cal_size <input> <output>"
-    cmd = f"{BART_PATH} caldir {cal_size} input out"
-    cfl.writecfl('input', input_)
-    out = cfl.readcfl('out')
-    return out
+    usage_string = "caldir cal_size input output"
 
-def calmat(kspace, calibration_matrix=None, k=None, r=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'caldir '
+    cmd_str += "cal_size input output "
+    cfl.writecfl('cal_size', cal_size)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def calmat(kspace, k=None, K=None, r=None, R=None, C=None):
     """
     Compute calibration matrix.
 
-    :param kspace:
-    :param calibration_matrix:
-    :param k: ksize; kernel size
-    :param r: cal_size; Limits the size of the calibration region.
-    :param h: help; 
+	:param kspace array:
+	:param k VEC3: kernel size 
+	:param K VEC3: () 
+	:param r VEC3: Limits the size of the calibration region. 
+	:param R VEC3: () 
+	:param C bool: () 
 
     """
-    help_string = "calmat [-k ...] [-r ...] <kspace> <calibration matrix>"
-    cmd = f'{BART_PATH} calmat '
-    if k:
-        cmd += f'-k {k} '
-    if r:
-        cmd += f'-r {r} '
-    cfl.writecfl('input', kspace)
-    cmd += 'input mat'
-    os.system(cmd)
-    out = cfl.readcfl('mat')
-    return out
+    usage_string = "calmat [-k d:d:d] [-r d:d:d] kspace calibration_matrix"
 
-def carg(input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'calmat '
+    if k:
+        cmd_str += f'-k {k} '
+    if K:
+        cmd_str += f'-K {K} '
+    if r:
+        cmd_str += f'-r {r} '
+    if R:
+        cmd_str += f'-R {R} '
+    if C:
+        cmd_str += f'-C '
+    cmd_str += "kspace calibration_matrix "
+    cfl.writecfl('kspace', kspace)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('calibration_matrix')
+
+def carg(input):
     """
     Argument (phase angle).
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "carg <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "carg input output"
 
-def casorati(dim_arr, kern_arr, input_, ):
-    """
-    Casorati matrix with kernel (kern1, ..., kernn) along dimensions (dim1, ..., dimn).
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'carg '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
 
-    :param dim1:
-    :param kern1:
-    :param dim2:
-    :param kern2:
-    :param ...:
-    :param dimn:
-    :param kernn:
-    :param input_:
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "casorati dim1 kern1 dim2 kern2 ... dimn kernn <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def cc(kspace, coeff, proj_kspace, p=None, M=None, r=None, A=None, S=None, G=None, E=None, ):
+    return cfl.readcfl('output')
+
+ 
+
+def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
     """
     Performs coil compression.
 
-    :param kspace:
-    :param coeff:
-    :param proj_kspace:
-    :param p: N; perform compression to N virtual channels
-    :param M: output; compression matrix
-    :param r: S; size of calibration region
-    :param A: use; all data to compute coefficients
-    :param S: type:; SVD
-    :param G: type:; Geometric
-    :param E: type:; ESPIRiT
-    :param h: help; 
+	:param kspace array:
+	:param p LONG: perform compression to N virtual channels 
+	:param M CLEAR: output compression matrix 
+	:param r VEC3: size of calibration region 
+	:param R VEC3: (size of calibration region) 
+	:param A bool: use all data to compute coefficients 
+	:param S bool: type: SVD 
+	:param G bool: type: Geometric 
+	:param E bool: type: ESPIRiT 
 
     """
-    help_string = "cc [-p d] [-M] [-r ...] [-A] [-S ...] [-G ...] [-E ...] <kspace> <coeff>|<proj_kspace>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "cc [-p d] [-M] [-r d:d:d] [-A] [-S] [-G] [-E] kspace coeff|proj_kspace"
 
-def ccapply(kspace, cc_matrix, proj_kspace, p=None, u=None, t=None, S=None, G=None, E=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'cc '
+    if p:
+        cmd_str += f'-p {p} '
+    if M:
+        cmd_str += f'-M {M} '
+    if r:
+        cmd_str += f'-r {r} '
+    if R:
+        cmd_str += f'-R {R} '
+    if A:
+        cmd_str += f'-A '
+    if S:
+        cmd_str += f'-S '
+    if G:
+        cmd_str += f'-G '
+    if E:
+        cmd_str += f'-E '
+    cmd_str += "kspace coeff_proj_kspace "
+    cfl.writecfl('kspace', kspace)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('coeff_proj_kspace')
+
+def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
     """
     Apply coil compression forward/inverse operation.
 
-    :param kspace:
-    :param cc_matrix:
-    :param proj_kspace:
-    :param p: N; perform compression to N virtual channels
-    :param u: apply; inverse operation
-    :param t: don't; apply FFT in readout
-    :param S: type:; SVD
-    :param G: type:; Geometric
-    :param E: type:; ESPIRiT
-    :param h: help; 
+	:param kspace array:
+	:param cc_matrix array:
+	:param p LONG: perform compression to N virtual channels 
+	:param u CLEAR: apply inverse operation 
+	:param t CLEAR: don't apply FFT in readout 
+	:param S bool: type: SVD 
+	:param G bool: type: Geometric 
+	:param E bool: type: ESPIRiT 
 
     """
-    help_string = "ccapply [-p d] [-u] [-t] [-S ...] [-G ...] [-E ...] <kspace> <cc_matrix> <proj_kspace>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "ccapply [-p d] [-u] [-t] [-S] [-G] [-E] kspace cc_matrix proj_kspace"
 
-def cdf97(bitmask, input_, i=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'ccapply '
+    if p:
+        cmd_str += f'-p {p} '
+    if u:
+        cmd_str += f'-u {u} '
+    if t:
+        cmd_str += f'-t {t} '
+    if S:
+        cmd_str += f'-S '
+    if G:
+        cmd_str += f'-G '
+    if E:
+        cmd_str += f'-E '
+    cmd_str += "kspace cc_matrix proj_kspace "
+    cfl.writecfl('kspace', kspace)
+    cfl.writecfl('cc_matrix', cc_matrix)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('proj_kspace')
+
+def cdf97(bitmask, input, i=None):
     """
     Perform a wavelet (cdf97) transform.
 
-    :param bitmask:
-    :param input_:
-    :param i: inverse; 
-    :param h: help; 
+	:param bitmask int:
+	:param input array:
+	:param i bool: inverse 
 
     """
-    help_string = "cdf97 [-i] bitmask <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "cdf97 [-i] bitmask input output"
 
-def circshift(dim, shift, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'cdf97 '
+    if i:
+        cmd_str += f'-i '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def circshift(dim, shift, input):
     """
     Perform circular shift along {dim} by {shift} elements.
 
-    :param dim:
-    :param shift:
-    :param input_:
-    :param h: help; 
+	:param dim int:
+	:param shift int:
+	:param input array:
 
     """
-    help_string = "circshift dim shift <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "circshift dim shift input output"
 
-def conj(input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'circshift '
+    cmd_str += "dim shift input output "
+    cfl.writecfl('dim', dim)
+    cfl.writecfl('shift', shift)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def conj(input):
     """
     Compute complex conjugate.
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "conj <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "conj input output"
 
-def conv(bitmask, input_, kernel, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'conj '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def conv(bitmask, input, kernel):
     """
     Performs a convolution along selected dimensions.
 
-    :param bitmask:
-    :param input_:
-    :param kernel:
-    :param h: help; 
+	:param bitmask int:
+	:param input array:
+	:param kernel array:
 
     """
-    help_string = "conv bitmask <input> <kernel> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "conv bitmask input kernel output"
 
-def copy(pos_arr, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'conv '
+    cmd_str += "bitmask input kernel output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+    cfl.writecfl('kernel', kernel)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def conway(input, P=None, n=None):
     """
-    Copy an array (to a given position in the output file - which then must exist).
+    Conway's game of life.
 
-    :param pos1:
-    :param ...:
-    :param dimn:
-    :param input_:
-    :param h: help; 
+	:param input array:
+	:param P bool: periodic boundary conditions 
+	:param n int: nr. of iterations 
 
     """
-    help_string = "copy [dim1 pos1 ... dimn posn] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "conway [-P] [-n d] input output"
 
-def cpyphs(input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'conway '
+    if P:
+        cmd_str += f'-P '
+    if n:
+        cmd_str += f'-n {n} '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+ 
+
+def cpyphs(input):
     """
     Copy phase from <input> to <output>.
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "cpyphs <input> <output"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "cpyphs input output"
 
-def creal(input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'cpyphs '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def creal(input):
     """
     Real value.
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "creal <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "creal input output"
 
-def crop(dimension, size, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'creal '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def crop(dimension, size, input):
     """
     Extracts a sub-array corresponding to the central part of {size} along {dimension}
 
-    :param dimension:
-    :param size:
-    :param input_:
-    :param h: help; 
+	:param dimension int:
+	:param size int:
+	:param input array:
 
     """
-    help_string = "crop dimension size <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "crop dimension size input output"
 
-def delta(dims, flags, size, out, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'crop '
+    cmd_str += "dimension size input output "
+    cfl.writecfl('dimension', dimension)
+    cfl.writecfl('size', size)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def delta(dims, flags, size):
     """
     Kronecker delta.
 
-    :param dims:
-    :param flags:
-    :param size:
-    :param out:
-    :param h: help; 
+	:param dims int:
+	:param flags int:
+	:param size LONG:
 
     """
-    help_string = "delta dims flags size out"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "delta dims flags size out"
 
-def ecalib(kspace, sensitivites=None, t=None, c=None, k=None, r=None, m=None, S=None, W=None, I=None, first=None, P=None, v=None, a=None, d=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'delta '
+    cmd_str += "dims flags size out "
+    cfl.writecfl('dims', dims)
+    cfl.writecfl('flags', flags)
+    cfl.writecfl('size', size)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('out')
+
+def ecalib(kspace, t=None, c=None, k=None, K=None, r=None, R=None, m=None, S=None, W=None, I=None, _1=None, P=None, O=None, b=None, V=None, C=None, g=None, p=None, n=None, v=None, a=None, d=None):
     """
     Estimate coil sensitivities using ESPIRiT calibration.
+Optionally outputs the eigenvalue maps.
 
-    :param kspace:
-    :param sensitivites:
-    :param t: threshold; This determined the size of the null-space.
-    :param c: crop_value; Crop the sensitivities if the eigenvalue is smaller than {crop_value}.
-    :param k: ksize; kernel size
-    :param r: cal_size; Limits the size of the calibration region.
-    :param m: maps; Number of maps to compute.
-    :param S: create; maps with smooth transitions (Soft-SENSE).
-    :param W: soft-weighting; of the singular vectors.
-    :param I: intensity; correction
-    :param first: perform; only first part of the calibration
-    :param P: Do; not rotate the phase with respect to the first principal component
-    :param v: variance; Variance of noise in data.
-    :param a: Automatically; pick thresholds.
-    :param d: level; Debug level
-    :param h: help; 
+	:param kspace array:
+	:param t float: This determined the size of the null-space. 
+	:param c float: Crop the sensitivities if the eigenvalue is smaller than crop_value. 
+	:param k VEC3: kernel size 
+	:param K VEC3: () 
+	:param r VEC3: Limits the size of the calibration region. 
+	:param R VEC3: () 
+	:param m int: Number of maps to compute. 
+	:param S bool: create maps with smooth transitions (Soft-SENSE). 
+	:param W bool: soft-weighting of the singular vectors. 
+	:param I bool: intensity correction 
+	:param _1 bool: perform only first part of the calibration 
+	:param P CLEAR: Do not rotate the phase with respect to the first principal component 
+	:param O CLEAR: () 
+	:param b float: () 
+	:param V bool: () 
+	:param C bool: () 
+	:param g bool: () 
+	:param p float: () 
+	:param n int: () 
+	:param v float: Variance of noise in data. 
+	:param a bool: Automatically pick thresholds. 
+	:param d int: Debug level 
 
     """
-    help_string = "ecalib [-t f] [-c f] [-k ...] [-r ...] [-m d] [-S] [-W] [-I] [-1] [-P] [-v f] [-a] [-d d] <kspace> <sensitivites> [<ev-maps>]"
-    cmd = f'{BART_PATH} ecalib '
-    if r:
-        cmd += f'-r {r} '
-    cfl.writecfl('input', kspace)
-    cmd += 'input sens out'
-    print(cmd)
-    os.system(cmd)
-    out = cfl.readcfl('out')
-    sens = cfl.readcfl('sens')
-    return [sens, out]
+    usage_string = "calib [-t f] [-c f] [-k d:d:d] [-r d:d:d] [-m d] [-S] [-W] [-I] [-1] [-P] [-v f] [-a] [-d d] kspace sensitivities [ev-maps]"
 
-def ecaltwo(input_, sensitivities, c=None, m=None, S=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'ecalib '
+    if t:
+        cmd_str += f'-t {t} '
+    if c:
+        cmd_str += f'-c {c} '
+    if k:
+        cmd_str += f'-k {k} '
+    if K:
+        cmd_str += f'-K {K} '
+    if r:
+        cmd_str += f'-r {r} '
+    if R:
+        cmd_str += f'-R {R} '
+    if m:
+        cmd_str += f'-m {m} '
+    if S:
+        cmd_str += f'-S '
+    if W:
+        cmd_str += f'-W '
+    if I:
+        cmd_str += f'-I '
+    if _1:
+        cmd_str += f'-1 '
+    if P:
+        cmd_str += f'-P {P} '
+    if O:
+        cmd_str += f'-O {O} '
+    if b:
+        cmd_str += f'-b {b} '
+    if V:
+        cmd_str += f'-V '
+    if C:
+        cmd_str += f'-C '
+    if g:
+        cmd_str += f'-g '
+    if p:
+        cmd_str += f'-p {p} '
+    if n:
+        cmd_str += f'-n {n} '
+    if v:
+        cmd_str += f'-v {v} '
+    if a:
+        cmd_str += f'-a '
+    if d:
+        cmd_str += f'-d {d} '
+    cmd_str += "kspace sensitivities "
+    cfl.writecfl('kspace', kspace)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('sensitivities')
+
+def ecaltwo(x, y, z, input, c=None, m=None, S=None, O=None, g=None):
     """
     Second part of ESPIRiT calibration.
+Optionally outputs the eigenvalue maps.
 
-    :param input_:
-    :param sensitivities:
-    :param c: crop_value; Crop the sensitivities if the eigenvalue is smaller than {crop_value}.
-    :param m: maps; Number of maps to compute.
-    :param S: Create; maps with smooth transitions (Soft-SENSE).
-    :param h: help; 
+	:param x LONG:
+	:param y LONG:
+	:param z LONG:
+	:param input array:
+	:param c float: Crop the sensitivities if the eigenvalue is smaller than crop_value. 
+	:param m LONG: Number of maps to compute. 
+	:param S bool: Create maps with smooth transitions (Soft-SENSE). 
+	:param O CLEAR: () 
+	:param g bool: () 
 
     """
-    help_string = "ecaltwo [-c f] [-m d] [-S] x y z <input> <sensitivities> [<ev_maps>]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "caltwo [-c f] [-m d] [-S] x y z input sensitivities [ev-maps]"
 
-def estdelay(trajectory, data, R=None, p=None, n=None, r=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'ecaltwo '
+    if c:
+        cmd_str += f'-c {c} '
+    if m:
+        cmd_str += f'-m {m} '
+    if S:
+        cmd_str += f'-S '
+    if O:
+        cmd_str += f'-O {O} '
+    if g:
+        cmd_str += f'-g '
+    cmd_str += "x y z input sensitivities "
+    cfl.writecfl('x', x)
+    cfl.writecfl('y', y)
+    cfl.writecfl('z', z)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('sensitivities')
+
+def epg(C=None, M=None, H=None, F=None, S=None, B=None, _1=None, _2=None, b=None, o=None, r=None, e=None, f=None, s=None, n=None, u=None, v=None):
+    """
+    Simulate MR pulse sequence based on Extended Phase Graphs (EPG)
+
+	:param C bool: CPMG 
+	:param M bool: fmSSFP 
+	:param H bool: Hyperecho 
+	:param F bool: FLASH 
+	:param S bool: Spinecho 
+	:param B bool: bSSFP 
+	:param _1 float: T1 [units of time] 
+	:param _2 float: T2 [units of time] 
+	:param b float: relative B1 [unitless] 
+	:param o float: off-resonance [units of inverse time] 
+	:param r float: repetition time [units of time] 
+	:param e float: echo time [units of time] 
+	:param f float: flip angle [degrees] 
+	:param s LONG: spoiling (0: ideal 1: conventional RF 2: random RF) 
+	:param n LONG: number of pulses 
+	:param u LONG: unknowns as bitmask (0: T1 1: T2 2: B1 3: off-res) 
+	:param v LONG: verbosity level 
+
+    """
+    usage_string = "pg [-C] [-M] [-H] [-F] [-S] [-B] [-1 f] [-2 f] [-b f] [-o f] [-r f] [-e f] [-f f] [-s d] [-n d] [-u d] [-v d] signal intensity [configuration states] [(rel.) signal derivatives] [configuration derivatives]"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'epg '
+    if C:
+        cmd_str += f'-C '
+    if M:
+        cmd_str += f'-M '
+    if H:
+        cmd_str += f'-H '
+    if F:
+        cmd_str += f'-F '
+    if S:
+        cmd_str += f'-S '
+    if B:
+        cmd_str += f'-B '
+    if _1:
+        cmd_str += f'-1 {_1} '
+    if _2:
+        cmd_str += f'-2 {_2} '
+    if b:
+        cmd_str += f'-b {b} '
+    if o:
+        cmd_str += f'-o {o} '
+    if r:
+        cmd_str += f'-r {r} '
+    if e:
+        cmd_str += f'-e {e} '
+    if f:
+        cmd_str += f'-f {f} '
+    if s:
+        cmd_str += f'-s {s} '
+    if n:
+        cmd_str += f'-n {n} '
+    if u:
+        cmd_str += f'-u {u} '
+    if v:
+        cmd_str += f'-v {v} '
+    cmd_str += "signal_intensity "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('signal_intensity')
+
+def estdelay(trajectory, data, R=None, p=None, n=None, r=None):
     """
     Estimate gradient delays from radial data.
 
-    :param trajectory:
-    :param data:
-    :param R: RING; method
-    :param p: p; [RING] Padding
-    :param n: n; [RING] Number of intersecting spokes
-    :param r: r; [RING] Central region size
-    :param h: help; 
+	:param trajectory array:
+	:param data array:
+	:param R bool: RING method 
+	:param p int: [RING] Padding 
+	:param n int: [RING] Number of intersecting spokes 
+	:param r float: [RING] Central region size 
 
     """
-    help_string = "estdelay [-R] [-p d] [-n d] [-r f] <trajectory> <data>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "tdelay [-R] [-p d] [-n d] [-r f] trajectory data [qf]"
 
-def estdims(traj, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'estdelay '
+    if R:
+        cmd_str += f'-R '
+    if p:
+        cmd_str += f'-p {p} '
+    if n:
+        cmd_str += f'-n {n} '
+    if r:
+        cmd_str += f'-r {r} '
+    cmd_str += "trajectory data "
+    cfl.writecfl('trajectory', trajectory)
+    cfl.writecfl('data', data)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return
+
+def estdims(traj):
     """
     Estimate image dimension from non-Cartesian trajectory.
+Assume trajectory scaled to -DIM/2 to DIM/2 (ie dk=1/FOV=1)
 
-    :param traj:
-    :param h: help; 
+	:param traj array:
 
     """
-    help_string = "estdims <traj>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "tdims traj"
 
-def estshift(flags, arg1, arg2, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'estdims '
+    cmd_str += "traj "
+    cfl.writecfl('traj', traj)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+def estshift(flags, arg1, arg2):
     """
     Estimate sub-pixel shift.
 
-    :param flags:
-    :param arg1:
-    :param arg2:
-    :param h: help; 
+	:param flags int:
+	:param arg1 array:
+	:param arg2 array:
 
     """
-    help_string = "estshift flags <arg1> <arg2>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "tshift flags arg1 arg2"
 
-def estvar(kspace, k=None, r=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'estshift '
+    cmd_str += "flags arg1 arg2 "
+    cfl.writecfl('flags', flags)
+    cfl.writecfl('arg1', arg1)
+    cfl.writecfl('arg2', arg2)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+def estvar(kspace, k=None, K=None, r=None, R=None):
     """
     Estimate the noise variance assuming white Gaussian noise.
 
-    :param kspace:
-    :param k: ksize; kernel size
-    :param r: cal_size; Limits the size of the calibration region.
-    :param h: help; 
+	:param kspace array:
+	:param k VEC3: kernel size 
+	:param K VEC3: () 
+	:param r VEC3: Limits the size of the calibration region. 
+	:param R VEC3: () 
 
     """
-    help_string = "estvar [-k ...] [-r ...] <kspace>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "tvar [-k d:d:d] [-r d:d:d] kspace"
 
-def extract(dim1, start_arr, end_arr, endn, input_, ):
-    """
-    Extracts a sub-array along dims from index start to (not including) end.
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'estvar '
+    if k:
+        cmd_str += f'-k {k} '
+    if K:
+        cmd_str += f'-K {K} '
+    if r:
+        cmd_str += f'-r {r} '
+    if R:
+        cmd_str += f'-R {R} '
+    cmd_str += "kspace "
+    cfl.writecfl('kspace', kspace)
 
-    :param dim1:
-    :param start1:
-    :param end1:
-    :param ...:
-    :param dimn:
-    :param startn:
-    :param endn:
-    :param input_:
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "extract dim1 start1 end1 ... dimn startn endn <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def fakeksp(image, kspace, sens, r=None, ):
+ 
+
+def fakeksp(image, kspace, sens, output, r=None):
     """
     Recreate k-space from image and sensitivities.
 
-    :param image:
-    :param kspace:
-    :param sens:
-    :param r: replace; measured samples with original values
-    :param h: help; 
+	:param image array:
+	:param kspace array:
+	:param sens array:
+	:param output array:
+	:param r bool: replace measured samples with original values 
 
     """
-    help_string = "fakeksp [-r] <image> <kspace> <sens> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "fakeksp [-r] image kspace sens output"
 
-def fft(bitmask, input_, u=None, i=None, n=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'fakeksp '
+    if r:
+        cmd_str += f'-r '
+    cmd_str += "image kspace sens output "
+    cfl.writecfl('image', image)
+    cfl.writecfl('kspace', kspace)
+    cfl.writecfl('sens', sens)
+    cfl.writecfl('output', output)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+def fft(bitmask, input, u=None, i=None, n=None):
     """
     Performs a fast Fourier transform (FFT) along selected dimensions.
 
-    :param bitmask:
-    :param input_:
-    :param u: unitary; 
-    :param i: inverse; 
-    :param n: un-centered; 
-    :param h: help; 
+	:param bitmask long:
+	:param input array:
+	:param u bool: unitary 
+	:param i bool: inverse 
+	:param n CLEAR: un-centered 
 
     """
-    help_string = "fft [-u] [-i] [-n] bitmask <input> <output>"
-    cmd = f'{BART_PATH} fft '
-    if u:
-        cmd += '-u '
-    if i:
-        cmd += '-i '
-    if n:
-        cmd += '-n '
-    cfl.writecfl('input', input_)
-    cmd += f'{bitmask} input out'
-    os.system(cmd)
-    if 'output' in help_string:
-        out = cfl.readcfl('out')
-    os.remove('input.hdr')
-    os.remove('input.cfl')
-    os.remove('out.hdr')
-    os.remove('out.cfl')
-    return out
+    usage_string = "fft [-u] [-i] [-n] bitmask input output"
 
-def fftmod(bitmask, input_, i=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'fft '
+    if u:
+        cmd_str += f'-u '
+    if i:
+        cmd_str += f'-i '
+    if n:
+        cmd_str += f'-n {n} '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def fftmod(bitmask, input, b=None, i=None):
     """
     Apply 1 -1 modulation along dimensions selected by the {bitmask}.
 
-    :param bitmask:
-    :param input_:
-    :param i: inverse; 
-    :param h: help; 
+	:param bitmask long:
+	:param input array:
+	:param b bool: (deprecated) 
+	:param i bool: inverse 
 
     """
-    help_string = "fftmod [-i] bitmask <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "fftmod [-i] bitmask input output"
 
-def fftrot(dim1, dim2, theta, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'fftmod '
+    if b:
+        cmd_str += f'-b '
+    if i:
+        cmd_str += f'-i '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def fftrot(dim1, dim2, theta, input):
     """
     Performs a rotation using Fourier transform (FFT) along selected dimensions.
 
-    :param dim1:
-    :param dim2:
-    :param theta:
-    :param input_:
-    :param h: help; 
+	:param dim1 int:
+	:param dim2 int:
+	:param theta float:
+	:param input array:
 
     """
-    help_string = "fftrot dim1 dim2 theta <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "fftrot dim1 dim2 theta input output"
 
-def fftshift(bitmask, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'fftrot '
+    cmd_str += "dim1 dim2 theta input output "
+    cfl.writecfl('dim1', dim1)
+    cfl.writecfl('dim2', dim2)
+    cfl.writecfl('theta', theta)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def fftshift(bitmask, input, b=None):
     """
     Apply fftshift along dimensions selected by the {bitmask}.
 
-    :param bitmask:
-    :param input_:
-    :param h: help; 
+	:param bitmask long:
+	:param input array:
+	:param b bool: apply ifftshift 
 
     """
-    help_string = "fftshift bitmask <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "fftshift [-b] bitmask input output"
 
-def filter(input_, m=None, l=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'fftshift '
+    if b:
+        cmd_str += f'-b '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def filter(input, m=None, l=None):
     """
     Apply filter.
 
-    :param input_:
-    :param m: dim; median filter along dimension dim
-    :param l: len; length of filter
-    :param h: help; 
+	:param input array:
+	:param m int: median filter along dimension dim 
+	:param l int: length of filter 
 
     """
-    help_string = "filter [-m d] [-l d] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "filter [-m d] [-l d] input output"
 
-def flatten(input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'filter '
+    if m:
+        cmd_str += f'-m {m} '
+    if l:
+        cmd_str += f'-l {l} '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def flatten(input):
     """
     Flatten array to one dimension.
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "flatten <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "flatten input output"
 
-def flip(bitmask, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'flatten '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def flip(bitmask, input):
     """
     Flip (reverse) dimensions specified by the {bitmask}.
 
-    :param bitmask:
-    :param input_:
-    :param h: help; 
+	:param bitmask long:
+	:param input array:
 
     """
-    help_string = "flip bitmask <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "flip bitmask input output"
 
-def fmac(input1, A=None, C=None, s=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'flip '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def fmac(input1, input2=None, A=None, C=None, s=None):
     """
     Multiply <input1> and <input2> and accumulate in <output>.
+If <input2> is not specified, assume all-ones.
 
-    :param input1:
-    :param A: add; to existing output (instead of overwriting)
-    :param C: conjugate; input2
-    :param s: b; squash dimensions selected by bitmask b
-    :param h: help; 
+	:param input1 array:
+	:param input2 array: None 
+	:param A CLEAR: add to existing output (instead of overwriting) 
+	:param C bool: conjugate input2 
+	:param s LONG: squash dimensions selected by bitmask b 
 
     """
-    help_string = "fmac [-A] [-C] [-s d] <input1> [<input2>] <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "fmac [-A] [-C] [-s d] input1 [input2] output"
 
-def homodyne(dim, fraction, input_, r=None, I=None, C=None, P=None, n=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'fmac '
+    if A:
+        cmd_str += f'-A {A} '
+    if C:
+        cmd_str += f'-C '
+    if s:
+        cmd_str += f'-s {s} '
+    cmd_str += "input1 output "
+    cfl.writecfl('input1', input1)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def homodyne(dim, fraction, input, r=None, I=None, C=None, P=None, n=None):
     """
     Perform homodyne reconstruction along dimension dim.
 
-    :param dim:
-    :param fraction:
-    :param input_:
-    :param r: alpha; Offset of ramp filter, between 0 and 1. alpha=0 is a full ramp, alpha=1 is a horizontal line
-    :param I: Input; is in image domain
-    :param C: Clear; unacquired portion of kspace
-    :param P: phase_ref>; Use <phase_ref> as phase reference
-    :param n: use; uncentered ffts
-    :param h: help; 
+	:param dim int:
+	:param fraction float:
+	:param input array:
+	:param r float: Offset of ramp filter between 0 and 1. alpha=0 is a full ramp alpha=1 is a horizontal line 
+	:param I bool: Input is in image domain 
+	:param C bool: Clear unacquired portion of kspace 
+	:param P array: Use <phase_ref> as phase reference 
+	:param n CLEAR: use uncentered ffts 
 
     """
-    help_string = "homodyne [-r f] [-I] [-C] [-P <string>] [-n] dim fraction <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "homodyne [-r f] [-I] [-C] [-P file] [-n] dim fraction input output"
 
-def index(dim, size, name, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'homodyne '
+    if r:
+        cmd_str += f'-r {r} '
+    if I:
+        cmd_str += f'-I '
+    if C:
+        cmd_str += f'-C '
+    if P:
+        cmd_str += f'-P {P} '
+    if n:
+        cmd_str += f'-n {n} '
+    cmd_str += "dim fraction input output "
+    cfl.writecfl('dim', dim)
+    cfl.writecfl('fraction', fraction)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def index(dim, size):
     """
     Create an array counting from 0 to {size-1} in dimensions {dim}.
 
-    :param dim:
-    :param size:
-    :param name:
-    :param h: help; 
+	:param dim int:
+	:param size int:
 
     """
-    help_string = "index dim size name"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "index dim size name"
 
-def invert(input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'index '
+    cmd_str += "dim size name "
+    cfl.writecfl('dim', dim)
+    cfl.writecfl('size', size)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('name')
+
+def invert(input):
     """
     Invert array (1 / <input>). The output is set to zero in case of divide by zero.
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "invert <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "invert input output"
 
-def itsense(alpha, sensitivities, kspace, pattern, image, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'invert '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def itsense(alpha, sensitivities, kspace, pattern):
     """
     A simplified implementation of iterative sense reconstruction
+with l2-regularization.
 
-    :param alpha:
-    :param sensitivities:
-    :param kspace:
-    :param pattern:
-    :param image:
-    :param h: help; 
-
-    """
-    help_string = "itsense alpha <sensitivities> <kspace> <pattern> <image>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
-
-def join(dimension, input_arr, a=None, ):
-    """
-    Join input files along {dimensions}. All other dimensions must have the same size.
-
-    :param dimension:
-    :param input1:
-    :param ...:
-    :param inputn:
-    :param a: append; - only works for cfl files!
-    :param h: help; 
+	:param alpha float:
+	:param sensitivities array:
+	:param kspace array:
+	:param pattern array:
 
     """
-    help_string = "join [-a] dimension <input1> ... <inputn> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "itsense alpha sensitivities kspace pattern output"
 
-def looklocker(input_, t=None, D=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'itsense '
+    cmd_str += "alpha sensitivities kspace pattern output "
+    cfl.writecfl('alpha', alpha)
+    cfl.writecfl('sensitivities', sensitivities)
+    cfl.writecfl('kspace', kspace)
+    cfl.writecfl('pattern', pattern)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+ 
+
+def looklocker(input, t=None, D=None):
     """
     Compute T1 map from M_0, M_ss, and R_1*.
 
-    :param input_:
-    :param t: threshold; Pixels with M0 values smaller than {threshold} are set to zero.
-    :param D: delay; Time between the middle of inversion pulse and the first excitation.
-    :param h: help; 
+	:param input array:
+	:param t float: Pixels with M0 values smaller than threshold are set to zero. 
+	:param D float: Time between the middle of inversion pulse and the first excitation. 
 
     """
-    help_string = "looklocker [-t f] [-D f] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "looklocker [-t f] [-D f] input output"
 
-def lrmatrix(input_, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=None, l=None, o=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'looklocker '
+    if t:
+        cmd_str += f'-t {t} '
+    if D:
+        cmd_str += f'-D {D} '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=None, l=None, u=None, v=None, H=None, p=None, n=None, g=None):
     """
     Perform (multi-scale) low rank matrix completion
 
-    :param input_:
-    :param d: perform; decomposition instead, ie fully sampled
-    :param i: iter; maximum iterations.
-    :param m: flags; which dimensions are reshaped to matrix columns.
-    :param f: flags; which dimensions to perform multi-scale partition.
-    :param j: scale; block size scaling from one scale to the next one.
-    :param k: size; smallest block size
-    :param N: add; noise scale to account for Gaussian noise.
-    :param s: perform; low rank + sparse matrix completion.
-    :param l: size; perform locally low rank soft thresholding with specified block size.
-    :param o: out2; summed over all non-noise scales to create a denoised output.
-    :param h: help; 
+	:param input array:
+	:param d bool: perform decomposition instead ie fully sampled 
+	:param i int: maximum iterations. 
+	:param m LONG: which dimensions are reshaped to matrix columns. 
+	:param f LONG: which dimensions to perform multi-scale partition. 
+	:param j int: block size scaling from one scale to the next one. 
+	:param k LONG: smallest block size 
+	:param N bool: add noise scale to account for Gaussian noise. 
+	:param s bool: perform low rank + sparse matrix completion. 
+	:param l LONG: perform locally low rank soft thresholding with specified block size. 
+	:param u bool: () 
+	:param v bool: () 
+	:param H bool: (hogwild) 
+	:param p float: (rho) 
+	:param n CLEAR: (no randshift) 
+	:param g bool: (use GPU) 
 
     """
-    help_string = "lrmatrix [-d] [-i d] [-m d] [-f d] [-j d] [-k d] [-N] [-s] [-l d] [-o <string>] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "lrmatrix [-d] [-i d] [-m d] [-f d] [-j d] [-k d] [-N] [-s] [-l d] [-o file] input output"
 
-def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'lrmatrix '
+    if d:
+        cmd_str += f'-d '
+    if i:
+        cmd_str += f'-i {i} '
+    if m:
+        cmd_str += f'-m {m} '
+    if f:
+        cmd_str += f'-f {f} '
+    if j:
+        cmd_str += f'-j {j} '
+    if k:
+        cmd_str += f'-k {k} '
+    if N:
+        cmd_str += f'-N '
+    if s:
+        cmd_str += f'-s '
+    if l:
+        cmd_str += f'-l {l} '
+    if u:
+        cmd_str += f'-u '
+    if v:
+        cmd_str += f'-v '
+    if H:
+        cmd_str += f'-H '
+    if p:
+        cmd_str += f'-p {p} '
+    if n:
+        cmd_str += f'-n {n} '
+    if g:
+        cmd_str += f'-g '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None):
     """
     Compute mandelbrot set.
 
-    :param s: size; image size
-    :param n: #; nr. of iterations
-    :param t: t; threshold for divergence
-    :param z: z; zoom
-    :param r: r; offset real
-    :param i: i; offset imag
-    :param h: help; 
+	:param s int: image size 
+	:param n int: nr. of iterations 
+	:param t float: threshold for divergence 
+	:param z float: zoom 
+	:param r float: offset real 
+	:param i float: offset imag 
 
     """
-    help_string = "mandelbrot [-s d] [-n d] [-t f] [-z f] [-r f] [-i f] output"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "mandelbrot [-s d] [-n d] [-t f] [-z f] [-r f] [-i f] output"
 
-def mip(bitmask, input_, m=None, a=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'mandelbrot '
+    if s:
+        cmd_str += f'-s {s} '
+    if n:
+        cmd_str += f'-n {n} '
+    if t:
+        cmd_str += f'-t {t} '
+    if z:
+        cmd_str += f'-z {z} '
+    if r:
+        cmd_str += f'-r {r} '
+    if i:
+        cmd_str += f'-i {i} '
+    cmd_str += "output "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def mip(bitmask, input, m=None, a=None):
     """
     Maximum (minimum) intensity projection (MIP) along dimensions specified by bitmask.
 
-    :param bitmask:
-    :param input_:
-    :param m: minimum; 
-    :param a: do; absolute value first
-    :param h: help; 
+	:param bitmask int:
+	:param input array:
+	:param m bool: minimum 
+	:param a bool: do absolute value first 
 
     """
-    help_string = "mip [-m] [-a] bitmask <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "mip [-m] [-a] bitmask input output"
 
-def moba(kspace, TI_TE, L=None, i=None, j=None, C=None, s=None, B=None, d=None, f=None, p=None, M=None, g=None, t=None, o=None, k=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'mip '
+    if m:
+        cmd_str += f'-m '
+    if a:
+        cmd_str += f'-a '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, R=None, T=None, j=None, u=None, C=None, s=None, B=None, b=None, d=None, N=None, f=None, p=None, J=None, M=None, O=None, g=None, I=None, t=None, o=None, k=None, kfilter_1=None, kfilter_2=None, n=None, no_alpha_min_exp_decay=None, sobolev_a=None, sobolev_b=None, fat_spec_0=None):
     """
     Model-based nonlinear inverse reconstruction
 
-    :param kspace:
-    :param TI/TE:
-    :param L: T1; mapping using model-based look-locker
-    :param i: iter; Number of Newton steps
-    :param j: Minimum; regu. parameter
-    :param C: iter; inner iterations
-    :param s: step; step size
-    :param B: bound; lower bound for relaxivity
-    :param d: level; Debug level
-    :param f: FOV; 
-    :param p: PSF; 
-    :param M: Simultaneous; Multi-Slice reconstruction
-    :param g: use; gpu
-    :param t: Traj; 
-    :param o: os; Oversampling factor for gridding [default: 1.25]
-    :param k: k-space; edge filter for non-Cartesian trajectories
-    :param h: help; 
+	:param kspace array:
+	:param TI_TE array:
+	:param r SPECIAL: generalized regularization options (-rh for help) 
+	:param L bool: T1 mapping using model-based look-locker 
+	:param F bool: T2 mapping using model-based Fast Spin Echo 
+	:param G bool: T2* mapping using model-based multiple gradient echo 
+	:param m int: Select the MGRE model from enum  WF = 0 WFR2S WF2R2S R2S PHASEDIFF  [default: WFR2S] 
+	:param l int: toggle l1-wavelet or l2 regularization. 
+	:param i int: Number of Newton steps 
+	:param R float: reduction factor 
+	:param T float: damping on temporal frames 
+	:param j float: Minimum regu. parameter 
+	:param u float: ADMM rho [default: 0.01] 
+	:param C int: inner iterations 
+	:param s float: step size 
+	:param B float: lower bound for relaxivity 
+	:param b FLOAT_VEC2: B0 field: spatial smooth level; scaling [default: 222.; 1.] 
+	:param d int: Debug level 
+	:param N bool: (normalize) 
+	:param f float:  
+	:param p array:  
+	:param J bool: Stack frames for joint recon 
+	:param M bool: Simultaneous Multi-Slice reconstruction 
+	:param O bool: (Output original maps from reconstruction without post processing) 
+	:param g bool: use gpu 
+	:param I array: File for initialization 
+	:param t array:  
+	:param o float: Oversampling factor for gridding [default: 1.25] 
+	:param k bool: k-space edge filter for non-Cartesian trajectories 
+	:param kfilter_1 bool: k-space edge filter 1 
+	:param kfilter_2 bool: k-space edge filter 2 
+	:param n bool: disable normlization of parameter maps for thresholding 
+	:param no_alpha_min_exp_decay CLEAR: (Use hard minimum instead of exponentional decay towards alpha_min) 
+	:param sobolev_a float: (a in 1 + a * \Laplace^-b/2) 
+	:param sobolev_b float: (b in 1 + a * \Laplace^-b/2) 
+	:param fat_spec_0 bool: select fat spectrum from ISMRM fat-water tool 
 
     """
-    help_string = "moba [-L ...] [-i d] [-j f] [-C d] [-s f] [-B f] [-d d] [-f f] [-p <string>] [-M] [-g] [-t <string>] [-o f] [-k] <kspace> <TI/TE> <output> [<sensitivities>]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "moba [-r ...] [-L] [-F] [-G] [-m d] [-l d] [-i d] [-R f] [-T f] [-j f] [-u f] [-C d] [-s f] [-B f] [-b f:f] [-d d] [-f f] [-p file] [-J] [-M] [-g] [-I file] [-t file] [-o f] [-k] [--kfilter-1] [--kfilter-2] [-n] [--fat_spec_0] kspace TI/TE output [sensitivities]"
 
-def nlinv(kspace, i=None, d=None, c=None, N=None, m=None, U=None, f=None, p=None, t=None, I=None, g=None, S=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'moba '
+    if r:
+        cmd_str += f'-r {r} '
+    if L:
+        cmd_str += f'-L '
+    if F:
+        cmd_str += f'-F '
+    if G:
+        cmd_str += f'-G '
+    if m:
+        cmd_str += f'-m {m} '
+    if l:
+        cmd_str += f'-l {l} '
+    if i:
+        cmd_str += f'-i {i} '
+    if R:
+        cmd_str += f'-R {R} '
+    if T:
+        cmd_str += f'-T {T} '
+    if j:
+        cmd_str += f'-j {j} '
+    if u:
+        cmd_str += f'-u {u} '
+    if C:
+        cmd_str += f'-C {C} '
+    if s:
+        cmd_str += f'-s {s} '
+    if B:
+        cmd_str += f'-B {B} '
+    if b:
+        cmd_str += f'-b {b} '
+    if d:
+        cmd_str += f'-d {d} '
+    if N:
+        cmd_str += f'-N '
+    if f:
+        cmd_str += f'-f {f} '
+    if p:
+        cmd_str += f'-p {p} '
+    if J:
+        cmd_str += f'-J '
+    if M:
+        cmd_str += f'-M '
+    if O:
+        cmd_str += f'-O '
+    if g:
+        cmd_str += f'-g '
+    if I:
+        cmd_str += f'-I {I} '
+    if t:
+        cmd_str += f'-t {t} '
+    if o:
+        cmd_str += f'-o {o} '
+    if k:
+        cmd_str += f'-k '
+    if kfilter_1:
+        cmd_str += f'--kfilter-1 '
+    if kfilter_2:
+        cmd_str += f'--kfilter-2 '
+    if n:
+        cmd_str += f'-n '
+    if no_alpha_min_exp_decay:
+        cmd_str += f'--no_alpha_min_exp_decay {no_alpha_min_exp_decay} '
+    if sobolev_a:
+        cmd_str += f'--sobolev_a {sobolev_a} '
+    if sobolev_b:
+        cmd_str += f'--sobolev_b {sobolev_b} '
+    if fat_spec_0:
+        cmd_str += f'--fat_spec_0 '
+    cmd_str += "kspace TI_TE output "
+    cfl.writecfl('kspace', kspace)
+    cfl.writecfl('TI_TE', TI_TE)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def mobafit(TE, echo_images, G=None, m=None, i=None, p=None, g=None):
+    """
+    Pixel-wise fitting of sequence models.
+
+	:param TE array:
+	:param echo_images array:
+	:param G bool: MGRE 
+	:param m int: Select the MGRE model from enum  WF = 0 WFR2S WF2R2S R2S PHASEDIFF  [default: WFR2S] 
+	:param i int: Number of IRGNM steps 
+	:param p VEC3: (patch size) 
+	:param g bool: use gpu 
+
+    """
+    usage_string = "mobafit [-G] [-m d] [-i d] [-g] TE echo images [paramters]"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'mobafit '
+    if G:
+        cmd_str += f'-G '
+    if m:
+        cmd_str += f'-m {m} '
+    if i:
+        cmd_str += f'-i {i} '
+    if p:
+        cmd_str += f'-p {p} '
+    if g:
+        cmd_str += f'-g '
+    cmd_str += "TE echo_images "
+    cfl.writecfl('TE', TE)
+    cfl.writecfl('echo_images', echo_images)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return
+
+def nlinv(kspace, i=None, R=None, M=None, d=None, c=None, N=None, m=None, U=None, f=None, p=None, t=None, I=None, g=None, S=None, s=None, a=None, b=None, P=None, n=None, w=None, lowmem=None):
     """
     Jointly estimate image and sensitivities with nonlinear
+inversion using {iter} iteration steps. Optionally outputs
+the sensitivities.
 
-    :param kspace:
-    :param i: iter; Number of Newton steps
-    :param d: level; Debug level
-    :param c: Real-value; constraint
-    :param N: Do; not normalize image with coil sensitivities
-    :param m: nmaps; Number of ENLIVE maps to use in reconstruction
-    :param U: Do; not combine ENLIVE maps in output
-    :param f: FOV; restrict FOV
-    :param p: file; pattern / transfer function
-    :param t: file; kspace trajectory
-    :param I: file; File for initialization
-    :param g: use; gpu
-    :param S: Re-scale; image after reconstruction
-    :param h: help; 
+	:param kspace array:
+	:param i int: Number of Newton steps 
+	:param R float: (reduction factor) 
+	:param M float: (minimum for regularization) 
+	:param d int: Debug level 
+	:param c bool: Real-value constraint 
+	:param N CLEAR: Do not normalize image with coil sensitivities 
+	:param m int: Number of ENLIVE maps to use in reconstruction 
+	:param U CLEAR: Do not combine ENLIVE maps in output 
+	:param f float: restrict FOV 
+	:param p array: pattern / transfer function 
+	:param t array: kspace trajectory 
+	:param I array: File for initialization 
+	:param g bool: use gpu 
+	:param S bool: Re-scale image after reconstruction 
+	:param s int: (dimensions with constant sensitivities) 
+	:param a float: (a in 1 + a * \Laplace^-b/2) 
+	:param b float: (b in 1 + a * \Laplace^-b/2) 
+	:param P bool: (supplied psf is different for each coil) 
+	:param n bool: (non-Cartesian) 
+	:param w float: (inverse scaling of the data) 
+	:param lowmem bool: Use low-mem mode of the nuFFT 
 
     """
-    help_string = "nlinv [-i d] [-d d] [-c] [-N] [-m d] [-U] [-f f] [-p <string>] [-t <string>] [-I <string>] [-g] [-S] <kspace> <output> [<sensitivities>]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "nlinv [-i d] [-d d] [-c] [-N] [-m d] [-U] [-f f] [-p file] [-t file] [-I file] [-g] [-S] [--lowmem] kspace output [sensitivities]"
 
-def noise(input_, s=None, r=None, n=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'nlinv '
+    if i:
+        cmd_str += f'-i {i} '
+    if R:
+        cmd_str += f'-R {R} '
+    if M:
+        cmd_str += f'-M {M} '
+    if d:
+        cmd_str += f'-d {d} '
+    if c:
+        cmd_str += f'-c '
+    if N:
+        cmd_str += f'-N {N} '
+    if m:
+        cmd_str += f'-m {m} '
+    if U:
+        cmd_str += f'-U {U} '
+    if f:
+        cmd_str += f'-f {f} '
+    if p:
+        cmd_str += f'-p {p} '
+    if t:
+        cmd_str += f'-t {t} '
+    if I:
+        cmd_str += f'-I {I} '
+    if g:
+        cmd_str += f'-g '
+    if S:
+        cmd_str += f'-S '
+    if s:
+        cmd_str += f'-s {s} '
+    if a:
+        cmd_str += f'-a {a} '
+    if b:
+        cmd_str += f'-b {b} '
+    if P:
+        cmd_str += f'-P '
+    if n:
+        cmd_str += f'-n '
+    if w:
+        cmd_str += f'-w {w} '
+    if lowmem:
+        cmd_str += f'--lowmem '
+    cmd_str += "kspace output "
+    cfl.writecfl('kspace', kspace)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def noise(input, s=None, S=None, r=None, n=None):
     """
     Add noise with selected variance to input.
 
-    :param input_:
-    :param s: random; seed initialization
-    :param r: real-valued; input
-    :param n: variance; DEFAULT: 1.0
-    :param h: help; 
+	:param input array:
+	:param s int: random seed initialization 
+	:param S float: () 
+	:param r bool: real-valued input 
+	:param n float: DEFAULT: 1.0 
 
     """
-    help_string = "noise [-s d] [-r] [-n f] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "noise [-s d] [-r] [-n f] input output"
 
-def normalize(flags, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'noise '
+    if s:
+        cmd_str += f'-s {s} '
+    if S:
+        cmd_str += f'-S {S} '
+    if r:
+        cmd_str += f'-r '
+    if n:
+        cmd_str += f'-n {n} '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def normalize(flags, input, b=None):
     """
     Normalize along selected dimensions.
 
-    :param flags:
-    :param input_:
-    :param h: help; 
+	:param flags int:
+	:param input array:
+	:param b bool: l1 
 
     """
-    help_string = "normalize flags <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "normalize [-b] flags input output"
 
-def nrmse(reference, input_, t=None, s=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'normalize '
+    if b:
+        cmd_str += f'-b '
+    cmd_str += "flags input output "
+    cfl.writecfl('flags', flags)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def nrmse(reference, input, t=None, s=None):
     """
     Output normalized root mean square error (NRMSE),
+i.e. norm(input - ref) / norm(ref)
 
-    :param reference:
-    :param input_:
-    :param t: eps; compare to eps
-    :param s: automatic; (complex) scaling
-    :param h: help; 
+	:param reference array:
+	:param input array:
+	:param t float: compare to eps 
+	:param s bool: automatic (complex) scaling 
 
     """
-    help_string = "nrmse [-t f] [-s] <reference> <input>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "nrmse [-t f] [-s] reference input"
 
-def nufft(traj, input_, a=None, i=None, d=None, t=None, r=None, c=None, l=None, P=None, s=None, g=None, first=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'nrmse '
+    if t:
+        cmd_str += f'-t {t} '
+    if s:
+        cmd_str += f'-s '
+    cmd_str += "reference input "
+    cfl.writecfl('reference', reference)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+def nufft(traj, input, a=None, i=None, d=None, D=None, t=None, r=None, c=None, l=None, m=None, P=None, s=None, g=None, _1=None, lowmem=None):
     """
     Perform non-uniform Fast Fourier Transform.
 
-    :param traj:
-    :param input_:
-    :param a: adjoint; 
-    :param i: inverse; 
-    :param d: x:y:z; dimensions
-    :param t: Toeplitz; embedding for inverse NUFFT
-    :param r: turn-off; Toeplitz embedding for inverse NUFFT
-    :param c: Preconditioning; for inverse NUFFT
-    :param l: lambda; l2 regularization
-    :param P: periodic; k-space
-    :param s: DFT; 
-    :param g: GPU; (only inverse)
-    :param first: use/return; oversampled grid
-    :param h: help; 
+	:param traj array:
+	:param input array:
+	:param a bool: adjoint 
+	:param i bool: inverse 
+	:param d VEC3: dimensions 
+	:param D VEC3: () 
+	:param t bool: Toeplitz embedding for inverse NUFFT 
+	:param r CLEAR: turn-off Toeplitz embedding for inverse NUFFT 
+	:param c bool: Preconditioning for inverse NUFFT 
+	:param l float: l2 regularization 
+	:param m int: () 
+	:param P bool: periodic k-space 
+	:param s bool: DFT 
+	:param g bool: GPU (only inverse) 
+	:param _1 CLEAR: use/return oversampled grid 
+	:param lowmem bool: Use low-mem mode of the nuFFT 
 
     """
-    help_string = "nufft [-a] [-i] [-d ...] [-t] [-r] [-c] [-l f] [-P] [-s] [-g] [-1] <traj> <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "nufft [-a] [-i] [-d d:d:d] [-t] [-r] [-c] [-l f] [-P] [-s] [-g] [-1] [--lowmem] traj input output"
 
-def ones(dims, dim_arr, name, ):
-    """
-    Create an array filled with ones with {dims} dimensions of size {dim1} to {dimn}.
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'nufft '
+    if a:
+        cmd_str += f'-a '
+    if i:
+        cmd_str += f'-i '
+    if d:
+        cmd_str += f'-d {d} '
+    if D:
+        cmd_str += f'-D {D} '
+    if t:
+        cmd_str += f'-t '
+    if r:
+        cmd_str += f'-r {r} '
+    if c:
+        cmd_str += f'-c '
+    if l:
+        cmd_str += f'-l {l} '
+    if m:
+        cmd_str += f'-m {m} '
+    if P:
+        cmd_str += f'-P '
+    if s:
+        cmd_str += f'-s '
+    if g:
+        cmd_str += f'-g '
+    if _1:
+        cmd_str += f'-1 {_1} '
+    if lowmem:
+        cmd_str += f'--lowmem '
+    cmd_str += "traj input output "
+    cfl.writecfl('traj', traj)
+    cfl.writecfl('input', input)
 
-    :param dims:
-    :param dim1:
-    :param ...:
-    :param dimn:
-    :param name:
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "ones dims dim1 ... dimn name"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def pattern(kspace, pattern, s=None, ):
+    return cfl.readcfl('output')
+
+ 
+
+def pattern(kspace, s=None):
     """
     Compute sampling pattern from kspace
 
-    :param kspace:
-    :param pattern:
-    :param s: bitmask; Squash dimensions selected by bitmask
-    :param h: help; 
+	:param kspace array:
+	:param s int: Squash dimensions selected by bitmask 
 
     """
-    help_string = "pattern [-s d] <kspace> <pattern>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "pattern [-s d] kspace pattern"
 
-def phantom(s=None, S=None, k=None, t=None, G=None, T=None, B=None, x=None, g=None, third=None, b=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'pattern '
+    if s:
+        cmd_str += f'-s {s} '
+    cmd_str += "kspace pattern "
+    cfl.writecfl('kspace', kspace)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('pattern')
+
+def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=None, N=None, B=None, x=None, g=None, _3=None, b=None, r=None):
     """
     Image and k-space domain phantoms.
 
-    :param s: nc; nc sensitivities
-    :param S: nc; Output nc sensitivities
-    :param k: k-space; 
-    :param t: file; trajectory
-    :param G: geometric; object phantom
-    :param T: tubes; phantom
-    :param B: BART; logo
-    :param x: n; dimensions in y and z
-    :param g: n=1,2; select geometry for object phantom
-    :param third: 3D; 
-    :param b: basis; functions for geometry
-    :param h: help; 
+	:param s int: nc sensitivities 
+	:param S int: Output nc sensitivities 
+	:param k bool: k-space 
+	:param t array: trajectory 
+	:param c bool: () 
+	:param a bool: () 
+	:param m bool: () 
+	:param G bool: geometric object phantom 
+	:param T bool: tubes phantom 
+	:param N int: Random tubes phantom and number 
+	:param B bool: BART logo 
+	:param x int: dimensions in y and z 
+	:param g int: select geometry for object phantom 
+	:param _3 bool: 3D 
+	:param b bool: basis functions for geometry 
+	:param r int: random seed initialization 
 
     """
-    help_string = "phantom [-s d] [-S d] [-k] [-t <string>] [-G ...] [-T ...] [-B ...] [-x d] [-g d] [-3] [-b] <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "phantom [-s d] [-S d] [-k] [-t file] [-G] [-T] [-N d] [-B] [-x d] [-g d] [-3] [-b] [-r d] output"
 
-def pics(kspace, sensitivities, l1=None, l2=None, r=None, c=None, s=None, i=None, t=None, n=None, N=None, g=None, G=None, p=None, I=None, b=None, e=None, T=None, W=None, d=None, O=None, o=None, u=None, C=None, q=None, f=None, m=None, w=None, S=None, L=None, K=None, B=None, P=None, a=None, M=None, U=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'phantom '
+    if s:
+        cmd_str += f'-s {s} '
+    if S:
+        cmd_str += f'-S {S} '
+    if k:
+        cmd_str += f'-k '
+    if t:
+        cmd_str += f'-t {t} '
+    if c:
+        cmd_str += f'-c '
+    if a:
+        cmd_str += f'-a '
+    if m:
+        cmd_str += f'-m '
+    if G:
+        cmd_str += f'-G '
+    if T:
+        cmd_str += f'-T '
+    if N:
+        cmd_str += f'-N {N} '
+    if B:
+        cmd_str += f'-B '
+    if x:
+        cmd_str += f'-x {x} '
+    if g:
+        cmd_str += f'-g {g} '
+    if _3:
+        cmd_str += f'-3 '
+    if b:
+        cmd_str += f'-b '
+    if r:
+        cmd_str += f'-r {r} '
+    cmd_str += "output "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, t=None, n=None, N=None, g=None, G=None, p=None, I=None, b=None, e=None, H=None, D=None, F=None, J=None, T=None, W=None, d=None, O=None, o=None, u=None, C=None, q=None, f=None, m=None, w=None, S=None, L=None, K=None, B=None, P=None, a=None, M=None, lowmem=None):
     """
     Parallel-imaging compressed-sensing reconstruction.
 
-    :param kspace:
-    :param sensitivities:
-    :param l1: toggle; l1-wavelet or l2 regularization.
-    :param l2: toggle; l1-wavelet or l2 regularization.
-    :param r: lambda; regularization parameter
-    :param R: <T>:A:B:C; generalized regularization options (-Rh for help)
-    :param c: real-value; constraint
-    :param s: step; iteration stepsize
-    :param i: iter; max. number of iterations
-    :param t: file; k-space trajectory
-    :param n: disable; random wavelet cycle spinning
-    :param N: do; fully overlapping LLR blocks
-    :param g: use; GPU
-    :param G: gpun; use GPU device gpun
-    :param p: file; pattern or weights
-    :param I: select; IST
-    :param b: blk; Lowrank block size
-    :param e: Scale; stepsize based on max. eigenvalue
-    :param T: file; (truth file)
-    :param W: <img>; Warm start with <img>
-    :param d: level; Debug level
-    :param O: rwiter; (reweighting)
-    :param o: gamma; (reweighting)
-    :param u: rho; ADMM rho
-    :param C: iter; ADMM max. CG iterations
-    :param q: cclambda; (cclambda)
-    :param f: rfov; restrict FOV
-    :param m: select; ADMM
-    :param w: val; inverse scaling of the data
-    :param S: re-scale; the image after reconstruction
-    :param L: flags; batch-mode
-    :param K: randshift; for NUFFT
-    :param B: file; temporal (or other) basis
-    :param P: eps; Basis Pursuit formulation, || y- Ax ||_2 <= eps
-    :param a: select; Primal Dual
-    :param M: Simultaneous; Multi-Slice reconstruction
-    :param U: Use; low-mem mode of the nuFFT
-    :param h: help; 
+	:param kspace array:
+	:param sensitivities array:
+	:param l SPECIAL: toggle l1-wavelet or l2 regularization. 
+	:param r float: regularization parameter 
+	:param R SPECIAL: generalized regularization options (-Rh for help) 
+	:param c bool: real-value constraint 
+	:param s float: iteration stepsize 
+	:param i int: max. number of iterations 
+	:param t array: k-space trajectory 
+	:param n CLEAR: disable random wavelet cycle spinning 
+	:param N bool: do fully overlapping LLR blocks 
+	:param g bool: use GPU 
+	:param G int: use GPU device gpun 
+	:param p array: pattern or weights 
+	:param I bool: select IST 
+	:param b int: Lowrank block size 
+	:param e bool: Scale stepsize based on max. eigenvalue 
+	:param H bool: (hogwild) 
+	:param D bool: (ADMM dynamic step size) 
+	:param F bool: (fast) 
+	:param J bool: (ADMM residual balancing) 
+	:param T array: (truth file) 
+	:param W array: Warm start with <img> 
+	:param d int: Debug level 
+	:param O int: (reweighting) 
+	:param o float: (reweighting) 
+	:param u float: ADMM rho 
+	:param C int: ADMM max. CG iterations 
+	:param q float: (cclambda) 
+	:param f float: restrict FOV 
+	:param m bool: select ADMM 
+	:param w float: inverse scaling of the data 
+	:param S bool: re-scale the image after reconstruction 
+	:param L int: batch-mode 
+	:param K bool: randshift for NUFFT 
+	:param B array: temporal (or other) basis 
+	:param P float: Basis Pursuit formulation || y- Ax ||_2 <= eps 
+	:param a bool: select Primal Dual 
+	:param M bool: Simultaneous Multi-Slice reconstruction 
+	:param lowmem bool: Use low-mem mode of the nuFFT 
 
     """
-    #TODO: Automate
-    help_string = "pics [-l ...] [-r f] [-R ...] [-c] [-s f] [-i d] [-t <string>] [-n] [-N] [-g] [-G d] [-p <string>] [-I ...] [-b d] [-e] [-T <string>] [-W <string>] [-d d] [-O d] [-o f] [-u f] [-C d] [-q f] [-f f] [-m ...] [-w f] [-S] [-L d] [-K] [-B <string>] [-P f] [-a ...] [-M] [-U] <kspace> <sensitivities> <output>"
-    cmd = f'{BART_PATH} pics '
-    cfl.writecfl('input', kspace)
-    cfl.writecfl('sens', sensitivities)
-    cmd += 'input sens out'
-    os.system(cmd)
-    out = cfl.readcfl('out')
-    return out
+    usage_string = "pics [-l ...] [-r f] [-R ...] [-c] [-s f] [-i d] [-t file] [-n] [-N] [-g] [-G d] [-p file] [-I] [-b d] [-e] [-W file] [-d d] [-u f] [-C d] [-f f] [-m] [-w f] [-S] [-L d] [-K] [-B file] [-P f] [-a] [-M] [-U,--lowmem] kspace sensitivities output"
 
-def pocsense(kspace, sensitivities, i=None, r=None, l=None, ):
-    """
-    Perform POCSENSE reconstruction. 
-
-    :param kspace:
-    :param sensitivities:
-    :param i: iter; max. number of iterations
-    :param r: alpha; regularization parameter
-    :param l: 1/-l2; toggle l1-wavelet or l2 regularization
-    :param h: help; 
-
-    """
-    help_string = "pocsense [-i d] [-r f] [-l d] <kspace> <sensitivities> <output>"
-    cmd = f'{BART_PATH} pocsense '
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'pics '
+    if l:
+        cmd_str += f'-l {l} '
     if r:
-        cmd += f'-r {r} '
+        cmd_str += f'-r {r} '
+    if R:
+        cmd_str += f'-R {R} '
+    if c:
+        cmd_str += f'-c '
+    if s:
+        cmd_str += f'-s {s} '
     if i:
-        cmd += f'-i {i} '
-    cfl.writecfl('input', kspace)
-    cfl.writecfl('sens', sensitivities)
-    cmd += 'input sens out'
-    os.system(cmd)
-    out = cfl.readcfl('out')
-    return out
+        cmd_str += f'-i {i} '
+    if t:
+        cmd_str += f'-t {t} '
+    if n:
+        cmd_str += f'-n {n} '
+    if N:
+        cmd_str += f'-N '
+    if g:
+        cmd_str += f'-g '
+    if G:
+        cmd_str += f'-G {G} '
+    if p:
+        cmd_str += f'-p {p} '
+    if I:
+        cmd_str += f'-I '
+    if b:
+        cmd_str += f'-b {b} '
+    if e:
+        cmd_str += f'-e '
+    if H:
+        cmd_str += f'-H '
+    if D:
+        cmd_str += f'-D '
+    if F:
+        cmd_str += f'-F '
+    if J:
+        cmd_str += f'-J '
+    if T:
+        cmd_str += f'-T {T} '
+    if W:
+        cmd_str += f'-W {W} '
+    if d:
+        cmd_str += f'-d {d} '
+    if O:
+        cmd_str += f'-O {O} '
+    if o:
+        cmd_str += f'-o {o} '
+    if u:
+        cmd_str += f'-u {u} '
+    if C:
+        cmd_str += f'-C {C} '
+    if q:
+        cmd_str += f'-q {q} '
+    if f:
+        cmd_str += f'-f {f} '
+    if m:
+        cmd_str += f'-m '
+    if w:
+        cmd_str += f'-w {w} '
+    if S:
+        cmd_str += f'-S '
+    if L:
+        cmd_str += f'-L {L} '
+    if K:
+        cmd_str += f'-K '
+    if B:
+        cmd_str += f'-B {B} '
+    if P:
+        cmd_str += f'-P {P} '
+    if a:
+        cmd_str += f'-a '
+    if M:
+        cmd_str += f'-M '
+    if lowmem:
+        cmd_str += f'--lowmem '
+    cmd_str += "kspace sensitivities output "
+    cfl.writecfl('kspace', kspace)
+    cfl.writecfl('sensitivities', sensitivities)
 
-def poisson(outfile, Y=None, Z=None, y=None, z=None, C=None, v=None, e=None, s=None, ):
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def pocsense(kspace, sensitivities, i=None, r=None, l=None, g=None, o=None, m=None):
+    """
+    Perform POCSENSE reconstruction.
+
+	:param kspace array:
+	:param sensitivities array:
+	:param i int: max. number of iterations 
+	:param r float: regularization parameter 
+	:param l int: toggle l1-wavelet or l2 regularization 
+	:param g bool: () 
+	:param o float: () 
+	:param m float: () 
+
+    """
+    usage_string = "pocsense [-i d] [-r f] [-l d] kspace sensitivities output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'pocsense '
+    if i:
+        cmd_str += f'-i {i} '
+    if r:
+        cmd_str += f'-r {r} '
+    if l:
+        cmd_str += f'-l {l} '
+    if g:
+        cmd_str += f'-g '
+    if o:
+        cmd_str += f'-o {o} '
+    if m:
+        cmd_str += f'-m {m} '
+    cmd_str += "kspace sensitivities output "
+    cfl.writecfl('kspace', kspace)
+    cfl.writecfl('sensitivities', sensitivities)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def poisson(Y=None, Z=None, y=None, z=None, C=None, v=None, V=None, e=None, D=None, T=None, m=None, R=None, s=None):
     """
     Computes Poisson-disc sampling pattern.
 
-    :param outfile:
-    :param Y: size; size dimension 1
-    :param Z: size; size dimension 2
-    :param y: acc; acceleration dim 1
-    :param z: acc; acceleration dim 2
-    :param C: size; size of calibration region
-    :param v: variable; density
-    :param e: elliptical; scanning
-    :param s: seed; random seed
-    :param h: help; 
+	:param Y int: size dimension 1 
+	:param Z int: size dimension 2 
+	:param y float: acceleration dim 1 
+	:param z float: acceleration dim 2 
+	:param C int: size of calibration region 
+	:param v bool: variable density 
+	:param V float: (variable density) 
+	:param e bool: elliptical scanning 
+	:param D float: () 
+	:param T int: () 
+	:param m CLEAR: () 
+	:param R int: () 
+	:param s int: random seed 
 
     """
-    help_string = "poisson [-Y d] [-Z d] [-y f] [-z f] [-C d] [-v] [-e] [-s d] <outfile>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "poisson [-Y d] [-Z d] [-y f] [-z f] [-C d] [-v] [-e] [-s d] output"
 
-def poly(a_0, a__arr, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'poisson '
+    if Y:
+        cmd_str += f'-Y {Y} '
+    if Z:
+        cmd_str += f'-Z {Z} '
+    if y:
+        cmd_str += f'-y {y} '
+    if z:
+        cmd_str += f'-z {z} '
+    if C:
+        cmd_str += f'-C {C} '
+    if v:
+        cmd_str += f'-v '
+    if V:
+        cmd_str += f'-V {V} '
+    if e:
+        cmd_str += f'-e '
+    if D:
+        cmd_str += f'-D {D} '
+    if T:
+        cmd_str += f'-T {T} '
+    if m:
+        cmd_str += f'-m {m} '
+    if R:
+        cmd_str += f'-R {R} '
+    if s:
+        cmd_str += f'-s {s} '
+    cmd_str += "output "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def pol2mask(poly, X=None, Y=None):
     """
-    Evaluate polynomial p(x) = a_0 + a_1 x + a_2 x^2 ... a_N x^N at x = {0, 1, ... , L - 1} where a_i are floats.
+    Compute masks from polygons.
 
-    :param a_0:
-    :param a_1:
-    :param ...:
-    :param a_N:
-    :param h: help; 
+	:param poly array:
+	:param X int: size dimension 0 
+	:param Y int: size dimension 1 
 
     """
-    help_string = "poly L N a_0 a_1 ... a_N output"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "pol2mask [-X d] [-Y d] poly output"
 
-def repmat(dimension, repetitions, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'pol2mask '
+    if X:
+        cmd_str += f'-X {X} '
+    if Y:
+        cmd_str += f'-Y {Y} '
+    cmd_str += "poly output "
+    cfl.writecfl('poly', poly)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+ 
+
+def repmat(dimension, repetitions, input):
     """
     Repeat input array multiple times along a certain dimension.
 
-    :param dimension:
-    :param repetitions:
-    :param input_:
-    :param h: help; 
+	:param dimension int:
+	:param repetitions int:
+	:param input array:
 
     """
-    help_string = "repmat dimension repetitions <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "repmat dimension repetitions input output"
 
-def reshape(flags, dim_arr, input_, ):
-    """
-    Reshape selected dimensions.
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'repmat '
+    cmd_str += "dimension repetitions input output "
+    cfl.writecfl('dimension', dimension)
+    cfl.writecfl('repetitions', repetitions)
+    cfl.writecfl('input', input)
 
-    :param flags:
-    :param dim1:
-    :param ...:
-    :param dimN:
-    :param input_:
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "reshape flags dim1 ... dimN <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def resize(dim_arr, size_arr, input_, c=None, ):
-    """
-    Resizes an array along dimensions to sizes by truncating or zero-padding.
+    return cfl.readcfl('output')
 
-    :param dim1:
-    :param size1:
-    :param ...:
-    :param dimn:
-    :param sizen:
-    :param input_:
-    :param c: center; 
-    :param h: help; 
+ 
 
-    """
-    help_string = "resize [-c] dim1 size1 ... dimn sizen <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+ 
 
-def rmfreq(traj, k_cor, N=None, ):
+def rmfreq(traj, k, N=None):
     """
     Remove angle-dependent frequency
 
-    :param traj:
-    :param k_cor:
-    :param N: #; Number of harmonics [Default: 5]
-    :param h: help; 
+	:param traj array:
+	:param k array:
+	:param N int: Number of harmonics [Default: 5] 
 
     """
-    help_string = "rmfreq [-N d] <traj> <k> <k_cor>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "rmfreq [-N d] traj k k_cor"
 
-def rof(llambda, flags, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'rmfreq '
+    if N:
+        cmd_str += f'-N {N} '
+    cmd_str += "traj k k_cor "
+    cfl.writecfl('traj', traj)
+    cfl.writecfl('k', k)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('k_cor')
+
+def rof(llambda, flags, input):
     """
     Perform total variation denoising along dims <flags>.
 
-    :param llambda:
-    :param flags:
-    :param input_:
-    :param h: help; 
+	:param llambda float:
+	:param flags int:
+	:param input array:
 
     """
-    help_string = "rof <lambda> <flags> <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "rof lambda flags input output"
 
-def rss(bitmask, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'rof '
+    cmd_str += "llambda flags input output "
+    cfl.writecfl('llambda', llambda)
+    cfl.writecfl('flags', flags)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def roistat(roi, input, b=None, C=None, S=None, M=None, D=None, E=None, V=None):
+    """
+    Compute ROI statistics.
+
+	:param roi array:
+	:param input array:
+	:param b bool: Bessel's correction i.e. 1 / (n - 1) 
+	:param C bool: voxel count 
+	:param S bool: sum 
+	:param M bool: mean 
+	:param D bool: standard deviation 
+	:param E bool: energy 
+	:param V bool: variance 
+
+    """
+    usage_string = "roistat [-b] [-C] [-S] [-M] [-D] [-E] [-V] roi input [output]"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'roistat '
+    if b:
+        cmd_str += f'-b '
+    if C:
+        cmd_str += f'-C '
+    if S:
+        cmd_str += f'-S '
+    if M:
+        cmd_str += f'-M '
+    if D:
+        cmd_str += f'-D '
+    if E:
+        cmd_str += f'-E '
+    if V:
+        cmd_str += f'-V '
+    cmd_str += "roi input "
+    cfl.writecfl('roi', roi)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return
+
+def rss(bitmask, input):
     """
     Calculates root of sum of squares along selected dimensions.
 
-    :param bitmask:
-    :param input_:
-    :param h: help; 
+	:param bitmask int:
+	:param input array:
 
     """
-    help_string = "rss bitmask <input> <output>"
-    cmd = f'{BART_PATH} rss {bitmask} input out'
-    cfl.writecfl('input', input_)
-    os.system(BART_PATH + ' ' + cmd)
-    if 'output' in help_string:
-       out = cfl.readcfl('out')
-    os.remove('input.hdr')
-    os.remove('input.cfl')
-    os.remove('out.hdr')
-    os.remove('out.cfl')
-    return out
+    usage_string = "rss bitmask input output"
 
-def rtnlinv(kspace, i=None, d=None, c=None, N=None, m=None, U=None, f=None, p=None, t=None, I=None, g=None, S=None, T=None, x=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'rss '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def rtnlinv(kspace, i=None, R=None, M=None, d=None, c=None, N=None, m=None, U=None, f=None, p=None, t=None, I=None, C=None, g=None, S=None, a=None, b=None, T=None, w=None, x=None, A=None, s=None):
     """
     Jointly estimate a time-series of images and sensitivities with nonlinear
+inversion using {iter} iteration steps. Optionally outputs
+the sensitivities.
 
-    :param kspace:
-    :param i: iter; Number of Newton steps
-    :param d: level; Debug level
-    :param c: Real-value; constraint
-    :param N: Do; not normalize image with coil sensitivities
-    :param m: nmaps; Number of ENLIVE maps to use in reconstruction
-    :param U: Do; not combine ENLIVE maps in output
-    :param f: FOV; restrict FOV
-    :param p: file; pattern / transfer function
-    :param t: file; kspace trajectory
-    :param I: file; File for initialization
-    :param g: use; gpu
-    :param S: Re-scale; image after reconstruction
-    :param T: temp_damp; temporal damping [default: 0.9]
-    :param x: x:y:z; Explicitly specify image dimensions
-    :param h: help; 
+	:param kspace array:
+	:param i int: Number of Newton steps 
+	:param R float: (reduction factor) 
+	:param M float: (minimum for regularization) 
+	:param d int: Debug level 
+	:param c bool: Real-value constraint 
+	:param N CLEAR: Do not normalize image with coil sensitivities 
+	:param m int: Number of ENLIVE maps to use in reconstruction 
+	:param U CLEAR: Do not combine ENLIVE maps in output 
+	:param f float: restrict FOV 
+	:param p array: pattern / transfer function 
+	:param t array: kspace trajectory 
+	:param I array: File for initialization 
+	:param C array: (File for initialization with image space sensitivities) 
+	:param g bool: use gpu 
+	:param S bool: Re-scale image after reconstruction 
+	:param a float: (a in 1 + a * \Laplace^-b/2) 
+	:param b float: (b in 1 + a * \Laplace^-b/2) 
+	:param T float: temporal damping [default: 0.9] 
+	:param w float: (inverse scaling of the data) 
+	:param x VEC3: Explicitly specify image dimensions 
+	:param A bool: (Alternative scaling) 
+	:param s bool: (Simultaneous Multi-Slice reconstruction) 
 
     """
-    help_string = "rtnlinv [-i d] [-d d] [-c] [-N] [-m d] [-U] [-f f] [-p <string>] [-t <string>] [-I <string>] [-g] [-S] [-T f] [-x ...] <kspace> <output> [<sensitivities>]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "rtnlinv [-i d] [-d d] [-c] [-N] [-m d] [-U] [-f f] [-p file] [-t file] [-I file] [-g] [-S] [-T f] [-x d:d:d] kspace output [sensitivities]"
 
-def sake(kspace, i=None, s=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'rtnlinv '
+    if i:
+        cmd_str += f'-i {i} '
+    if R:
+        cmd_str += f'-R {R} '
+    if M:
+        cmd_str += f'-M {M} '
+    if d:
+        cmd_str += f'-d {d} '
+    if c:
+        cmd_str += f'-c '
+    if N:
+        cmd_str += f'-N {N} '
+    if m:
+        cmd_str += f'-m {m} '
+    if U:
+        cmd_str += f'-U {U} '
+    if f:
+        cmd_str += f'-f {f} '
+    if p:
+        cmd_str += f'-p {p} '
+    if t:
+        cmd_str += f'-t {t} '
+    if I:
+        cmd_str += f'-I {I} '
+    if C:
+        cmd_str += f'-C {C} '
+    if g:
+        cmd_str += f'-g '
+    if S:
+        cmd_str += f'-S '
+    if a:
+        cmd_str += f'-a {a} '
+    if b:
+        cmd_str += f'-b {b} '
+    if T:
+        cmd_str += f'-T {T} '
+    if w:
+        cmd_str += f'-w {w} '
+    if x:
+        cmd_str += f'-x {x} '
+    if A:
+        cmd_str += f'-A '
+    if s:
+        cmd_str += f'-s '
+    cmd_str += "kspace output "
+    cfl.writecfl('kspace', kspace)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def sake(kspace, i=None, s=None, o=None):
     """
     Use SAKE algorithm to recover a full k-space from undersampled
+data using low-rank matrix completion.
 
-    :param kspace:
-    :param i: iter; tnumber of iterations
-    :param s: size; rel. size of the signal subspace
-    :param h: help; 
+	:param kspace array:
+	:param i int: number of iterations 
+	:param s float: rel. size of the signal subspace 
+	:param o float: () 
 
     """
-    help_string = "sake [-i d] [-s f] <kspace> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "ke [-i d] [-s f] kspace output"
 
-def saxpy(scale, input1, input2, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'sake '
+    if i:
+        cmd_str += f'-i {i} '
+    if s:
+        cmd_str += f'-s {s} '
+    if o:
+        cmd_str += f'-o {o} '
+    cmd_str += "kspace output "
+    cfl.writecfl('kspace', kspace)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def saxpy(scale, input1, input2):
     """
     Multiply input1 with scale factor and add input2.
 
-    :param scale:
-    :param input1:
-    :param input2:
-    :param h: help; 
+	:param scale CFL:
+	:param input1 array:
+	:param input2 array:
 
     """
-    help_string = "saxpy scale <input1> <input2> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "xpy scale input1 input2 output"
 
-def scale(factor, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'saxpy '
+    cmd_str += "scale input1 input2 output "
+    cfl.writecfl('scale', scale)
+    cfl.writecfl('input1', input1)
+    cfl.writecfl('input2', input2)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def scale(factor, input):
     """
     Scale array by {factor}. The scale factor can be a complex number.
 
-    :param factor:
-    :param input_:
-    :param h: help; 
+	:param factor CFL:
+	:param input array:
 
     """
-    help_string = "scale factor <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "cale factor input output"
 
-def sdot(input1, input2, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'scale '
+    cmd_str += "factor input output "
+    cfl.writecfl('factor', factor)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def sdot(input1, input2):
     """
     Compute dot product along selected dimensions.
 
-    :param input1:
-    :param input2:
-    :param h: help; 
+	:param input1 array:
+	:param input2 array:
 
     """
-    help_string = "sdot <input1> <input2>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "dot input1 input2"
 
-def show(input_, m=None, d=None, s=None, f=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'sdot '
+    cmd_str += "input1 input2 "
+    cfl.writecfl('input1', input1)
+    cfl.writecfl('input2', input2)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+def show(input, m=None, d=None, s=None, f=None):
     """
     Outputs values or meta data.
 
-    :param input_:
-    :param m: show; meta data
-    :param d: dim; show size of dimension
-    :param s: sep; use <sep> as the separator
-    :param f: format; use <format> as the format. Default: "%%+.6e%%+.6ei"
-    :param h: help; 
+	:param input array:
+	:param m bool: show meta data 
+	:param d int: show size of dimension 
+	:param s STRING: use <sep> as the separator 
+	:param f STRING: use <format> as the format. Default: %%+.6e%%+.6ei 
 
     """
-    help_string = "show [-m] [-d d] [-s <string>] [-f <string>] <input>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "how [-m] [-d d] [-s string] [-f string] input"
 
-def slice(dim_arr, pos_arr, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'show '
+    if m:
+        cmd_str += f'-m '
+    if d:
+        cmd_str += f'-d {d} '
+    if s:
+        cmd_str += f'-s {s} '
+    if f:
+        cmd_str += f'-f {f} '
+    cmd_str += "input "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=None, _1=None, _2=None, _3=None, r=None, e=None, f=None, t=None, n=None, b=None):
     """
-    Extracts a slice from positions along dimensions.
+    Analytical simulation tool.
 
-    :param dim1:
-    :param pos1:
-    :param ...:
-    :param dimn:
-    :param posn:
-    :param input_:
-    :param h: help; 
+	:param F bool: FLASH 
+	:param B bool: bSSFP 
+	:param T bool: TSE 
+	:param M bool: MOLLI 
+	:param G bool: MGRE 
+	:param fat bool: Simulate additional fat component. 
+	:param I bool: inversion recovery 
+	:param s bool: inversion recovery starting from steady state 
+	:param _0 FLOAT_VEC3: range of off-resonance frequency (Hz) 
+	:param _1 FLOAT_VEC3: range of T1s (s) 
+	:param _2 FLOAT_VEC3: range of T2s (s) 
+	:param _3 FLOAT_VEC3: range of Mss 
+	:param r float: repetition time 
+	:param e float: echo time 
+	:param f float: flip ange 
+	:param t float: T1 relax period (second) for MOLLI 
+	:param n LONG: number of measurements 
+	:param b LONG: number of heart beats for MOLLI 
 
     """
-    help_string = "slice dim1 pos1 ... dimn posn <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "ignal [-F] [-B] [-T] [-M] [-G] [--fat] [-I] [-s] [-0 f:f:f] [-1 f:f:f] [-2 f:f:f] [-3 f:f:f] [-r f] [-e f] [-f f] [-t f] [-n d] [-b d] basis-functions"
 
-def spow(exponent, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'signal '
+    if F:
+        cmd_str += f'-F '
+    if B:
+        cmd_str += f'-B '
+    if T:
+        cmd_str += f'-T '
+    if M:
+        cmd_str += f'-M '
+    if G:
+        cmd_str += f'-G '
+    if fat:
+        cmd_str += f'--fat '
+    if I:
+        cmd_str += f'-I '
+    if s:
+        cmd_str += f'-s '
+    if _0:
+        cmd_str += f'-0 {_0} '
+    if _1:
+        cmd_str += f'-1 {_1} '
+    if _2:
+        cmd_str += f'-2 {_2} '
+    if _3:
+        cmd_str += f'-3 {_3} '
+    if r:
+        cmd_str += f'-r {r} '
+    if e:
+        cmd_str += f'-e {e} '
+    if f:
+        cmd_str += f'-f {f} '
+    if t:
+        cmd_str += f'-t {t} '
+    if n:
+        cmd_str += f'-n {n} '
+    if b:
+        cmd_str += f'-b {b} '
+    cmd_str += "basis_functions "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('basis_functions')
+
+ 
+
+def spow(exponent, input):
     """
     Raise array to the power of {exponent}. The exponent can be a complex number.
 
-    :param exponent:
-    :param input_:
-    :param h: help; 
+	:param exponent CFL:
+	:param input array:
 
     """
-    help_string = "spow exponent <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "pow exponent input output"
 
-def sqpics(kspace, sensitivities, l1=None, l2=None, r=None, s=None, i=None, t=None, n=None, g=None, p=None, b=None, e=None, T=None, W=None, d=None, u=None, C=None, f=None, m=None, w=None, S=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'spow '
+    cmd_str += "exponent input output "
+    cfl.writecfl('exponent', exponent)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None, n=None, g=None, p=None, I=None, b=None, e=None, H=None, F=None, T=None, W=None, d=None, u=None, C=None, f=None, m=None, w=None, S=None):
     """
     Parallel-imaging compressed-sensing reconstruction.
 
-    :param kspace:
-    :param sensitivities:
-    :param l1: toggle; l1-wavelet or l2 regularization.
-    :param l2: toggle; l1-wavelet or l2 regularization.
-    :param r: lambda; regularization parameter
-    :param R: <T>:A:B:C; generalized regularization options (-Rh for help)
-    :param s: step; iteration stepsize
-    :param i: iter; max. number of iterations
-    :param t: file; k-space trajectory
-    :param n: disable; random wavelet cycle spinning
-    :param g: use; GPU
-    :param p: file; pattern or weights
-    :param b: blk; Lowrank block size
-    :param e: Scale; stepsize based on max. eigenvalue
-    :param T: file; (truth file)
-    :param W: <img>; Warm start with <img>
-    :param d: level; Debug level
-    :param u: rho; ADMM rho
-    :param C: iter; ADMM max. CG iterations
-    :param f: rfov; restrict FOV
-    :param m: Select; ADMM
-    :param w: val; scaling
-    :param S: Re-scale; the image after reconstruction
-    :param h: help; 
+	:param kspace array:
+	:param sensitivities array:
+	:param l SPECIAL: toggle l1-wavelet or l2 regularization. 
+	:param r float: regularization parameter 
+	:param R SPECIAL: generalized regularization options (-Rh for help) 
+	:param s float: iteration stepsize 
+	:param i int: max. number of iterations 
+	:param t array: k-space trajectory 
+	:param n CLEAR: disable random wavelet cycle spinning 
+	:param g bool: use GPU 
+	:param p array: pattern or weights 
+	:param I bool: (select IST) 
+	:param b int: Lowrank block size 
+	:param e bool: Scale stepsize based on max. eigenvalue 
+	:param H bool: (hogwild) 
+	:param F bool: (fast) 
+	:param T array: (truth file) 
+	:param W array: Warm start with <img> 
+	:param d int: Debug level 
+	:param u float: ADMM rho 
+	:param C int: ADMM max. CG iterations 
+	:param f float: restrict FOV 
+	:param m bool: Select ADMM 
+	:param w float: scaling 
+	:param S bool: Re-scale the image after reconstruction 
 
     """
-    help_string = "sqpics [-l ...] [-r f] [-R ...] [-s f] [-i d] [-t <string>] [-n] [-g] [-p <string>] [-b d] [-e] [-T <string>] [-W <string>] [-d d] [-u f] [-C d] [-f f] [-m ...] [-w f] [-S] <kspace> <sensitivities> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "qpics [-l ...] [-r f] [-R ...] [-s f] [-i d] [-t file] [-n] [-g] [-p file] [-b d] [-e] [-W file] [-d d] [-u f] [-C d] [-f f] [-m] [-w f] [-S] kspace sensitivities output"
 
-def squeeze(input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'sqpics '
+    if l:
+        cmd_str += f'-l {l} '
+    if r:
+        cmd_str += f'-r {r} '
+    if R:
+        cmd_str += f'-R {R} '
+    if s:
+        cmd_str += f'-s {s} '
+    if i:
+        cmd_str += f'-i {i} '
+    if t:
+        cmd_str += f'-t {t} '
+    if n:
+        cmd_str += f'-n {n} '
+    if g:
+        cmd_str += f'-g '
+    if p:
+        cmd_str += f'-p {p} '
+    if I:
+        cmd_str += f'-I '
+    if b:
+        cmd_str += f'-b {b} '
+    if e:
+        cmd_str += f'-e '
+    if H:
+        cmd_str += f'-H '
+    if F:
+        cmd_str += f'-F '
+    if T:
+        cmd_str += f'-T {T} '
+    if W:
+        cmd_str += f'-W {W} '
+    if d:
+        cmd_str += f'-d {d} '
+    if u:
+        cmd_str += f'-u {u} '
+    if C:
+        cmd_str += f'-C {C} '
+    if f:
+        cmd_str += f'-f {f} '
+    if m:
+        cmd_str += f'-m '
+    if w:
+        cmd_str += f'-w {w} '
+    if S:
+        cmd_str += f'-S '
+    cmd_str += "kspace sensitivities output "
+    cfl.writecfl('kspace', kspace)
+    cfl.writecfl('sensitivities', sensitivities)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def squeeze(input):
     """
     Remove singleton dimensions of array.
 
-    :param input_:
-    :param h: help; 
+	:param input array:
 
     """
-    help_string = "squeeze <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "queeze input output"
 
-def ssa(src, EOF, w=None, z=None, m=None, n=None, r=None, g=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'squeeze '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def ssa(src, w=None, z=None, m=None, n=None, r=None, g=None):
     """
     Perform SSA-FARY or Singular Spectrum Analysis. <src>: [samples, coordinates]
 
-    :param src:
-    :param EOF:
-    :param w: window; Window length
-    :param z: Zeropadding; [Default: True]
-    :param m: 0/1; Remove mean [Default: True]
-    :param n: 0/1; Normalize [Default: False]
-    :param r: rank; Rank for backprojection. r < 0: Throw away first r components. r > 0: Use only first r components.
-    :param g: bitmask; Bitmask for Grouping (long value!)
-    :param h: help; 
+	:param src array:
+	:param w int: Window length 
+	:param z CLEAR: Zeropadding [Default: True] 
+	:param m int: Remove mean [Default: True] 
+	:param n int: Normalize [Default: False] 
+	:param r int: Rank for backprojection. r < 0: Throw away first r components. r > 0: Use only first r components. 
+	:param g LONG: Bitmask for Grouping (long value!) 
 
     """
-    help_string = "ssa [-w d] [-z] [-m d] [-n d] [-r d] [-g d] <src> <EOF> [<S>] [<backprojection>]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "[-w d] [-z] [-m d] [-n d] [-r d] [-g d] src EOF [S] [backprojection]"
 
-def std(bitmask, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'ssa '
+    if w:
+        cmd_str += f'-w {w} '
+    if z:
+        cmd_str += f'-z {z} '
+    if m:
+        cmd_str += f'-m {m} '
+    if n:
+        cmd_str += f'-n {n} '
+    if r:
+        cmd_str += f'-r {r} '
+    if g:
+        cmd_str += f'-g {g} '
+    cmd_str += "src EOF "
+    cfl.writecfl('src', src)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('EOF')
+
+def std(bitmask, input):
     """
     Compute standard deviation along selected dimensions specified by the {bitmask}
 
-    :param bitmask:
-    :param input_:
-    :param h: help; 
+	:param bitmask LONG:
+	:param input array:
 
     """
-    help_string = "std bitmask <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "td bitmask input output"
 
-def svd(input_, VH, e=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'std '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def svd(input, e=None):
     """
     Compute singular-value-decomposition (SVD).
 
-    :param input_:
-    :param VH:
-    :param e: econ; 
-    :param h: help; 
+	:param input array:
+	:param e bool: econ 
 
     """
-    help_string = "svd [-e] <input> <U> <S> <VH>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "vd [-e] input U S VH"
 
-def tgv(llambda, flags, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'svd '
+    if e:
+        cmd_str += f'-e '
+    cmd_str += "input U S VH "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('U'), cfl.readcfl('S'), cfl.readcfl('VH')
+
+def tgv(llambda, flags, input):
     """
-    Perform total generalized variation denoising along dims <flags>.
+    Perform total generalized variation denoising along dims specified by flags.
 
-    :param llambda:
-    :param flags:
-    :param input_:
-    :param h: help; 
+	:param llambda float:
+	:param flags int:
+	:param input array:
 
     """
-    help_string = "tgv <lambda> <flags> <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "tgv lambda flags input output"
 
-def threshold(llambda, input_, H=None, W=None, L=None, D=None, j=None, b=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'tgv '
+    cmd_str += "llambda flags input output "
+    cfl.writecfl('llambda', llambda)
+    cfl.writecfl('flags', flags)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def threshold(llambda, input, H=None, W=None, L=None, D=None, B=None, j=None, b=None):
     """
     Perform (soft) thresholding with parameter lambda.
 
-    :param llambda:
-    :param input_:
-    :param H: hard; thresholding
-    :param W: daubechies; wavelet soft-thresholding
-    :param L: locally; low rank soft-thresholding
-    :param D: divergence-free; wavelet soft-thresholding
-    :param j: bitmask; joint soft-thresholding
-    :param b: blocksize; locally low rank block size
-    :param h: help; 
+	:param llambda float:
+	:param input array:
+	:param H bool: hard thresholding 
+	:param W bool: daubechies wavelet soft-thresholding 
+	:param L bool: locally low rank soft-thresholding 
+	:param D bool: divergence-free wavelet soft-thresholding 
+	:param B bool: thresholding with binary output 
+	:param j int: joint soft-thresholding 
+	:param b int: locally low rank block size 
 
     """
-    help_string = "threshold [-H ...] [-W ...] [-L ...] [-D ...] [-j d] [-b d] lambda <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "threshold [-H] [-W] [-L] [-D] [-B] [-j d] [-b d] lambda input output"
 
-def toimg(input_, output_prefix, g=None, c=None, w=None, d=None, m=None, W=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'threshold '
+    if H:
+        cmd_str += f'-H '
+    if W:
+        cmd_str += f'-W '
+    if L:
+        cmd_str += f'-L '
+    if D:
+        cmd_str += f'-D '
+    if B:
+        cmd_str += f'-B '
+    if j:
+        cmd_str += f'-j {j} '
+    if b:
+        cmd_str += f'-b {b} '
+    cmd_str += "llambda input output "
+    cfl.writecfl('llambda', llambda)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def toimg(input, g=None, c=None, w=None, d=None, m=None, W=None):
     """
     Create magnitude images as png or proto-dicom.
+The first two non-singleton dimensions will
+be used for the image, and the other dimensions
+will be looped over.
 
-    :param input_:
-    :param output_prefix:
-    :param g: gamma; gamma level
-    :param c: contrast; contrast level
-    :param w: window; window level
-    :param d: write; to dicom format (deprecated, use extension .dcm)
-    :param m: re-scale; each image
-    :param W: use; dynamic windowing
-    :param h: help; 
+	:param input array:
+	:param g float: gamma level 
+	:param c float: contrast level 
+	:param w float: window level 
+	:param d bool: write to dicom format (deprecated use extension .dcm) 
+	:param m CLEAR: re-scale each image 
+	:param W bool: use dynamic windowing 
 
     """
-    help_string = "toimg [-g f] [-c f] [-w f] [-d] [-m] [-W] [-h] <input> <output_prefix>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "toimg [-g f] [-c f] [-w f] [-d] [-m] [-W] input output prefix"
 
-def traj(x=None, y=None, d=None, a=None, t=None, m=None, l=None, g=None, r=None, G=None, H=None, s=None, D=None, R=None, q=None, Q=None, O=None, third=None, c=None, z=None, C=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'toimg '
+    if g:
+        cmd_str += f'-g {g} '
+    if c:
+        cmd_str += f'-c {c} '
+    if w:
+        cmd_str += f'-w {w} '
+    if d:
+        cmd_str += f'-d '
+    if m:
+        cmd_str += f'-m {m} '
+    if W:
+        cmd_str += f'-W '
+    cmd_str += "input output_prefix "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output_prefix')
+
+def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None, r=None, G=None, H=None, s=None, D=None, R=None, q=None, Q=None, O=None, _3=None, c=None, E=None, z=None, C=None, V=None):
     """
     Computes k-space trajectories.
 
-    :param x: x; readout samples
-    :param y: y; phase encoding lines
-    :param d: d; full readout samples
-    :param a: a; acceleration
-    :param t: t; turns
-    :param m: mb; SMS multiband factor
-    :param l: aligned; partition angle
-    :param g: golden; angle in partition direction
-    :param r: radial; 
-    :param G: golden-ratio; sampling
-    :param H: halfCircle; golden-ratio sampling
-    :param s: #; Tiny GA tiny golden angle
-    :param D: projection; angle in [0,360°), else in [0,180°)
-    :param R: phi; rotate
-    :param q: delays; gradient delays: x, y, xy
-    :param Q: delays; (gradient delays: z, xz, yz)
-    :param O: correct; transverse gradient error for radial tajectories
-    :param third: 3D; 
-    :param c: asymmetric; trajectory [DC sampled]
-    :param z: Ref:Acel; Undersampling in z-direction.
-    :param C: file; custom_angle file [phi + i * psi]
-    :param h: help; 
+	:param x int: readout samples 
+	:param y int: phase encoding lines 
+	:param d int: full readout samples 
+	:param e int: number of echoes 
+	:param a int: acceleration 
+	:param t int: turns 
+	:param m int: SMS multiband factor 
+	:param l bool: aligned partition angle 
+	:param g bool: golden angle in partition direction 
+	:param r bool: radial 
+	:param G bool: golden-ratio sampling 
+	:param H bool: halfCircle golden-ratio sampling 
+	:param s int: tiny golden angle 
+	:param D bool: projection angle in [0 360°) else in [0 180°) 
+	:param R float: rotate 
+	:param q FLOAT_VEC3: gradient delays: x y xy 
+	:param Q FLOAT_VEC3: (gradient delays: z xz yz) 
+	:param O bool: correct transverse gradient error for radial tajectories 
+	:param _3 bool: 3D 
+	:param c bool: asymmetric trajectory [DC sampled] 
+	:param E bool: multi-echo multi-spoke trajectory 
+	:param z VEC2: Undersampling in z-direction. 
+	:param C array: custom_angle file [phi + i * psi] 
+	:param V array: (custom_gdelays) 
 
     """
-    help_string = "traj [-x d] [-y d] [-d d] [-a d] [-t d] [-m d] [-l] [-g] [-r] [-G] [-H] [-s d] [-D] [-R f] [-q ...] [-Q ...] [-O] [-3] [-c] [-z ...] [-C <string>] <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "traj [-x d] [-y d] [-d d] [-e d] [-a d] [-t d] [-m d] [-l] [-g] [-r] [-G] [-H] [-s d] [-D] [-R f] [-q f:f:f] [-O] [-3] [-c] [-E] [-z d:d] [-C file] output"
 
-def transpose(dim1, dim2, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'traj '
+    if x:
+        cmd_str += f'-x {x} '
+    if y:
+        cmd_str += f'-y {y} '
+    if d:
+        cmd_str += f'-d {d} '
+    if e:
+        cmd_str += f'-e {e} '
+    if a:
+        cmd_str += f'-a {a} '
+    if t:
+        cmd_str += f'-t {t} '
+    if m:
+        cmd_str += f'-m {m} '
+    if l:
+        cmd_str += f'-l '
+    if g:
+        cmd_str += f'-g '
+    if r:
+        cmd_str += f'-r '
+    if G:
+        cmd_str += f'-G '
+    if H:
+        cmd_str += f'-H '
+    if s:
+        cmd_str += f'-s {s} '
+    if D:
+        cmd_str += f'-D '
+    if R:
+        cmd_str += f'-R {R} '
+    if q:
+        cmd_str += f'-q {q} '
+    if Q:
+        cmd_str += f'-Q {Q} '
+    if O:
+        cmd_str += f'-O '
+    if _3:
+        cmd_str += f'-3 '
+    if c:
+        cmd_str += f'-c '
+    if E:
+        cmd_str += f'-E '
+    if z:
+        cmd_str += f'-z {z} '
+    if C:
+        cmd_str += f'-C {C} '
+    if V:
+        cmd_str += f'-V {V} '
+    cmd_str += "output "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def transpose(dim1, dim2, input):
     """
     Transpose dimensions {dim1} and {dim2}.
 
-    :param dim1:
-    :param dim2:
-    :param input_:
-    :param h: help; 
+	:param dim1 int:
+	:param dim2 int:
+	:param input array:
 
     """
-    help_string = "transpose dim1 dim2 <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "transpose dim1 dim2 input output"
 
-def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n=None, a=None, A=None, L=None, P=None, M=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'transpose '
+    cmd_str += "dim1 dim2 input output "
+    cfl.writecfl('dim1', dim1)
+    cfl.writecfl('dim2', dim2)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n=None, a=None, A=None, L=None, P=None, M=None):
     """
     Read data from Siemens twix (.dat) files.
 
-    :param dat_file:
-    :param x: X; number of samples (read-out)
-    :param r: R; radial lines
-    :param y: Y; phase encoding steps
-    :param z: Z; partition encoding steps
-    :param s: S; number of slices
-    :param v: V; number of averages
-    :param c: C; number of channels
-    :param n: N; number of repetitions
-    :param a: A; total number of ADCs
-    :param A: automatic; [guess dimensions]
-    :param L: use; linectr offset
-    :param P: use; partctr offset
-    :param M: MPI; mode
-    :param h: help; 
+	:param dat_file array:
+	:param x LONG: number of samples (read-out) 
+	:param r LONG: radial lines 
+	:param y LONG: phase encoding steps 
+	:param z LONG: partition encoding steps 
+	:param s LONG: number of slices 
+	:param v LONG: number of averages 
+	:param c LONG: number of channels 
+	:param n LONG: number of repetitions 
+	:param a LONG: total number of ADCs 
+	:param A bool: automatic [guess dimensions] 
+	:param L bool: use linectr offset 
+	:param P bool: use partctr offset 
+	:param M bool: MPI mode 
 
     """
-    help_string = "twixread [-x d] [-r d] [-y d] [-z d] [-s d] [-v d] [-c d] [-n d] [-a d] [-A] [-L] [-P] [-M] <dat file> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "twixread [-x d] [-r d] [-y d] [-z d] [-s d] [-v d] [-c d] [-n d] [-a d] [-A] [-L] [-P] [-M] dat file output"
 
-def upat(Y=None, Z=None, y=None, z=None, c=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'twixread '
+    if x:
+        cmd_str += f'-x {x} '
+    if r:
+        cmd_str += f'-r {r} '
+    if y:
+        cmd_str += f'-y {y} '
+    if z:
+        cmd_str += f'-z {z} '
+    if s:
+        cmd_str += f'-s {s} '
+    if v:
+        cmd_str += f'-v {v} '
+    if c:
+        cmd_str += f'-c {c} '
+    if n:
+        cmd_str += f'-n {n} '
+    if a:
+        cmd_str += f'-a {a} '
+    if A:
+        cmd_str += f'-A '
+    if L:
+        cmd_str += f'-L '
+    if P:
+        cmd_str += f'-P '
+    if M:
+        cmd_str += f'-M '
+    cmd_str += "dat_file output "
+    cfl.writecfl('dat_file', dat_file)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def upat(Y=None, Z=None, y=None, z=None, c=None):
     """
     Create a sampling pattern.
 
-    :param Y: Y; size Y
-    :param Z: Z; size Z
-    :param y: uy; undersampling y
-    :param z: uz; undersampling z
-    :param c: cen; size of k-space center
-    :param h: help; 
+	:param Y LONG: size Y 
+	:param Z LONG: size Z 
+	:param y int: undersampling y 
+	:param z int: undersampling z 
+	:param c int: size of k-space center 
 
     """
-    help_string = "upat [-Y d] [-Z d] [-y d] [-z d] [-c d] output"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "upat [-Y d] [-Z d] [-y d] [-z d] [-c d] output"
 
-def var(bitmask, input_, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'upat '
+    if Y:
+        cmd_str += f'-Y {Y} '
+    if Z:
+        cmd_str += f'-Z {Z} '
+    if y:
+        cmd_str += f'-y {y} '
+    if z:
+        cmd_str += f'-z {z} '
+    if c:
+        cmd_str += f'-c {c} '
+    cmd_str += "output "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def var(bitmask, input):
     """
     Compute variance along selected dimensions specified by the {bitmask}
 
-    :param bitmask:
-    :param input_:
-    :param h: help; 
+	:param bitmask LONG:
+	:param input array:
 
     """
-    help_string = "var bitmask <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "var bitmask input output"
 
-def vec(val_arr, name, ):
-    """
-    Create a vector of values.
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'var '
+    cmd_str += "bitmask input output "
+    cfl.writecfl('bitmask', bitmask)
+    cfl.writecfl('input', input)
 
-    :param val1:
-    :param val2:
-    :param ...:
-    :param valN:
-    :param name:
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "vec val1 val2 ... valN name"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def version(t=None, V=None, ):
-    """
-    Print BART version. The version string is of the form
+    return cfl.readcfl('output')
 
-    :param t: version; Check minimum version
-    :param V: Output; verbose info
-    :param h: help; 
+ 
 
-    """
-    help_string = "version [-t <string>] [-V] [-h]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+ 
 
-def walsh(input_, r=None, b=None, ):
+def walsh(input, r=None, R=None, b=None, B=None):
     """
     Estimate coil sensitivities using walsh method (use with ecaltwo).
 
-    :param input_:
-    :param r: cal_size; Limits the size of the calibration region.
-    :param b: block_size; Block size.
-    :param h: help; 
+	:param input array:
+	:param r VEC3: Limits the size of the calibration region. 
+	:param R VEC3: () 
+	:param b VEC3: Block size. 
+	:param B VEC3: () 
 
     """
-    help_string = "walsh [-r ...] [-b ...] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "walsh [-r d:d:d] [-b d:d:d] input output"
 
-def wave(maps, wave, kspace, r=None, b=None, i=None, s=None, c=None, t=None, e=None, g=None, f=None, H=None, v=None, w=None, l=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'walsh '
+    if r:
+        cmd_str += f'-r {r} '
+    if R:
+        cmd_str += f'-R {R} '
+    if b:
+        cmd_str += f'-b {b} '
+    if B:
+        cmd_str += f'-B {B} '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def wave(maps, wave, kspace, r=None, b=None, i=None, s=None, c=None, t=None, e=None, g=None, f=None, H=None, v=None, w=None, l=None):
     """
     Perform a wave-caipi reconstruction.
 
-    :param maps:
-    :param wave:
-    :param kspace:
-    :param r: lambda; Soft threshold lambda for wavelet or locally low rank.
-    :param b: blkdim; Block size for locally low rank.
-    :param i: mxiter; Maximum number of iterations.
-    :param s: stepsz; Step size for iterative method.
-    :param c: cntnu; Continuation value for IST/FISTA.
-    :param t: toler; Tolerance convergence condition for iterative method.
-    :param e: eigvl; Maximum eigenvalue of normal operator, if known.
-    :param g: gpunm; GPU device number.
-    :param f: Reconstruct; using FISTA instead of IST.
-    :param H: Use; hogwild in IST/FISTA.
-    :param v: Split; result to real and imaginary components.
-    :param w: Use; wavelet.
-    :param l: Use; locally low rank across the real and imaginary components.
-    :param h: help; 
+Conventions:
+  * (sx, sy, sz) - Spatial dimensions.
+  * wx           - Extended FOV in READ_DIM due to
+                   wave's voxel spreading.
+  * (nc, md)     - Number of channels and ESPIRiT's 
+                   extended-SENSE model operator
+                   dimensions (or # of maps).
+Expected dimensions:
+  * maps    - ( sx, sy, sz, nc, md)
+  * wave    - ( wx, sy, sz,  1,  1)
+  * kspace  - ( wx, sy, sz, nc,  1)
+  * output  - ( sx, sy, sz,  1, md)
+
+	:param maps array:
+	:param wave array:
+	:param kspace array:
+	:param r float: Soft threshold lambda for wavelet or locally low rank. 
+	:param b int: Block size for locally low rank. 
+	:param i int: Maximum number of iterations. 
+	:param s float: Step size for iterative method. 
+	:param c float: Continuation value for IST/FISTA. 
+	:param t float: Tolerance convergence condition for iterative method. 
+	:param e float: Maximum eigenvalue of normal operator if known. 
+	:param g bool: use GPU 
+	:param f bool: Reconstruct using FISTA instead of IST. 
+	:param H bool: Use hogwild in IST/FISTA. 
+	:param v bool: Split result to real and imaginary components. 
+	:param w bool: Use wavelet. 
+	:param l bool: Use locally low rank across the real and imaginary components. 
 
     """
-    help_string = "wave [-r f] [-b d] [-i d] [-s f] [-c f] [-t f] [-e f] [-g d] [-f] [-H] [-v] [-w] [-l] <maps> <wave> <kspace> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "wave [-r f] [-b d] [-i d] [-s f] [-c f] [-t f] [-e f] [-g] [-f] [-H] [-v] [-w] [-l] maps wave kspace output"
 
-def wavelet(flags, input_, a=None, ):
-    """
-    Perform wavelet transform.
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'wave '
+    if r:
+        cmd_str += f'-r {r} '
+    if b:
+        cmd_str += f'-b {b} '
+    if i:
+        cmd_str += f'-i {i} '
+    if s:
+        cmd_str += f'-s {s} '
+    if c:
+        cmd_str += f'-c {c} '
+    if t:
+        cmd_str += f'-t {t} '
+    if e:
+        cmd_str += f'-e {e} '
+    if g:
+        cmd_str += f'-g '
+    if f:
+        cmd_str += f'-f '
+    if H:
+        cmd_str += f'-H '
+    if v:
+        cmd_str += f'-v '
+    if w:
+        cmd_str += f'-w '
+    if l:
+        cmd_str += f'-l '
+    cmd_str += "maps wave kspace output "
+    cfl.writecfl('maps', maps)
+    cfl.writecfl('wave', wave)
+    cfl.writecfl('kspace', kspace)
 
-    :param flags:
-    :param input_:
-    :param a: adjoint; (specify dims)
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "wavelet [-a] flags [dims] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def wavepsf(D=None, art=None, c=None, x=None, y=None, r=None, a=None, t=None, g=None, s=None, n=None, ):
+    return cfl.readcfl('output')
+
+ 
+
+def wavepsf(c=None, x=None, y=None, r=None, a=None, t=None, g=None, s=None, n=None):
     """
     Generate a wave PSF in hybrid space.
+- Assumes the first dimension is the readout dimension.
+- Only generates a 2 dimensional PSF.
+- Use reshape and fmac to generate a 3D PSF.
 
-    :param D: PSF; Example:
-    :param art: fmac; wY wZ wYZ
-    :param c: Set; to use a cosine gradient wave
-    :param x: RO_dim; Number of readout points
-    :param y: PE_dim; Number of phase encode points
-    :param r: PE_res; Resolution of phase encode in cm
-    :param a: ADC_T; Readout duration in microseconds.
-    :param t: ADC_dt; ADC sampling rate in seconds
-    :param g: gMax; Maximum gradient amplitude in Gauss/cm
-    :param s: sMax; Maximum gradient slew rate in Gauss/cm/second
-    :param n: ncyc; Number of cycles in the gradient wave
-    :param h: help; 
+3D PSF Example:
+bart wavepsf		-x 768 -y 128 -r 0.1 -a 3000 -t 0.00001 -g 0.8 -s 17000 -n 6 wY
+bart wavepsf -c -x 768 -y 128 -r 0.1 -a 3000 -t 0.00001 -g 0.8 -s 17000 -n 6 wZ
+bart reshape 7 wZ 768 1 128 wZ wZ
+bart fmac wY wZ wYZ
+
+	:param c bool: Set to use a cosine gradient wave 
+	:param x int: Number of readout points 
+	:param y int: Number of phase encode points 
+	:param r float: Resolution of phase encode in cm 
+	:param a int: Readout duration in microseconds. 
+	:param t float: ADC sampling rate in seconds 
+	:param g float: Maximum gradient amplitude in Gauss/cm 
+	:param s float: Maximum gradient slew rate in Gauss/cm/second 
+	:param n int: Number of cycles in the gradient wave 
 
     """
-    help_string = "wavepsf [-c] [-x d] [-y d] [-r f] [-a d] [-t f] [-g f] [-s f] [-n d] <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "wavepsf [-c] [-x d] [-y d] [-r f] [-a d] [-t f] [-g f] [-s f] [-n d] output"
 
-def whiten(input_, ndata, o=None, c=None, n=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'wavepsf '
+    if c:
+        cmd_str += f'-c '
+    if x:
+        cmd_str += f'-x {x} '
+    if y:
+        cmd_str += f'-y {y} '
+    if r:
+        cmd_str += f'-r {r} '
+    if a:
+        cmd_str += f'-a {a} '
+    if t:
+        cmd_str += f'-t {t} '
+    if g:
+        cmd_str += f'-g {g} '
+    if s:
+        cmd_str += f'-s {s} '
+    if n:
+        cmd_str += f'-n {n} '
+    cmd_str += "output "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def whiten(input, ndata, o=None, c=None, n=None):
     """
     Apply multi-channel noise pre-whitening on <input> using noise data <ndata>.
+Optionally output whitening matrix and noise covariance matrix
 
-    :param input_:
-    :param ndata:
-    :param o: <optmat_in>; use external whitening matrix <optmat_in>
-    :param c: <covar_in>; use external noise covariance matrix <covar_in>
-    :param n: normalize; variance to 1 using noise data <ndata>
-    :param h: help; 
+	:param input array:
+	:param ndata array:
+	:param o array: use external whitening matrix <optmat_in> 
+	:param c array: use external noise covariance matrix <covar_in> 
+	:param n bool: normalize variance to 1 using noise data <ndata> 
 
     """
-    help_string = "whiten [-o <string>] [-c <string>] [-n] <input> <ndata> <output> [<optmat_out>] [<covar_out>]"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "whiten [-o file] [-c file] [-n] input ndata output [optmat_out] [covar_out]"
 
-def window(flags, input_, H=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'whiten '
+    if o:
+        cmd_str += f'-o {o} '
+    if c:
+        cmd_str += f'-c {c} '
+    if n:
+        cmd_str += f'-n '
+    cmd_str += "input ndata output "
+    cfl.writecfl('input', input)
+    cfl.writecfl('ndata', ndata)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def window(flags, input, H=None):
     """
     Apply Hamming (Hann) window to <input> along dimensions specified by flags
 
-    :param flags:
-    :param input_:
-    :param H: Hann; window
-    :param h: help; 
+	:param flags LONG:
+	:param input array:
+	:param H CLEAR: Hann window 
 
     """
-    help_string = "window [-H] flags <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "window [-H] flags input output"
 
-def wshfl(maps, wave, phi, reorder, table, b=None, i=None, j=None, s=None, F=None, O=None, g=None, K=None, H=None, v=None, ):
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'window '
+    if H:
+        cmd_str += f'-H {H} '
+    cmd_str += "flags input output "
+    cfl.writecfl('flags', flags)
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def wshfl(maps, wave, phi, reorder, table, R=None, b=None, i=None, j=None, s=None, e=None, F=None, O=None, t=None, g=None, K=None, H=None, v=None):
     """
     Perform a wave-shuffling reconstruction.
 
-    :param maps:
-    :param wave:
-    :param phi:
-    :param reorder:
-    :param table:
-    :param R<T>:A:B:C: Generalized; regularization options. (-Rh for help)
-    :param b: blkdim; Block size for locally low rank.
-    :param i: mxiter; Maximum number of iterations.
-    :param j: cgiter; Maximum number of CG iterations in ADMM.
-    :param s: admrho; ADMM Rho value.
-    :param F: frwrd; Go from shfl-coeffs to data-table. Pass in coeffs path.
-    :param O: initl; Initialize reconstruction with guess.
-    :param g: gpunm; GPU device number.
-    :param K: Go; from data-table to shuffling basis k-space.
-    :param H: Use; hogwild.
-    :param v: Split; coefficients to real and imaginary components.
-    :param h: help; 
+Conventions:
+  * (sx, sy, sz) - Spatial dimensions.
+  * wx           - Extended FOV in READ_DIM due to
+                   wave's voxel spreading.
+  * (nc, md)     - Number of channels and ESPIRiT's 
+                   extended-SENSE model operator
+                   dimensions (or # of maps).
+  * (tf, tk)     - Turbo-factor and the rank
+                   of the temporal basis used in
+                   shuffling.
+  * ntr          - Number of TRs, or the number of
+                   (ky, kz) points acquired of one
+                   echo image.
+  * n            - Total number of (ky, kz) points
+                   acquired. This is equal to the
+                   product of ntr and tf.
+
+Descriptions:
+  * reorder is an (n by 3) index matrix such that
+    [ky, kz, t] = reorder(i, :) represents the
+    (ky, kz) kspace position of the readout line
+    acquired at echo number (t), and 0 <= ky < sy,
+    0 <= kz < sz, 0 <= t < tf).
+  * table is a (wx by nc by n) matrix such that
+    table(:, :, k) represents the kth multichannel
+    kspace line.
+
+Expected dimensions:
+  * maps    - (   sx, sy, sz, nc, md,  1,  1)
+  * wave    - (   wx, sy, sz,  1,  1,  1,  1)
+  * phi     - (    1,  1,  1,  1,  1, tf, tk)
+  * output  - (   sx, sy, sz,  1, md,  1, tk)
+  * reorder - (    n,  3,  1,  1,  1,  1,  1)
+  * table   - (   wx, nc,  n,  1,  1,  1,  1)
+
+	:param maps array:
+	:param wave array:
+	:param phi array:
+	:param reorder array:
+	:param table array:
+	:param R SPECIAL: Generalized regularization options. (-Rh for help) 
+	:param b int: Block size for locally low rank. 
+	:param i int: Maximum number of iterations. 
+	:param j int: Maximum number of CG iterations in ADMM. 
+	:param s float: ADMM Rho value. 
+	:param e float: Eigenvalue to scale step size. (Optional.) 
+	:param F array: Go from shfl-coeffs to data-table. Pass in coeffs path. 
+	:param O array: Initialize reconstruction with guess. 
+	:param t float: Tolerance convergence condition for FISTA. 
+	:param g bool: Use GPU. 
+	:param K bool: Go from data-table to shuffling basis k-space. 
+	:param H bool: Use hogwild. 
+	:param v bool: Split coefficients to real and imaginary components. 
 
     """
-    help_string = "wshfl [-R ...] [-b d] [-i d] [-j d] [-s f] [-F <string>] [-O <string>] [-g d] [-K] [-H] [-v] <maps> <wave> <phi> <reorder> <table> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "wshfl [-R ...] [-b d] [-i d] [-j d] [-s f] [-e f] [-F file] [-O file] [-t f] [-g] [-K] [-H] [-v] maps wave phi reorder table output"
 
-def zeros(dims, dim_arr, name, ):
-    """
-    Create a zero-filled array with {dims} dimensions of size {dim1} to {dimn}.
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'wshfl '
+    if R:
+        cmd_str += f'-R {R} '
+    if b:
+        cmd_str += f'-b {b} '
+    if i:
+        cmd_str += f'-i {i} '
+    if j:
+        cmd_str += f'-j {j} '
+    if s:
+        cmd_str += f'-s {s} '
+    if e:
+        cmd_str += f'-e {e} '
+    if F:
+        cmd_str += f'-F {F} '
+    if O:
+        cmd_str += f'-O {O} '
+    if t:
+        cmd_str += f'-t {t} '
+    if g:
+        cmd_str += f'-g '
+    if K:
+        cmd_str += f'-K '
+    if H:
+        cmd_str += f'-H '
+    if v:
+        cmd_str += f'-v '
+    cmd_str += "maps wave phi reorder table output "
+    cfl.writecfl('maps', maps)
+    cfl.writecfl('wave', wave)
+    cfl.writecfl('phi', phi)
+    cfl.writecfl('reorder', reorder)
+    cfl.writecfl('table', table)
 
-    :param dims:
-    :param dim1:
-    :param ...:
-    :param dimn:
-    :param name:
-    :param h: help; 
+    print(cmd_str)
 
-    """
-    help_string = "zeros dims dim1 ... dimn name"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    os.system(cmd_str)
 
-def zexp(input_, i=None, ):
+    return cfl.readcfl('output')
+
+ 
+
+def zexp(input, i=None):
     """
     Point-wise complex exponential.
 
-    :param input_:
-    :param i: imaginary; 
-    :param h: help; 
+	:param input array:
+	:param i bool: imaginary 
 
     """
-    help_string = "zexp [-i] <input> <output>"
-    if 'output' in help_string:
-        print('output is here')
-    print(help_string)
+    usage_string = "zexp [-i] input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'zexp '
+    if i:
+        cmd_str += f'-i '
+    cmd_str += "input output "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 

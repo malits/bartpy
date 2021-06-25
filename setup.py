@@ -83,7 +83,7 @@ setup(
         "Operating System :: OS X",
         "Operating System :: Linux"
     ],
-    ext_modules = [simu, fft, linops, iter_module],
+#     ext_modules = [simu, fft, linops, iter_module],
     package_dir = {},
-    packages = ["bartpy", "bartpy.utils", "bartpy.simu", "bartpy.num", "bartpy.linops", "bartpy.tools"],
+    packages = ["bartpy", "bartpy.utils", "bartpy.tools"],
 )
