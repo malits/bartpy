@@ -8,3 +8,6 @@ bartpy.egg-info/
 demos/.ipynb_checkpoints/*
 
 *.so
+
+*.cfl
+*.hdr
