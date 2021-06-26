@@ -17,7 +17,9 @@ TYPE_MAP = {
     "SET": 'bool',
     "SELECT": 'bool',
     "INFILE": 'array',
-    "ULONG": 'long'
+    "ULONG": 'long',
+    "LONG": 'long',
+    "TUPLE": 'tuple',
 }
 
 def argparse(**kwargs):
@@ -104,23 +106,29 @@ def parse_pos_args(pos_str: str):
     arg_list = []
     # pos_str = re.sub(r"\{", r"(", pos_str)
     # pos_str = re.sub(r"\}", r")", pos_str)
+    parse_tuple = False
+    num_tuples = 0
     positional_args = pos_str.split("\n")[1:]
     for arg in positional_args:
         if not arg:
             continue
         arg = re.sub(r'[\{\}\"]', '', arg).strip()
         args = arg.split(',')
+        if len(args) < 3: # TODO: Better handle this case
+            continue
         required_str, arg_type, num_arg = [x.strip() for x in args[:3]]
         required = False
         if required_str == 'true':
             required = True
-        if arg_type == 'ARG_TUPLE':
-            print("TODO: Implement tuple handling")
-            return
-        elif arg_type == 'ARG':
+        if arg_type == 'ARG_TUPLE' and num_arg != '1':
+            print(args)
+            parse_tuple = True
+        elif 'ARG' in arg_type:
             opt_type, _, arg_name = [x.strip() for x in args[-3:]]
             opt_type = re.sub('OPT_', '', opt_type)
             type_str = opt_type if opt_type not in TYPE_MAP.keys() else TYPE_MAP[opt_type]
+            if arg_type == 'ARG_TUPLE':
+                type_str = 'tuple'
             is_input = True
             if opt_type == 'OUTFILE':
                 is_input = False
@@ -263,40 +271,53 @@ def create_template(tool: str):
 
     template += '\n'
 
-    # if len(kwarg_list) > 0:
-    #     kwarg_list_str = 'flags = ['
-    #     for kwarg in kwarg_list:
-    #         flag = kwarg['name']
-    #         kwarg_list_str += flag + ', '
-    #         template += '\n\t' + flag + ' = ' + flag + ' and None'
-    #     kwarg_list_str = kwarg_list_str.rstrip(', ') + ']\n'
-
-    #     template += '\n\t' + kwarg_list_str
-
-    # template += f"\n\n\tcmd_str = BART_PATH + '{tool} '\n"
-
     template += "\n    cmd_str = f'{BART_PATH} '"
     template += f"\n    cmd_str += '{tool} '"
+
+    arg_names = ""
+
+    template += f"\n    flag_str = ''\n"
+    template += f"\n    opt_args = f''\n"
 
     for kwarg in kwarg_list:
         if kwarg['opt']:
             flag = kwarg['flag']
             arg_name = kwarg['name']
-            template += f"\n    if " + arg_name + ":\n        "
+            template += f"\n    if " + arg_name + " != None:\n    "
             if kwarg['is_long_opt']:
-                template += f"cmd_str += f'--{flag} "
+                template += f"    flag_str += f'--{flag} "
             else:
-                template += f"cmd_str += f'-{flag} "
+                template += f"    flag_str += f'-{flag} "
             if kwarg['type'] != 'bool':
-                template += '{' + arg_name + '} '
-            template += "'"
+                template += '{' + arg_name + "} '\n"
+            else:
+                template += "'\n"
+        if not kwarg['opt']:
+            name = kwarg['name']
+            template += f"\n    if " + name + " != None:\n        "
+            if kwarg['type'] == 'tuple':
+                template += "opt_args += f\"{" + f"\' \'.join([str(arg) for arg in {name}])" + "} \"\n"
+            else:
+                template += "opt_args += {" + name + "}\n" 
+            
+    template += "    cmd_str += flag_str + opt_args + ' '"
 
-    arg_names = " ".join([arg['name'] for arg in arg_list])
-    template += f'\n    cmd_str += \"{arg_names} \"'
+    arg_names = ""
+    for arg in arg_list:
+        if arg['type'] == 'array' or arg['type'] == 'OUTFILE':
+            arg_names += arg['name'] + " "
+        elif arg['input'] and arg['type'] == 'tuple':
+            arg_names += "{" + f"' '.join([str(arg) for arg in {arg['name']}])" + "} "
+        else:
+            arg_names += "{" + arg['name'] + "} "
+
+    template += f'\n    cmd_str += f\"{arg_names} \"'
+    if 'bitmask' in tool:
+        print(kwarg_list)
 
     for arg in arg_list:
         name = arg['name']
-        if arg['input']:
+        if arg['input'] and arg['type'] == 'array':
             template += f"\n    cfl.writecfl(\'{name}\', {name})"
 
     template += "\n\n    print(cmd_str)\n\n    os.system(cmd_str)\n"

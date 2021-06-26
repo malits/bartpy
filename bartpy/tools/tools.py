@@ -18,10 +18,14 @@ def avg(bitmask, input, w=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'avg '
-    if w:
-        cmd_str += f'-w '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+
+    if w != None:
+        flag_str += f'-w '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -36,20 +40,27 @@ def bench(T=None, S=None, s=None):
 
 	:param T bool: varying number of threads 
 	:param S bool: varying problem size 
-	:param s LONG: select benchmarks 
+	:param s long: select benchmarks 
 
     """
     usage_string = "bench [-T] [-S] [-s d] [output]"
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'bench '
-    if T:
-        cmd_str += f'-T '
-    if S:
-        cmd_str += f'-S '
-    if s:
-        cmd_str += f'-s {s} '
-    cmd_str += " "
+    flag_str = ''
+
+    opt_args = f''
+
+    if T != None:
+        flag_str += f'-T '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if s != None:
+        flag_str += f'-s {s} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f" "
 
     print(cmd_str)
 
@@ -77,23 +88,35 @@ def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=No
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'bin '
-    if l:
-        cmd_str += f'-l {l} '
-    if o:
-        cmd_str += f'-o '
-    if R:
-        cmd_str += f'-R {R} '
-    if C:
-        cmd_str += f'-C {C} '
-    if r:
-        cmd_str += f'-r {r} '
-    if c:
-        cmd_str += f'-c {c} '
-    if a:
-        cmd_str += f'-a {a} '
-    if A:
-        cmd_str += f'-A {A} '
-    cmd_str += "label src dst "
+    flag_str = ''
+
+    opt_args = f''
+
+    if l != None:
+        flag_str += f'-l {l} '
+
+    if o != None:
+        flag_str += f'-o '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if C != None:
+        flag_str += f'-C {C} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if c != None:
+        flag_str += f'-c {c} '
+
+    if a != None:
+        flag_str += f'-a {a} '
+
+    if A != None:
+        flag_str += f'-A {A} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"label src dst  "
     cfl.writecfl('label', label)
     cfl.writecfl('src', src)
 
@@ -103,7 +126,33 @@ def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=No
 
     return cfl.readcfl('dst')
 
- 
+def bitmask(dim=None, b=None):
+    """
+    Convert between a bitmask and set of dimensions.
+
+	:param dim tuple: None 
+	:param b bool: dimensions from bitmask use with exaclty one argument 
+
+    """
+    usage_string = "bitmask [-b] [dim1 ... dimN ]"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'bitmask '
+    flag_str = ''
+
+    opt_args = f''
+
+    if dim != None:
+        opt_args += f"{' '.join([str(arg) for arg in dim])} "
+
+    if b != None:
+        flag_str += f'-b '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f" "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
 
 def cabs(input):
     """
@@ -116,7 +165,11 @@ def cabs(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'cabs '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -140,8 +193,11 @@ calibration region is automatically determined but limited by
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'caldir '
-    cmd_str += "cal_size input output "
-    cfl.writecfl('cal_size', cal_size)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{cal_size} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -166,17 +222,26 @@ def calmat(kspace, k=None, K=None, r=None, R=None, C=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'calmat '
-    if k:
-        cmd_str += f'-k {k} '
-    if K:
-        cmd_str += f'-K {K} '
-    if r:
-        cmd_str += f'-r {r} '
-    if R:
-        cmd_str += f'-R {R} '
-    if C:
-        cmd_str += f'-C '
-    cmd_str += "kspace calibration_matrix "
+    flag_str = ''
+
+    opt_args = f''
+
+    if k != None:
+        flag_str += f'-k {k} '
+
+    if K != None:
+        flag_str += f'-K {K} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if C != None:
+        flag_str += f'-C '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace calibration_matrix  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -196,7 +261,11 @@ def carg(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'carg '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -205,14 +274,36 @@ def carg(input):
 
     return cfl.readcfl('output')
 
- 
+def casorati(input):
+    """
+    Casorati matrix with kernel (kern1, ..., kernN) along dimensions (dim1, ..., dimN).
+
+	:param input array:
+
+    """
+    usage_string = "casorati dim1 kern1 ... dimN kernN input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'casorati '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
     """
     Performs coil compression.
 
 	:param kspace array:
-	:param p LONG: perform compression to N virtual channels 
+	:param p long: perform compression to N virtual channels 
 	:param M CLEAR: output compression matrix 
 	:param r VEC3: size of calibration region 
 	:param R VEC3: (size of calibration region) 
@@ -226,23 +317,35 @@ def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'cc '
-    if p:
-        cmd_str += f'-p {p} '
-    if M:
-        cmd_str += f'-M {M} '
-    if r:
-        cmd_str += f'-r {r} '
-    if R:
-        cmd_str += f'-R {R} '
-    if A:
-        cmd_str += f'-A '
-    if S:
-        cmd_str += f'-S '
-    if G:
-        cmd_str += f'-G '
-    if E:
-        cmd_str += f'-E '
-    cmd_str += "kspace coeff_proj_kspace "
+    flag_str = ''
+
+    opt_args = f''
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if M != None:
+        flag_str += f'-M {M} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if A != None:
+        flag_str += f'-A '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if G != None:
+        flag_str += f'-G '
+
+    if E != None:
+        flag_str += f'-E '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace coeff_proj_kspace  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -257,7 +360,7 @@ def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
 
 	:param kspace array:
 	:param cc_matrix array:
-	:param p LONG: perform compression to N virtual channels 
+	:param p long: perform compression to N virtual channels 
 	:param u CLEAR: apply inverse operation 
 	:param t CLEAR: don't apply FFT in readout 
 	:param S bool: type: SVD 
@@ -269,19 +372,29 @@ def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'ccapply '
-    if p:
-        cmd_str += f'-p {p} '
-    if u:
-        cmd_str += f'-u {u} '
-    if t:
-        cmd_str += f'-t {t} '
-    if S:
-        cmd_str += f'-S '
-    if G:
-        cmd_str += f'-G '
-    if E:
-        cmd_str += f'-E '
-    cmd_str += "kspace cc_matrix proj_kspace "
+    flag_str = ''
+
+    opt_args = f''
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if u != None:
+        flag_str += f'-u {u} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if G != None:
+        flag_str += f'-G '
+
+    if E != None:
+        flag_str += f'-E '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace cc_matrix proj_kspace  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('cc_matrix', cc_matrix)
 
@@ -304,10 +417,14 @@ def cdf97(bitmask, input, i=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'cdf97 '
-    if i:
-        cmd_str += f'-i '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+
+    if i != None:
+        flag_str += f'-i '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -329,9 +446,11 @@ def circshift(dim, shift, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'circshift '
-    cmd_str += "dim shift input output "
-    cfl.writecfl('dim', dim)
-    cfl.writecfl('shift', shift)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dim} {shift} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -351,7 +470,11 @@ def conj(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'conj '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -373,8 +496,11 @@ def conv(bitmask, input, kernel):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'conv '
-    cmd_str += "bitmask input kernel output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input kernel output  "
     cfl.writecfl('input', input)
     cfl.writecfl('kernel', kernel)
 
@@ -397,11 +523,17 @@ def conway(input, P=None, n=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'conway '
-    if P:
-        cmd_str += f'-P '
-    if n:
-        cmd_str += f'-n {n} '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if P != None:
+        flag_str += f'-P '
+
+    if n != None:
+        flag_str += f'-n {n} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -410,7 +542,28 @@ def conway(input, P=None, n=None):
 
     return cfl.readcfl('output')
 
- 
+def copy(input, output):
+    """
+    Copy an array (to a given position in the output file - which then must exist).
+
+	:param input array:
+	:param output INOUTFILE:
+
+    """
+    usage_string = "copy [dim1 pos1 ... dimN posN ] input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'copy '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input {output}  "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
 
 def cpyphs(input):
     """
@@ -423,7 +576,11 @@ def cpyphs(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'cpyphs '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -443,7 +600,11 @@ def creal(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'creal '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -465,9 +626,11 @@ def crop(dimension, size, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'crop '
-    cmd_str += "dimension size input output "
-    cfl.writecfl('dimension', dimension)
-    cfl.writecfl('size', size)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dimension} {size} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -482,17 +645,18 @@ def delta(dims, flags, size):
 
 	:param dims int:
 	:param flags int:
-	:param size LONG:
+	:param size long:
 
     """
     usage_string = "delta dims flags size out"
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'delta '
-    cmd_str += "dims flags size out "
-    cfl.writecfl('dims', dims)
-    cfl.writecfl('flags', flags)
-    cfl.writecfl('size', size)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dims} {flags} {size} out  "
 
     print(cmd_str)
 
@@ -534,51 +698,77 @@ Optionally outputs the eigenvalue maps.
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'ecalib '
-    if t:
-        cmd_str += f'-t {t} '
-    if c:
-        cmd_str += f'-c {c} '
-    if k:
-        cmd_str += f'-k {k} '
-    if K:
-        cmd_str += f'-K {K} '
-    if r:
-        cmd_str += f'-r {r} '
-    if R:
-        cmd_str += f'-R {R} '
-    if m:
-        cmd_str += f'-m {m} '
-    if S:
-        cmd_str += f'-S '
-    if W:
-        cmd_str += f'-W '
-    if I:
-        cmd_str += f'-I '
-    if _1:
-        cmd_str += f'-1 '
-    if P:
-        cmd_str += f'-P {P} '
-    if O:
-        cmd_str += f'-O {O} '
-    if b:
-        cmd_str += f'-b {b} '
-    if V:
-        cmd_str += f'-V '
-    if C:
-        cmd_str += f'-C '
-    if g:
-        cmd_str += f'-g '
-    if p:
-        cmd_str += f'-p {p} '
-    if n:
-        cmd_str += f'-n {n} '
-    if v:
-        cmd_str += f'-v {v} '
-    if a:
-        cmd_str += f'-a '
-    if d:
-        cmd_str += f'-d {d} '
-    cmd_str += "kspace sensitivities "
+    flag_str = ''
+
+    opt_args = f''
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if c != None:
+        flag_str += f'-c {c} '
+
+    if k != None:
+        flag_str += f'-k {k} '
+
+    if K != None:
+        flag_str += f'-K {K} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if W != None:
+        flag_str += f'-W '
+
+    if I != None:
+        flag_str += f'-I '
+
+    if _1 != None:
+        flag_str += f'-1 '
+
+    if P != None:
+        flag_str += f'-P {P} '
+
+    if O != None:
+        flag_str += f'-O {O} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if V != None:
+        flag_str += f'-V '
+
+    if C != None:
+        flag_str += f'-C '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if v != None:
+        flag_str += f'-v {v} '
+
+    if a != None:
+        flag_str += f'-a '
+
+    if d != None:
+        flag_str += f'-d {d} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace sensitivities  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -592,12 +782,12 @@ def ecaltwo(x, y, z, input, c=None, m=None, S=None, O=None, g=None):
     Second part of ESPIRiT calibration.
 Optionally outputs the eigenvalue maps.
 
-	:param x LONG:
-	:param y LONG:
-	:param z LONG:
+	:param x long:
+	:param y long:
+	:param z long:
 	:param input array:
 	:param c float: Crop the sensitivities if the eigenvalue is smaller than crop_value. 
-	:param m LONG: Number of maps to compute. 
+	:param m long: Number of maps to compute. 
 	:param S bool: Create maps with smooth transitions (Soft-SENSE). 
 	:param O CLEAR: () 
 	:param g bool: () 
@@ -607,20 +797,26 @@ Optionally outputs the eigenvalue maps.
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'ecaltwo '
-    if c:
-        cmd_str += f'-c {c} '
-    if m:
-        cmd_str += f'-m {m} '
-    if S:
-        cmd_str += f'-S '
-    if O:
-        cmd_str += f'-O {O} '
-    if g:
-        cmd_str += f'-g '
-    cmd_str += "x y z input sensitivities "
-    cfl.writecfl('x', x)
-    cfl.writecfl('y', y)
-    cfl.writecfl('z', z)
+    flag_str = ''
+
+    opt_args = f''
+
+    if c != None:
+        flag_str += f'-c {c} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if O != None:
+        flag_str += f'-O {O} '
+
+    if g != None:
+        flag_str += f'-g '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{x} {y} {z} input sensitivities  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -646,51 +842,72 @@ def epg(C=None, M=None, H=None, F=None, S=None, B=None, _1=None, _2=None, b=None
 	:param r float: repetition time [units of time] 
 	:param e float: echo time [units of time] 
 	:param f float: flip angle [degrees] 
-	:param s LONG: spoiling (0: ideal 1: conventional RF 2: random RF) 
-	:param n LONG: number of pulses 
-	:param u LONG: unknowns as bitmask (0: T1 1: T2 2: B1 3: off-res) 
-	:param v LONG: verbosity level 
+	:param s long: spoiling (0: ideal 1: conventional RF 2: random RF) 
+	:param n long: number of pulses 
+	:param u long: unknowns as bitmask (0: T1 1: T2 2: B1 3: off-res) 
+	:param v long: verbosity level 
 
     """
     usage_string = "pg [-C] [-M] [-H] [-F] [-S] [-B] [-1 f] [-2 f] [-b f] [-o f] [-r f] [-e f] [-f f] [-s d] [-n d] [-u d] [-v d] signal intensity [configuration states] [(rel.) signal derivatives] [configuration derivatives]"
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'epg '
-    if C:
-        cmd_str += f'-C '
-    if M:
-        cmd_str += f'-M '
-    if H:
-        cmd_str += f'-H '
-    if F:
-        cmd_str += f'-F '
-    if S:
-        cmd_str += f'-S '
-    if B:
-        cmd_str += f'-B '
-    if _1:
-        cmd_str += f'-1 {_1} '
-    if _2:
-        cmd_str += f'-2 {_2} '
-    if b:
-        cmd_str += f'-b {b} '
-    if o:
-        cmd_str += f'-o {o} '
-    if r:
-        cmd_str += f'-r {r} '
-    if e:
-        cmd_str += f'-e {e} '
-    if f:
-        cmd_str += f'-f {f} '
-    if s:
-        cmd_str += f'-s {s} '
-    if n:
-        cmd_str += f'-n {n} '
-    if u:
-        cmd_str += f'-u {u} '
-    if v:
-        cmd_str += f'-v {v} '
-    cmd_str += "signal_intensity "
+    flag_str = ''
+
+    opt_args = f''
+
+    if C != None:
+        flag_str += f'-C '
+
+    if M != None:
+        flag_str += f'-M '
+
+    if H != None:
+        flag_str += f'-H '
+
+    if F != None:
+        flag_str += f'-F '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if B != None:
+        flag_str += f'-B '
+
+    if _1 != None:
+        flag_str += f'-1 {_1} '
+
+    if _2 != None:
+        flag_str += f'-2 {_2} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if o != None:
+        flag_str += f'-o {o} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if e != None:
+        flag_str += f'-e {e} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if u != None:
+        flag_str += f'-u {u} '
+
+    if v != None:
+        flag_str += f'-v {v} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"signal_intensity  "
 
     print(cmd_str)
 
@@ -714,15 +931,23 @@ def estdelay(trajectory, data, R=None, p=None, n=None, r=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'estdelay '
-    if R:
-        cmd_str += f'-R '
-    if p:
-        cmd_str += f'-p {p} '
-    if n:
-        cmd_str += f'-n {n} '
-    if r:
-        cmd_str += f'-r {r} '
-    cmd_str += "trajectory data "
+    flag_str = ''
+
+    opt_args = f''
+
+    if R != None:
+        flag_str += f'-R '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"trajectory data  "
     cfl.writecfl('trajectory', trajectory)
     cfl.writecfl('data', data)
 
@@ -744,7 +969,11 @@ Assume trajectory scaled to -DIM/2 to DIM/2 (ie dk=1/FOV=1)
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'estdims '
-    cmd_str += "traj "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"traj  "
     cfl.writecfl('traj', traj)
 
     print(cmd_str)
@@ -764,8 +993,11 @@ def estshift(flags, arg1, arg2):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'estshift '
-    cmd_str += "flags arg1 arg2 "
-    cfl.writecfl('flags', flags)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{flags} arg1 arg2  "
     cfl.writecfl('arg1', arg1)
     cfl.writecfl('arg2', arg2)
 
@@ -788,22 +1020,52 @@ def estvar(kspace, k=None, K=None, r=None, R=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'estvar '
-    if k:
-        cmd_str += f'-k {k} '
-    if K:
-        cmd_str += f'-K {K} '
-    if r:
-        cmd_str += f'-r {r} '
-    if R:
-        cmd_str += f'-R {R} '
-    cmd_str += "kspace "
+    flag_str = ''
+
+    opt_args = f''
+
+    if k != None:
+        flag_str += f'-k {k} '
+
+    if K != None:
+        flag_str += f'-K {K} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
 
     os.system(cmd_str)
 
- 
+def extract(input):
+    """
+    Extracts a sub-array along dims from index start to (not including) end.
+
+	:param input array:
+
+    """
+    usage_string = "xtract dim1 start1 end1 ... dimN startN endN input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'extract '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def fakeksp(image, kspace, sens, output, r=None):
     """
@@ -820,9 +1082,14 @@ def fakeksp(image, kspace, sens, output, r=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'fakeksp '
-    if r:
-        cmd_str += f'-r '
-    cmd_str += "image kspace sens output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if r != None:
+        flag_str += f'-r '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"image kspace sens output  "
     cfl.writecfl('image', image)
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sens', sens)
@@ -847,14 +1114,20 @@ def fft(bitmask, input, u=None, i=None, n=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'fft '
-    if u:
-        cmd_str += f'-u '
-    if i:
-        cmd_str += f'-i '
-    if n:
-        cmd_str += f'-n {n} '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+
+    if u != None:
+        flag_str += f'-u '
+
+    if i != None:
+        flag_str += f'-i '
+
+    if n != None:
+        flag_str += f'-n {n} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -877,12 +1150,17 @@ def fftmod(bitmask, input, b=None, i=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'fftmod '
-    if b:
-        cmd_str += f'-b '
-    if i:
-        cmd_str += f'-i '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+
+    if b != None:
+        flag_str += f'-b '
+
+    if i != None:
+        flag_str += f'-i '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -905,10 +1183,11 @@ def fftrot(dim1, dim2, theta, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'fftrot '
-    cmd_str += "dim1 dim2 theta input output "
-    cfl.writecfl('dim1', dim1)
-    cfl.writecfl('dim2', dim2)
-    cfl.writecfl('theta', theta)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dim1} {dim2} {theta} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -930,10 +1209,14 @@ def fftshift(bitmask, input, b=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'fftshift '
-    if b:
-        cmd_str += f'-b '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+
+    if b != None:
+        flag_str += f'-b '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -955,11 +1238,17 @@ def filter(input, m=None, l=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'filter '
-    if m:
-        cmd_str += f'-m {m} '
-    if l:
-        cmd_str += f'-l {l} '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if l != None:
+        flag_str += f'-l {l} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -979,7 +1268,11 @@ def flatten(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'flatten '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1000,8 +1293,11 @@ def flip(bitmask, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'flip '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1019,20 +1315,30 @@ If <input2> is not specified, assume all-ones.
 	:param input2 array: None 
 	:param A CLEAR: add to existing output (instead of overwriting) 
 	:param C bool: conjugate input2 
-	:param s LONG: squash dimensions selected by bitmask b 
+	:param s long: squash dimensions selected by bitmask b 
 
     """
     usage_string = "fmac [-A] [-C] [-s d] input1 [input2] output"
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'fmac '
-    if A:
-        cmd_str += f'-A {A} '
-    if C:
-        cmd_str += f'-C '
-    if s:
-        cmd_str += f'-s {s} '
-    cmd_str += "input1 output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if input2 != None:
+        opt_args += {input2}
+
+    if A != None:
+        flag_str += f'-A {A} '
+
+    if C != None:
+        flag_str += f'-C '
+
+    if s != None:
+        flag_str += f'-s {s} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input1 output  "
     cfl.writecfl('input1', input1)
 
     print(cmd_str)
@@ -1059,19 +1365,26 @@ def homodyne(dim, fraction, input, r=None, I=None, C=None, P=None, n=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'homodyne '
-    if r:
-        cmd_str += f'-r {r} '
-    if I:
-        cmd_str += f'-I '
-    if C:
-        cmd_str += f'-C '
-    if P:
-        cmd_str += f'-P {P} '
-    if n:
-        cmd_str += f'-n {n} '
-    cmd_str += "dim fraction input output "
-    cfl.writecfl('dim', dim)
-    cfl.writecfl('fraction', fraction)
+    flag_str = ''
+
+    opt_args = f''
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if I != None:
+        flag_str += f'-I '
+
+    if C != None:
+        flag_str += f'-C '
+
+    if P != None:
+        flag_str += f'-P {P} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dim} {fraction} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1092,9 +1405,11 @@ def index(dim, size):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'index '
-    cmd_str += "dim size name "
-    cfl.writecfl('dim', dim)
-    cfl.writecfl('size', size)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dim} {size} name  "
 
     print(cmd_str)
 
@@ -1113,7 +1428,11 @@ def invert(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'invert '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1137,8 +1456,11 @@ with l2-regularization.
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'itsense '
-    cmd_str += "alpha sensitivities kspace pattern output "
-    cfl.writecfl('alpha', alpha)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{alpha} sensitivities kspace pattern output  "
     cfl.writecfl('sensitivities', sensitivities)
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('pattern', pattern)
@@ -1149,7 +1471,34 @@ with l2-regularization.
 
     return cfl.readcfl('output')
 
- 
+def join(dimension, input, output, a=None):
+    """
+    Join input files along {dimensions}. All other dimensions must have the same size.
+	 Example 1: join 0 slice_001 slice_002 slice_003 full_data
+	 Example 2: join 0 `seq -f "slice_%%03g" 0 255` full_data
+
+	:param dimension int:
+	:param input tuple:
+	:param output INOUTFILE:
+	:param a bool: append - only works for cfl files! 
+
+    """
+    usage_string = "join [-a] dimension input1 ... inputN output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'join '
+    flag_str = ''
+
+    opt_args = f''
+
+    if a != None:
+        flag_str += f'-a '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dimension} {' '.join([str(arg) for arg in input])} {output}  "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
 
 def looklocker(input, t=None, D=None):
     """
@@ -1164,11 +1513,17 @@ def looklocker(input, t=None, D=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'looklocker '
-    if t:
-        cmd_str += f'-t {t} '
-    if D:
-        cmd_str += f'-D {D} '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if D != None:
+        flag_str += f'-D {D} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1184,13 +1539,13 @@ def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=No
 	:param input array:
 	:param d bool: perform decomposition instead ie fully sampled 
 	:param i int: maximum iterations. 
-	:param m LONG: which dimensions are reshaped to matrix columns. 
-	:param f LONG: which dimensions to perform multi-scale partition. 
+	:param m long: which dimensions are reshaped to matrix columns. 
+	:param f long: which dimensions to perform multi-scale partition. 
 	:param j int: block size scaling from one scale to the next one. 
-	:param k LONG: smallest block size 
+	:param k long: smallest block size 
 	:param N bool: add noise scale to account for Gaussian noise. 
 	:param s bool: perform low rank + sparse matrix completion. 
-	:param l LONG: perform locally low rank soft thresholding with specified block size. 
+	:param l long: perform locally low rank soft thresholding with specified block size. 
 	:param u bool: () 
 	:param v bool: () 
 	:param H bool: (hogwild) 
@@ -1203,37 +1558,56 @@ def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=No
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'lrmatrix '
-    if d:
-        cmd_str += f'-d '
-    if i:
-        cmd_str += f'-i {i} '
-    if m:
-        cmd_str += f'-m {m} '
-    if f:
-        cmd_str += f'-f {f} '
-    if j:
-        cmd_str += f'-j {j} '
-    if k:
-        cmd_str += f'-k {k} '
-    if N:
-        cmd_str += f'-N '
-    if s:
-        cmd_str += f'-s '
-    if l:
-        cmd_str += f'-l {l} '
-    if u:
-        cmd_str += f'-u '
-    if v:
-        cmd_str += f'-v '
-    if H:
-        cmd_str += f'-H '
-    if p:
-        cmd_str += f'-p {p} '
-    if n:
-        cmd_str += f'-n {n} '
-    if g:
-        cmd_str += f'-g '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if d != None:
+        flag_str += f'-d '
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if j != None:
+        flag_str += f'-j {j} '
+
+    if k != None:
+        flag_str += f'-k {k} '
+
+    if N != None:
+        flag_str += f'-N '
+
+    if s != None:
+        flag_str += f'-s '
+
+    if l != None:
+        flag_str += f'-l {l} '
+
+    if u != None:
+        flag_str += f'-u '
+
+    if v != None:
+        flag_str += f'-v '
+
+    if H != None:
+        flag_str += f'-H '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if g != None:
+        flag_str += f'-g '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1258,19 +1632,29 @@ def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'mandelbrot '
-    if s:
-        cmd_str += f'-s {s} '
-    if n:
-        cmd_str += f'-n {n} '
-    if t:
-        cmd_str += f'-t {t} '
-    if z:
-        cmd_str += f'-z {z} '
-    if r:
-        cmd_str += f'-r {r} '
-    if i:
-        cmd_str += f'-i {i} '
-    cmd_str += "output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if z != None:
+        flag_str += f'-z {z} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if i != None:
+        flag_str += f'-i {i} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"output  "
 
     print(cmd_str)
 
@@ -1292,12 +1676,17 @@ def mip(bitmask, input, m=None, a=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'mip '
-    if m:
-        cmd_str += f'-m '
-    if a:
-        cmd_str += f'-a '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+
+    if m != None:
+        flag_str += f'-m '
+
+    if a != None:
+        flag_str += f'-a '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1352,75 +1741,113 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'moba '
-    if r:
-        cmd_str += f'-r {r} '
-    if L:
-        cmd_str += f'-L '
-    if F:
-        cmd_str += f'-F '
-    if G:
-        cmd_str += f'-G '
-    if m:
-        cmd_str += f'-m {m} '
-    if l:
-        cmd_str += f'-l {l} '
-    if i:
-        cmd_str += f'-i {i} '
-    if R:
-        cmd_str += f'-R {R} '
-    if T:
-        cmd_str += f'-T {T} '
-    if j:
-        cmd_str += f'-j {j} '
-    if u:
-        cmd_str += f'-u {u} '
-    if C:
-        cmd_str += f'-C {C} '
-    if s:
-        cmd_str += f'-s {s} '
-    if B:
-        cmd_str += f'-B {B} '
-    if b:
-        cmd_str += f'-b {b} '
-    if d:
-        cmd_str += f'-d {d} '
-    if N:
-        cmd_str += f'-N '
-    if f:
-        cmd_str += f'-f {f} '
-    if p:
-        cmd_str += f'-p {p} '
-    if J:
-        cmd_str += f'-J '
-    if M:
-        cmd_str += f'-M '
-    if O:
-        cmd_str += f'-O '
-    if g:
-        cmd_str += f'-g '
-    if I:
-        cmd_str += f'-I {I} '
-    if t:
-        cmd_str += f'-t {t} '
-    if o:
-        cmd_str += f'-o {o} '
-    if k:
-        cmd_str += f'-k '
-    if kfilter_1:
-        cmd_str += f'--kfilter-1 '
-    if kfilter_2:
-        cmd_str += f'--kfilter-2 '
-    if n:
-        cmd_str += f'-n '
-    if no_alpha_min_exp_decay:
-        cmd_str += f'--no_alpha_min_exp_decay {no_alpha_min_exp_decay} '
-    if sobolev_a:
-        cmd_str += f'--sobolev_a {sobolev_a} '
-    if sobolev_b:
-        cmd_str += f'--sobolev_b {sobolev_b} '
-    if fat_spec_0:
-        cmd_str += f'--fat_spec_0 '
-    cmd_str += "kspace TI_TE output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if L != None:
+        flag_str += f'-L '
+
+    if F != None:
+        flag_str += f'-F '
+
+    if G != None:
+        flag_str += f'-G '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if l != None:
+        flag_str += f'-l {l} '
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if T != None:
+        flag_str += f'-T {T} '
+
+    if j != None:
+        flag_str += f'-j {j} '
+
+    if u != None:
+        flag_str += f'-u {u} '
+
+    if C != None:
+        flag_str += f'-C {C} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if B != None:
+        flag_str += f'-B {B} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if N != None:
+        flag_str += f'-N '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if J != None:
+        flag_str += f'-J '
+
+    if M != None:
+        flag_str += f'-M '
+
+    if O != None:
+        flag_str += f'-O '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if I != None:
+        flag_str += f'-I {I} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if o != None:
+        flag_str += f'-o {o} '
+
+    if k != None:
+        flag_str += f'-k '
+
+    if kfilter_1 != None:
+        flag_str += f'--kfilter-1 '
+
+    if kfilter_2 != None:
+        flag_str += f'--kfilter-2 '
+
+    if n != None:
+        flag_str += f'-n '
+
+    if no_alpha_min_exp_decay != None:
+        flag_str += f'--no_alpha_min_exp_decay {no_alpha_min_exp_decay} '
+
+    if sobolev_a != None:
+        flag_str += f'--sobolev_a {sobolev_a} '
+
+    if sobolev_b != None:
+        flag_str += f'--sobolev_b {sobolev_b} '
+
+    if fat_spec_0 != None:
+        flag_str += f'--fat_spec_0 '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace TI_TE output  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('TI_TE', TI_TE)
 
@@ -1447,17 +1874,26 @@ def mobafit(TE, echo_images, G=None, m=None, i=None, p=None, g=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'mobafit '
-    if G:
-        cmd_str += f'-G '
-    if m:
-        cmd_str += f'-m {m} '
-    if i:
-        cmd_str += f'-i {i} '
-    if p:
-        cmd_str += f'-p {p} '
-    if g:
-        cmd_str += f'-g '
-    cmd_str += "TE echo_images "
+    flag_str = ''
+
+    opt_args = f''
+
+    if G != None:
+        flag_str += f'-G '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if g != None:
+        flag_str += f'-g '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"TE echo_images  "
     cfl.writecfl('TE', TE)
     cfl.writecfl('echo_images', echo_images)
 
@@ -1501,49 +1937,74 @@ the sensitivities.
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'nlinv '
-    if i:
-        cmd_str += f'-i {i} '
-    if R:
-        cmd_str += f'-R {R} '
-    if M:
-        cmd_str += f'-M {M} '
-    if d:
-        cmd_str += f'-d {d} '
-    if c:
-        cmd_str += f'-c '
-    if N:
-        cmd_str += f'-N {N} '
-    if m:
-        cmd_str += f'-m {m} '
-    if U:
-        cmd_str += f'-U {U} '
-    if f:
-        cmd_str += f'-f {f} '
-    if p:
-        cmd_str += f'-p {p} '
-    if t:
-        cmd_str += f'-t {t} '
-    if I:
-        cmd_str += f'-I {I} '
-    if g:
-        cmd_str += f'-g '
-    if S:
-        cmd_str += f'-S '
-    if s:
-        cmd_str += f'-s {s} '
-    if a:
-        cmd_str += f'-a {a} '
-    if b:
-        cmd_str += f'-b {b} '
-    if P:
-        cmd_str += f'-P '
-    if n:
-        cmd_str += f'-n '
-    if w:
-        cmd_str += f'-w {w} '
-    if lowmem:
-        cmd_str += f'--lowmem '
-    cmd_str += "kspace output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if M != None:
+        flag_str += f'-M {M} '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if c != None:
+        flag_str += f'-c '
+
+    if N != None:
+        flag_str += f'-N {N} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if U != None:
+        flag_str += f'-U {U} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if I != None:
+        flag_str += f'-I {I} '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if a != None:
+        flag_str += f'-a {a} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if P != None:
+        flag_str += f'-P '
+
+    if n != None:
+        flag_str += f'-n '
+
+    if w != None:
+        flag_str += f'-w {w} '
+
+    if lowmem != None:
+        flag_str += f'--lowmem '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace output  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -1567,15 +2028,23 @@ def noise(input, s=None, S=None, r=None, n=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'noise '
-    if s:
-        cmd_str += f'-s {s} '
-    if S:
-        cmd_str += f'-S {S} '
-    if r:
-        cmd_str += f'-r '
-    if n:
-        cmd_str += f'-n {n} '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if S != None:
+        flag_str += f'-S {S} '
+
+    if r != None:
+        flag_str += f'-r '
+
+    if n != None:
+        flag_str += f'-n {n} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1597,10 +2066,14 @@ def normalize(flags, input, b=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'normalize '
-    if b:
-        cmd_str += f'-b '
-    cmd_str += "flags input output "
-    cfl.writecfl('flags', flags)
+    flag_str = ''
+
+    opt_args = f''
+
+    if b != None:
+        flag_str += f'-b '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{flags} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1624,11 +2097,17 @@ i.e. norm(input - ref) / norm(ref)
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'nrmse '
-    if t:
-        cmd_str += f'-t {t} '
-    if s:
-        cmd_str += f'-s '
-    cmd_str += "reference input "
+    flag_str = ''
+
+    opt_args = f''
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if s != None:
+        flag_str += f'-s '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"reference input  "
     cfl.writecfl('reference', reference)
     cfl.writecfl('input', input)
 
@@ -1662,35 +2141,53 @@ def nufft(traj, input, a=None, i=None, d=None, D=None, t=None, r=None, c=None, l
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'nufft '
-    if a:
-        cmd_str += f'-a '
-    if i:
-        cmd_str += f'-i '
-    if d:
-        cmd_str += f'-d {d} '
-    if D:
-        cmd_str += f'-D {D} '
-    if t:
-        cmd_str += f'-t '
-    if r:
-        cmd_str += f'-r {r} '
-    if c:
-        cmd_str += f'-c '
-    if l:
-        cmd_str += f'-l {l} '
-    if m:
-        cmd_str += f'-m {m} '
-    if P:
-        cmd_str += f'-P '
-    if s:
-        cmd_str += f'-s '
-    if g:
-        cmd_str += f'-g '
-    if _1:
-        cmd_str += f'-1 {_1} '
-    if lowmem:
-        cmd_str += f'--lowmem '
-    cmd_str += "traj input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if a != None:
+        flag_str += f'-a '
+
+    if i != None:
+        flag_str += f'-i '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if D != None:
+        flag_str += f'-D {D} '
+
+    if t != None:
+        flag_str += f'-t '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if c != None:
+        flag_str += f'-c '
+
+    if l != None:
+        flag_str += f'-l {l} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if P != None:
+        flag_str += f'-P '
+
+    if s != None:
+        flag_str += f'-s '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if _1 != None:
+        flag_str += f'-1 {_1} '
+
+    if lowmem != None:
+        flag_str += f'--lowmem '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"traj input output  "
     cfl.writecfl('traj', traj)
     cfl.writecfl('input', input)
 
@@ -1700,7 +2197,29 @@ def nufft(traj, input, a=None, i=None, d=None, D=None, t=None, r=None, c=None, l
 
     return cfl.readcfl('output')
 
- 
+def ones(dims, dim):
+    """
+    Create an array filled with ones with {dims} dimensions of size {dim1} to {dimn}.
+
+	:param dims long:
+	:param dim tuple:
+
+    """
+    usage_string = "ones dims dim1 ... dimN output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'ones '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dims} {' '.join([str(arg) for arg in dim])} output  "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def pattern(kspace, s=None):
     """
@@ -1714,9 +2233,14 @@ def pattern(kspace, s=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'pattern '
-    if s:
-        cmd_str += f'-s {s} '
-    cmd_str += "kspace pattern "
+    flag_str = ''
+
+    opt_args = f''
+
+    if s != None:
+        flag_str += f'-s {s} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace pattern  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -1751,39 +2275,59 @@ def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=No
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'phantom '
-    if s:
-        cmd_str += f'-s {s} '
-    if S:
-        cmd_str += f'-S {S} '
-    if k:
-        cmd_str += f'-k '
-    if t:
-        cmd_str += f'-t {t} '
-    if c:
-        cmd_str += f'-c '
-    if a:
-        cmd_str += f'-a '
-    if m:
-        cmd_str += f'-m '
-    if G:
-        cmd_str += f'-G '
-    if T:
-        cmd_str += f'-T '
-    if N:
-        cmd_str += f'-N {N} '
-    if B:
-        cmd_str += f'-B '
-    if x:
-        cmd_str += f'-x {x} '
-    if g:
-        cmd_str += f'-g {g} '
-    if _3:
-        cmd_str += f'-3 '
-    if b:
-        cmd_str += f'-b '
-    if r:
-        cmd_str += f'-r {r} '
-    cmd_str += "output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if S != None:
+        flag_str += f'-S {S} '
+
+    if k != None:
+        flag_str += f'-k '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if c != None:
+        flag_str += f'-c '
+
+    if a != None:
+        flag_str += f'-a '
+
+    if m != None:
+        flag_str += f'-m '
+
+    if G != None:
+        flag_str += f'-G '
+
+    if T != None:
+        flag_str += f'-T '
+
+    if N != None:
+        flag_str += f'-N {N} '
+
+    if B != None:
+        flag_str += f'-B '
+
+    if x != None:
+        flag_str += f'-x {x} '
+
+    if g != None:
+        flag_str += f'-g {g} '
+
+    if _3 != None:
+        flag_str += f'-3 '
+
+    if b != None:
+        flag_str += f'-b '
+
+    if r != None:
+        flag_str += f'-r {r} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"output  "
 
     print(cmd_str)
 
@@ -1841,83 +2385,125 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'pics '
-    if l:
-        cmd_str += f'-l {l} '
-    if r:
-        cmd_str += f'-r {r} '
-    if R:
-        cmd_str += f'-R {R} '
-    if c:
-        cmd_str += f'-c '
-    if s:
-        cmd_str += f'-s {s} '
-    if i:
-        cmd_str += f'-i {i} '
-    if t:
-        cmd_str += f'-t {t} '
-    if n:
-        cmd_str += f'-n {n} '
-    if N:
-        cmd_str += f'-N '
-    if g:
-        cmd_str += f'-g '
-    if G:
-        cmd_str += f'-G {G} '
-    if p:
-        cmd_str += f'-p {p} '
-    if I:
-        cmd_str += f'-I '
-    if b:
-        cmd_str += f'-b {b} '
-    if e:
-        cmd_str += f'-e '
-    if H:
-        cmd_str += f'-H '
-    if D:
-        cmd_str += f'-D '
-    if F:
-        cmd_str += f'-F '
-    if J:
-        cmd_str += f'-J '
-    if T:
-        cmd_str += f'-T {T} '
-    if W:
-        cmd_str += f'-W {W} '
-    if d:
-        cmd_str += f'-d {d} '
-    if O:
-        cmd_str += f'-O {O} '
-    if o:
-        cmd_str += f'-o {o} '
-    if u:
-        cmd_str += f'-u {u} '
-    if C:
-        cmd_str += f'-C {C} '
-    if q:
-        cmd_str += f'-q {q} '
-    if f:
-        cmd_str += f'-f {f} '
-    if m:
-        cmd_str += f'-m '
-    if w:
-        cmd_str += f'-w {w} '
-    if S:
-        cmd_str += f'-S '
-    if L:
-        cmd_str += f'-L {L} '
-    if K:
-        cmd_str += f'-K '
-    if B:
-        cmd_str += f'-B {B} '
-    if P:
-        cmd_str += f'-P {P} '
-    if a:
-        cmd_str += f'-a '
-    if M:
-        cmd_str += f'-M '
-    if lowmem:
-        cmd_str += f'--lowmem '
-    cmd_str += "kspace sensitivities output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if l != None:
+        flag_str += f'-l {l} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if c != None:
+        flag_str += f'-c '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if N != None:
+        flag_str += f'-N '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if G != None:
+        flag_str += f'-G {G} '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if I != None:
+        flag_str += f'-I '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if e != None:
+        flag_str += f'-e '
+
+    if H != None:
+        flag_str += f'-H '
+
+    if D != None:
+        flag_str += f'-D '
+
+    if F != None:
+        flag_str += f'-F '
+
+    if J != None:
+        flag_str += f'-J '
+
+    if T != None:
+        flag_str += f'-T {T} '
+
+    if W != None:
+        flag_str += f'-W {W} '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if O != None:
+        flag_str += f'-O {O} '
+
+    if o != None:
+        flag_str += f'-o {o} '
+
+    if u != None:
+        flag_str += f'-u {u} '
+
+    if C != None:
+        flag_str += f'-C {C} '
+
+    if q != None:
+        flag_str += f'-q {q} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if m != None:
+        flag_str += f'-m '
+
+    if w != None:
+        flag_str += f'-w {w} '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if L != None:
+        flag_str += f'-L {L} '
+
+    if K != None:
+        flag_str += f'-K '
+
+    if B != None:
+        flag_str += f'-B {B} '
+
+    if P != None:
+        flag_str += f'-P {P} '
+
+    if a != None:
+        flag_str += f'-a '
+
+    if M != None:
+        flag_str += f'-M '
+
+    if lowmem != None:
+        flag_str += f'--lowmem '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace sensitivities output  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sensitivities', sensitivities)
 
@@ -1945,19 +2531,29 @@ def pocsense(kspace, sensitivities, i=None, r=None, l=None, g=None, o=None, m=No
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'pocsense '
-    if i:
-        cmd_str += f'-i {i} '
-    if r:
-        cmd_str += f'-r {r} '
-    if l:
-        cmd_str += f'-l {l} '
-    if g:
-        cmd_str += f'-g '
-    if o:
-        cmd_str += f'-o {o} '
-    if m:
-        cmd_str += f'-m {m} '
-    cmd_str += "kspace sensitivities output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if l != None:
+        flag_str += f'-l {l} '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if o != None:
+        flag_str += f'-o {o} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace sensitivities output  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sensitivities', sensitivities)
 
@@ -1990,33 +2586,50 @@ def poisson(Y=None, Z=None, y=None, z=None, C=None, v=None, V=None, e=None, D=No
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'poisson '
-    if Y:
-        cmd_str += f'-Y {Y} '
-    if Z:
-        cmd_str += f'-Z {Z} '
-    if y:
-        cmd_str += f'-y {y} '
-    if z:
-        cmd_str += f'-z {z} '
-    if C:
-        cmd_str += f'-C {C} '
-    if v:
-        cmd_str += f'-v '
-    if V:
-        cmd_str += f'-V {V} '
-    if e:
-        cmd_str += f'-e '
-    if D:
-        cmd_str += f'-D {D} '
-    if T:
-        cmd_str += f'-T {T} '
-    if m:
-        cmd_str += f'-m {m} '
-    if R:
-        cmd_str += f'-R {R} '
-    if s:
-        cmd_str += f'-s {s} '
-    cmd_str += "output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if Y != None:
+        flag_str += f'-Y {Y} '
+
+    if Z != None:
+        flag_str += f'-Z {Z} '
+
+    if y != None:
+        flag_str += f'-y {y} '
+
+    if z != None:
+        flag_str += f'-z {z} '
+
+    if C != None:
+        flag_str += f'-C {C} '
+
+    if v != None:
+        flag_str += f'-v '
+
+    if V != None:
+        flag_str += f'-V {V} '
+
+    if e != None:
+        flag_str += f'-e '
+
+    if D != None:
+        flag_str += f'-D {D} '
+
+    if T != None:
+        flag_str += f'-T {T} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"output  "
 
     print(cmd_str)
 
@@ -2037,11 +2650,17 @@ def pol2mask(poly, X=None, Y=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'pol2mask '
-    if X:
-        cmd_str += f'-X {X} '
-    if Y:
-        cmd_str += f'-Y {Y} '
-    cmd_str += "poly output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if X != None:
+        flag_str += f'-X {X} '
+
+    if Y != None:
+        flag_str += f'-Y {Y} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"poly output  "
     cfl.writecfl('poly', poly)
 
     print(cmd_str)
@@ -2050,7 +2669,30 @@ def pol2mask(poly, X=None, Y=None):
 
     return cfl.readcfl('output')
 
- 
+def poly(L, N, a_):
+    """
+    Evaluate polynomial p(x) = a_1 + a_2 x + a_3 x^2 ... a_(N+1) x^N at x = {0, 1, ... , L - 1} where a_i are floats.
+
+	:param L int:
+	:param N int:
+	:param a_ tuple:
+
+    """
+    usage_string = "poly L N a_1 ... a_N output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'poly '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{L} {N} {' '.join([str(arg) for arg in a_])} output  "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def repmat(dimension, repetitions, input):
     """
@@ -2065,9 +2707,11 @@ def repmat(dimension, repetitions, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'repmat '
-    cmd_str += "dimension repetitions input output "
-    cfl.writecfl('dimension', dimension)
-    cfl.writecfl('repetitions', repetitions)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dimension} {repetitions} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2076,9 +2720,59 @@ def repmat(dimension, repetitions, input):
 
     return cfl.readcfl('output')
 
- 
+def reshape(flags, dim, input):
+    """
+    Reshape selected dimensions.
 
- 
+	:param flags long:
+	:param dim tuple:
+	:param input array:
+
+    """
+    usage_string = "reshape flags dim1 ... dimN input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'reshape '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{flags} {' '.join([str(arg) for arg in dim])} input output  "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
+
+def resize(input, c=None):
+    """
+    Resizes an array along dimensions to sizes by truncating or zero-padding.
+
+	:param input array:
+	:param c bool: center 
+
+    """
+    usage_string = "resize [-c] dim1 size1 ... dimN sizeN input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'resize '
+    flag_str = ''
+
+    opt_args = f''
+
+    if c != None:
+        flag_str += f'-c '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def rmfreq(traj, k, N=None):
     """
@@ -2093,9 +2787,14 @@ def rmfreq(traj, k, N=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'rmfreq '
-    if N:
-        cmd_str += f'-N {N} '
-    cmd_str += "traj k k_cor "
+    flag_str = ''
+
+    opt_args = f''
+
+    if N != None:
+        flag_str += f'-N {N} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"traj k k_cor  "
     cfl.writecfl('traj', traj)
     cfl.writecfl('k', k)
 
@@ -2118,9 +2817,11 @@ def rof(llambda, flags, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'rof '
-    cmd_str += "llambda flags input output "
-    cfl.writecfl('llambda', llambda)
-    cfl.writecfl('flags', flags)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{llambda} {flags} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2148,21 +2849,32 @@ def roistat(roi, input, b=None, C=None, S=None, M=None, D=None, E=None, V=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'roistat '
-    if b:
-        cmd_str += f'-b '
-    if C:
-        cmd_str += f'-C '
-    if S:
-        cmd_str += f'-S '
-    if M:
-        cmd_str += f'-M '
-    if D:
-        cmd_str += f'-D '
-    if E:
-        cmd_str += f'-E '
-    if V:
-        cmd_str += f'-V '
-    cmd_str += "roi input "
+    flag_str = ''
+
+    opt_args = f''
+
+    if b != None:
+        flag_str += f'-b '
+
+    if C != None:
+        flag_str += f'-C '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if M != None:
+        flag_str += f'-M '
+
+    if D != None:
+        flag_str += f'-D '
+
+    if E != None:
+        flag_str += f'-E '
+
+    if V != None:
+        flag_str += f'-V '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"roi input  "
     cfl.writecfl('roi', roi)
     cfl.writecfl('input', input)
 
@@ -2184,8 +2896,11 @@ def rss(bitmask, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'rss '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2229,51 +2944,77 @@ the sensitivities.
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'rtnlinv '
-    if i:
-        cmd_str += f'-i {i} '
-    if R:
-        cmd_str += f'-R {R} '
-    if M:
-        cmd_str += f'-M {M} '
-    if d:
-        cmd_str += f'-d {d} '
-    if c:
-        cmd_str += f'-c '
-    if N:
-        cmd_str += f'-N {N} '
-    if m:
-        cmd_str += f'-m {m} '
-    if U:
-        cmd_str += f'-U {U} '
-    if f:
-        cmd_str += f'-f {f} '
-    if p:
-        cmd_str += f'-p {p} '
-    if t:
-        cmd_str += f'-t {t} '
-    if I:
-        cmd_str += f'-I {I} '
-    if C:
-        cmd_str += f'-C {C} '
-    if g:
-        cmd_str += f'-g '
-    if S:
-        cmd_str += f'-S '
-    if a:
-        cmd_str += f'-a {a} '
-    if b:
-        cmd_str += f'-b {b} '
-    if T:
-        cmd_str += f'-T {T} '
-    if w:
-        cmd_str += f'-w {w} '
-    if x:
-        cmd_str += f'-x {x} '
-    if A:
-        cmd_str += f'-A '
-    if s:
-        cmd_str += f'-s '
-    cmd_str += "kspace output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if M != None:
+        flag_str += f'-M {M} '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if c != None:
+        flag_str += f'-c '
+
+    if N != None:
+        flag_str += f'-N {N} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if U != None:
+        flag_str += f'-U {U} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if I != None:
+        flag_str += f'-I {I} '
+
+    if C != None:
+        flag_str += f'-C {C} '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if S != None:
+        flag_str += f'-S '
+
+    if a != None:
+        flag_str += f'-a {a} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if T != None:
+        flag_str += f'-T {T} '
+
+    if w != None:
+        flag_str += f'-w {w} '
+
+    if x != None:
+        flag_str += f'-x {x} '
+
+    if A != None:
+        flag_str += f'-A '
+
+    if s != None:
+        flag_str += f'-s '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace output  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -2297,13 +3038,20 @@ data using low-rank matrix completion.
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'sake '
-    if i:
-        cmd_str += f'-i {i} '
-    if s:
-        cmd_str += f'-s {s} '
-    if o:
-        cmd_str += f'-o {o} '
-    cmd_str += "kspace output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if o != None:
+        flag_str += f'-o {o} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace output  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -2325,8 +3073,11 @@ def saxpy(scale, input1, input2):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'saxpy '
-    cmd_str += "scale input1 input2 output "
-    cfl.writecfl('scale', scale)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{scale} input1 input2 output  "
     cfl.writecfl('input1', input1)
     cfl.writecfl('input2', input2)
 
@@ -2348,8 +3099,11 @@ def scale(factor, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'scale '
-    cmd_str += "factor input output "
-    cfl.writecfl('factor', factor)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{factor} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2370,7 +3124,11 @@ def sdot(input1, input2):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'sdot '
-    cmd_str += "input1 input2 "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input1 input2  "
     cfl.writecfl('input1', input1)
     cfl.writecfl('input2', input2)
 
@@ -2393,15 +3151,23 @@ def show(input, m=None, d=None, s=None, f=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'show '
-    if m:
-        cmd_str += f'-m '
-    if d:
-        cmd_str += f'-d {d} '
-    if s:
-        cmd_str += f'-s {s} '
-    if f:
-        cmd_str += f'-f {f} '
-    cmd_str += "input "
+    flag_str = ''
+
+    opt_args = f''
+
+    if m != None:
+        flag_str += f'-m '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2428,51 +3194,73 @@ def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=
 	:param e float: echo time 
 	:param f float: flip ange 
 	:param t float: T1 relax period (second) for MOLLI 
-	:param n LONG: number of measurements 
-	:param b LONG: number of heart beats for MOLLI 
+	:param n long: number of measurements 
+	:param b long: number of heart beats for MOLLI 
 
     """
     usage_string = "ignal [-F] [-B] [-T] [-M] [-G] [--fat] [-I] [-s] [-0 f:f:f] [-1 f:f:f] [-2 f:f:f] [-3 f:f:f] [-r f] [-e f] [-f f] [-t f] [-n d] [-b d] basis-functions"
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'signal '
-    if F:
-        cmd_str += f'-F '
-    if B:
-        cmd_str += f'-B '
-    if T:
-        cmd_str += f'-T '
-    if M:
-        cmd_str += f'-M '
-    if G:
-        cmd_str += f'-G '
-    if fat:
-        cmd_str += f'--fat '
-    if I:
-        cmd_str += f'-I '
-    if s:
-        cmd_str += f'-s '
-    if _0:
-        cmd_str += f'-0 {_0} '
-    if _1:
-        cmd_str += f'-1 {_1} '
-    if _2:
-        cmd_str += f'-2 {_2} '
-    if _3:
-        cmd_str += f'-3 {_3} '
-    if r:
-        cmd_str += f'-r {r} '
-    if e:
-        cmd_str += f'-e {e} '
-    if f:
-        cmd_str += f'-f {f} '
-    if t:
-        cmd_str += f'-t {t} '
-    if n:
-        cmd_str += f'-n {n} '
-    if b:
-        cmd_str += f'-b {b} '
-    cmd_str += "basis_functions "
+    flag_str = ''
+
+    opt_args = f''
+
+    if F != None:
+        flag_str += f'-F '
+
+    if B != None:
+        flag_str += f'-B '
+
+    if T != None:
+        flag_str += f'-T '
+
+    if M != None:
+        flag_str += f'-M '
+
+    if G != None:
+        flag_str += f'-G '
+
+    if fat != None:
+        flag_str += f'--fat '
+
+    if I != None:
+        flag_str += f'-I '
+
+    if s != None:
+        flag_str += f'-s '
+
+    if _0 != None:
+        flag_str += f'-0 {_0} '
+
+    if _1 != None:
+        flag_str += f'-1 {_1} '
+
+    if _2 != None:
+        flag_str += f'-2 {_2} '
+
+    if _3 != None:
+        flag_str += f'-3 {_3} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if e != None:
+        flag_str += f'-e {e} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"basis_functions  "
 
     print(cmd_str)
 
@@ -2480,7 +3268,29 @@ def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=
 
     return cfl.readcfl('basis_functions')
 
- 
+def slice(input):
+    """
+    Extracts a slice from positions along dimensions.
+
+	:param input array:
+
+    """
+    usage_string = "lice dim1 pos1 ... dimN posN input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'slice '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def spow(exponent, input):
     """
@@ -2494,8 +3304,11 @@ def spow(exponent, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'spow '
-    cmd_str += "exponent input output "
-    cfl.writecfl('exponent', exponent)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{exponent} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2539,53 +3352,80 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'sqpics '
-    if l:
-        cmd_str += f'-l {l} '
-    if r:
-        cmd_str += f'-r {r} '
-    if R:
-        cmd_str += f'-R {R} '
-    if s:
-        cmd_str += f'-s {s} '
-    if i:
-        cmd_str += f'-i {i} '
-    if t:
-        cmd_str += f'-t {t} '
-    if n:
-        cmd_str += f'-n {n} '
-    if g:
-        cmd_str += f'-g '
-    if p:
-        cmd_str += f'-p {p} '
-    if I:
-        cmd_str += f'-I '
-    if b:
-        cmd_str += f'-b {b} '
-    if e:
-        cmd_str += f'-e '
-    if H:
-        cmd_str += f'-H '
-    if F:
-        cmd_str += f'-F '
-    if T:
-        cmd_str += f'-T {T} '
-    if W:
-        cmd_str += f'-W {W} '
-    if d:
-        cmd_str += f'-d {d} '
-    if u:
-        cmd_str += f'-u {u} '
-    if C:
-        cmd_str += f'-C {C} '
-    if f:
-        cmd_str += f'-f {f} '
-    if m:
-        cmd_str += f'-m '
-    if w:
-        cmd_str += f'-w {w} '
-    if S:
-        cmd_str += f'-S '
-    cmd_str += "kspace sensitivities output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if l != None:
+        flag_str += f'-l {l} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if p != None:
+        flag_str += f'-p {p} '
+
+    if I != None:
+        flag_str += f'-I '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if e != None:
+        flag_str += f'-e '
+
+    if H != None:
+        flag_str += f'-H '
+
+    if F != None:
+        flag_str += f'-F '
+
+    if T != None:
+        flag_str += f'-T {T} '
+
+    if W != None:
+        flag_str += f'-W {W} '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if u != None:
+        flag_str += f'-u {u} '
+
+    if C != None:
+        flag_str += f'-C {C} '
+
+    if f != None:
+        flag_str += f'-f {f} '
+
+    if m != None:
+        flag_str += f'-m '
+
+    if w != None:
+        flag_str += f'-w {w} '
+
+    if S != None:
+        flag_str += f'-S '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"kspace sensitivities output  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sensitivities', sensitivities)
 
@@ -2606,7 +3446,11 @@ def squeeze(input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'squeeze '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2625,26 +3469,36 @@ def ssa(src, w=None, z=None, m=None, n=None, r=None, g=None):
 	:param m int: Remove mean [Default: True] 
 	:param n int: Normalize [Default: False] 
 	:param r int: Rank for backprojection. r < 0: Throw away first r components. r > 0: Use only first r components. 
-	:param g LONG: Bitmask for Grouping (long value!) 
+	:param g long: Bitmask for Grouping (long value!) 
 
     """
     usage_string = "[-w d] [-z] [-m d] [-n d] [-r d] [-g d] src EOF [S] [backprojection]"
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'ssa '
-    if w:
-        cmd_str += f'-w {w} '
-    if z:
-        cmd_str += f'-z {z} '
-    if m:
-        cmd_str += f'-m {m} '
-    if n:
-        cmd_str += f'-n {n} '
-    if r:
-        cmd_str += f'-r {r} '
-    if g:
-        cmd_str += f'-g {g} '
-    cmd_str += "src EOF "
+    flag_str = ''
+
+    opt_args = f''
+
+    if w != None:
+        flag_str += f'-w {w} '
+
+    if z != None:
+        flag_str += f'-z {z} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if g != None:
+        flag_str += f'-g {g} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"src EOF  "
     cfl.writecfl('src', src)
 
     print(cmd_str)
@@ -2657,7 +3511,7 @@ def std(bitmask, input):
     """
     Compute standard deviation along selected dimensions specified by the {bitmask}
 
-	:param bitmask LONG:
+	:param bitmask long:
 	:param input array:
 
     """
@@ -2665,8 +3519,11 @@ def std(bitmask, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'std '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2687,9 +3544,14 @@ def svd(input, e=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'svd '
-    if e:
-        cmd_str += f'-e '
-    cmd_str += "input U S VH "
+    flag_str = ''
+
+    opt_args = f''
+
+    if e != None:
+        flag_str += f'-e '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input U S VH  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2711,9 +3573,11 @@ def tgv(llambda, flags, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'tgv '
-    cmd_str += "llambda flags input output "
-    cfl.writecfl('llambda', llambda)
-    cfl.writecfl('flags', flags)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{llambda} {flags} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2741,22 +3605,32 @@ def threshold(llambda, input, H=None, W=None, L=None, D=None, B=None, j=None, b=
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'threshold '
-    if H:
-        cmd_str += f'-H '
-    if W:
-        cmd_str += f'-W '
-    if L:
-        cmd_str += f'-L '
-    if D:
-        cmd_str += f'-D '
-    if B:
-        cmd_str += f'-B '
-    if j:
-        cmd_str += f'-j {j} '
-    if b:
-        cmd_str += f'-b {b} '
-    cmd_str += "llambda input output "
-    cfl.writecfl('llambda', llambda)
+    flag_str = ''
+
+    opt_args = f''
+
+    if H != None:
+        flag_str += f'-H '
+
+    if W != None:
+        flag_str += f'-W '
+
+    if L != None:
+        flag_str += f'-L '
+
+    if D != None:
+        flag_str += f'-D '
+
+    if B != None:
+        flag_str += f'-B '
+
+    if j != None:
+        flag_str += f'-j {j} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{llambda} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2785,19 +3659,29 @@ will be looped over.
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'toimg '
-    if g:
-        cmd_str += f'-g {g} '
-    if c:
-        cmd_str += f'-c {c} '
-    if w:
-        cmd_str += f'-w {w} '
-    if d:
-        cmd_str += f'-d '
-    if m:
-        cmd_str += f'-m {m} '
-    if W:
-        cmd_str += f'-W '
-    cmd_str += "input output_prefix "
+    flag_str = ''
+
+    opt_args = f''
+
+    if g != None:
+        flag_str += f'-g {g} '
+
+    if c != None:
+        flag_str += f'-c {c} '
+
+    if w != None:
+        flag_str += f'-w {w} '
+
+    if d != None:
+        flag_str += f'-d '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if W != None:
+        flag_str += f'-W '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output_prefix  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2840,55 +3724,83 @@ def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None,
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'traj '
-    if x:
-        cmd_str += f'-x {x} '
-    if y:
-        cmd_str += f'-y {y} '
-    if d:
-        cmd_str += f'-d {d} '
-    if e:
-        cmd_str += f'-e {e} '
-    if a:
-        cmd_str += f'-a {a} '
-    if t:
-        cmd_str += f'-t {t} '
-    if m:
-        cmd_str += f'-m {m} '
-    if l:
-        cmd_str += f'-l '
-    if g:
-        cmd_str += f'-g '
-    if r:
-        cmd_str += f'-r '
-    if G:
-        cmd_str += f'-G '
-    if H:
-        cmd_str += f'-H '
-    if s:
-        cmd_str += f'-s {s} '
-    if D:
-        cmd_str += f'-D '
-    if R:
-        cmd_str += f'-R {R} '
-    if q:
-        cmd_str += f'-q {q} '
-    if Q:
-        cmd_str += f'-Q {Q} '
-    if O:
-        cmd_str += f'-O '
-    if _3:
-        cmd_str += f'-3 '
-    if c:
-        cmd_str += f'-c '
-    if E:
-        cmd_str += f'-E '
-    if z:
-        cmd_str += f'-z {z} '
-    if C:
-        cmd_str += f'-C {C} '
-    if V:
-        cmd_str += f'-V {V} '
-    cmd_str += "output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if x != None:
+        flag_str += f'-x {x} '
+
+    if y != None:
+        flag_str += f'-y {y} '
+
+    if d != None:
+        flag_str += f'-d {d} '
+
+    if e != None:
+        flag_str += f'-e {e} '
+
+    if a != None:
+        flag_str += f'-a {a} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if m != None:
+        flag_str += f'-m {m} '
+
+    if l != None:
+        flag_str += f'-l '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if r != None:
+        flag_str += f'-r '
+
+    if G != None:
+        flag_str += f'-G '
+
+    if H != None:
+        flag_str += f'-H '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if D != None:
+        flag_str += f'-D '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if q != None:
+        flag_str += f'-q {q} '
+
+    if Q != None:
+        flag_str += f'-Q {Q} '
+
+    if O != None:
+        flag_str += f'-O '
+
+    if _3 != None:
+        flag_str += f'-3 '
+
+    if c != None:
+        flag_str += f'-c '
+
+    if E != None:
+        flag_str += f'-E '
+
+    if z != None:
+        flag_str += f'-z {z} '
+
+    if C != None:
+        flag_str += f'-C {C} '
+
+    if V != None:
+        flag_str += f'-V {V} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"output  "
 
     print(cmd_str)
 
@@ -2909,9 +3821,11 @@ def transpose(dim1, dim2, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'transpose '
-    cmd_str += "dim1 dim2 input output "
-    cfl.writecfl('dim1', dim1)
-    cfl.writecfl('dim2', dim2)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dim1} {dim2} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2925,15 +3839,15 @@ def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n
     Read data from Siemens twix (.dat) files.
 
 	:param dat_file array:
-	:param x LONG: number of samples (read-out) 
-	:param r LONG: radial lines 
-	:param y LONG: phase encoding steps 
-	:param z LONG: partition encoding steps 
-	:param s LONG: number of slices 
-	:param v LONG: number of averages 
-	:param c LONG: number of channels 
-	:param n LONG: number of repetitions 
-	:param a LONG: total number of ADCs 
+	:param x long: number of samples (read-out) 
+	:param r long: radial lines 
+	:param y long: phase encoding steps 
+	:param z long: partition encoding steps 
+	:param s long: number of slices 
+	:param v long: number of averages 
+	:param c long: number of channels 
+	:param n long: number of repetitions 
+	:param a long: total number of ADCs 
 	:param A bool: automatic [guess dimensions] 
 	:param L bool: use linectr offset 
 	:param P bool: use partctr offset 
@@ -2944,33 +3858,50 @@ def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'twixread '
-    if x:
-        cmd_str += f'-x {x} '
-    if r:
-        cmd_str += f'-r {r} '
-    if y:
-        cmd_str += f'-y {y} '
-    if z:
-        cmd_str += f'-z {z} '
-    if s:
-        cmd_str += f'-s {s} '
-    if v:
-        cmd_str += f'-v {v} '
-    if c:
-        cmd_str += f'-c {c} '
-    if n:
-        cmd_str += f'-n {n} '
-    if a:
-        cmd_str += f'-a {a} '
-    if A:
-        cmd_str += f'-A '
-    if L:
-        cmd_str += f'-L '
-    if P:
-        cmd_str += f'-P '
-    if M:
-        cmd_str += f'-M '
-    cmd_str += "dat_file output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if x != None:
+        flag_str += f'-x {x} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if y != None:
+        flag_str += f'-y {y} '
+
+    if z != None:
+        flag_str += f'-z {z} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if v != None:
+        flag_str += f'-v {v} '
+
+    if c != None:
+        flag_str += f'-c {c} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+
+    if a != None:
+        flag_str += f'-a {a} '
+
+    if A != None:
+        flag_str += f'-A '
+
+    if L != None:
+        flag_str += f'-L '
+
+    if P != None:
+        flag_str += f'-P '
+
+    if M != None:
+        flag_str += f'-M '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"dat_file output  "
     cfl.writecfl('dat_file', dat_file)
 
     print(cmd_str)
@@ -2983,8 +3914,8 @@ def upat(Y=None, Z=None, y=None, z=None, c=None):
     """
     Create a sampling pattern.
 
-	:param Y LONG: size Y 
-	:param Z LONG: size Z 
+	:param Y long: size Y 
+	:param Z long: size Z 
 	:param y int: undersampling y 
 	:param z int: undersampling z 
 	:param c int: size of k-space center 
@@ -2994,17 +3925,26 @@ def upat(Y=None, Z=None, y=None, z=None, c=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'upat '
-    if Y:
-        cmd_str += f'-Y {Y} '
-    if Z:
-        cmd_str += f'-Z {Z} '
-    if y:
-        cmd_str += f'-y {y} '
-    if z:
-        cmd_str += f'-z {z} '
-    if c:
-        cmd_str += f'-c {c} '
-    cmd_str += "output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if Y != None:
+        flag_str += f'-Y {Y} '
+
+    if Z != None:
+        flag_str += f'-Z {Z} '
+
+    if y != None:
+        flag_str += f'-y {y} '
+
+    if z != None:
+        flag_str += f'-z {z} '
+
+    if c != None:
+        flag_str += f'-c {c} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"output  "
 
     print(cmd_str)
 
@@ -3016,7 +3956,7 @@ def var(bitmask, input):
     """
     Compute variance along selected dimensions specified by the {bitmask}
 
-	:param bitmask LONG:
+	:param bitmask long:
 	:param input array:
 
     """
@@ -3024,8 +3964,11 @@ def var(bitmask, input):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'var '
-    cmd_str += "bitmask input output "
-    cfl.writecfl('bitmask', bitmask)
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3034,7 +3977,28 @@ def var(bitmask, input):
 
     return cfl.readcfl('output')
 
- 
+def vec(val):
+    """
+    Create a vector of values.
+
+	:param val tuple:
+
+    """
+    usage_string = "vec val1 ... valN output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'vec '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{' '.join([str(arg) for arg in val])} output  "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
  
 
@@ -3053,15 +4017,23 @@ def walsh(input, r=None, R=None, b=None, B=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'walsh '
-    if r:
-        cmd_str += f'-r {r} '
-    if R:
-        cmd_str += f'-R {R} '
-    if b:
-        cmd_str += f'-b {b} '
-    if B:
-        cmd_str += f'-B {B} '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if B != None:
+        flag_str += f'-B {B} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3109,33 +4081,50 @@ Expected dimensions:
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'wave '
-    if r:
-        cmd_str += f'-r {r} '
-    if b:
-        cmd_str += f'-b {b} '
-    if i:
-        cmd_str += f'-i {i} '
-    if s:
-        cmd_str += f'-s {s} '
-    if c:
-        cmd_str += f'-c {c} '
-    if t:
-        cmd_str += f'-t {t} '
-    if e:
-        cmd_str += f'-e {e} '
-    if g:
-        cmd_str += f'-g '
-    if f:
-        cmd_str += f'-f '
-    if H:
-        cmd_str += f'-H '
-    if v:
-        cmd_str += f'-v '
-    if w:
-        cmd_str += f'-w '
-    if l:
-        cmd_str += f'-l '
-    cmd_str += "maps wave kspace output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if c != None:
+        flag_str += f'-c {c} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if e != None:
+        flag_str += f'-e {e} '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if f != None:
+        flag_str += f'-f '
+
+    if H != None:
+        flag_str += f'-H '
+
+    if v != None:
+        flag_str += f'-v '
+
+    if w != None:
+        flag_str += f'-w '
+
+    if l != None:
+        flag_str += f'-l '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"maps wave kspace output  "
     cfl.writecfl('maps', maps)
     cfl.writecfl('wave', wave)
     cfl.writecfl('kspace', kspace)
@@ -3146,7 +4135,38 @@ Expected dimensions:
 
     return cfl.readcfl('output')
 
- 
+def wavelet(bitmask, input, dim=None, a=None):
+    """
+    Perform wavelet transform.
+
+	:param bitmask int:
+	:param input array:
+	:param dim tuple: None 
+	:param a bool: adjoint (specify dims) 
+
+    """
+    usage_string = "wavelet [-a] bitmask [dim1 ... dimN ] input output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'wavelet '
+    flag_str = ''
+
+    opt_args = f''
+
+    if dim != None:
+        opt_args += f"{' '.join([str(arg) for arg in dim])} "
+
+    if a != None:
+        flag_str += f'-a '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{bitmask} input output  "
+    cfl.writecfl('input', input)
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def wavepsf(c=None, x=None, y=None, r=None, a=None, t=None, g=None, s=None, n=None):
     """
@@ -3176,25 +4196,38 @@ bart fmac wY wZ wYZ
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'wavepsf '
-    if c:
-        cmd_str += f'-c '
-    if x:
-        cmd_str += f'-x {x} '
-    if y:
-        cmd_str += f'-y {y} '
-    if r:
-        cmd_str += f'-r {r} '
-    if a:
-        cmd_str += f'-a {a} '
-    if t:
-        cmd_str += f'-t {t} '
-    if g:
-        cmd_str += f'-g {g} '
-    if s:
-        cmd_str += f'-s {s} '
-    if n:
-        cmd_str += f'-n {n} '
-    cmd_str += "output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if c != None:
+        flag_str += f'-c '
+
+    if x != None:
+        flag_str += f'-x {x} '
+
+    if y != None:
+        flag_str += f'-y {y} '
+
+    if r != None:
+        flag_str += f'-r {r} '
+
+    if a != None:
+        flag_str += f'-a {a} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if g != None:
+        flag_str += f'-g {g} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if n != None:
+        flag_str += f'-n {n} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"output  "
 
     print(cmd_str)
 
@@ -3218,13 +4251,20 @@ Optionally output whitening matrix and noise covariance matrix
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'whiten '
-    if o:
-        cmd_str += f'-o {o} '
-    if c:
-        cmd_str += f'-c {c} '
-    if n:
-        cmd_str += f'-n '
-    cmd_str += "input ndata output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if o != None:
+        flag_str += f'-o {o} '
+
+    if c != None:
+        flag_str += f'-c {c} '
+
+    if n != None:
+        flag_str += f'-n '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input ndata output  "
     cfl.writecfl('input', input)
     cfl.writecfl('ndata', ndata)
 
@@ -3238,7 +4278,7 @@ def window(flags, input, H=None):
     """
     Apply Hamming (Hann) window to <input> along dimensions specified by flags
 
-	:param flags LONG:
+	:param flags long:
 	:param input array:
 	:param H CLEAR: Hann window 
 
@@ -3247,10 +4287,14 @@ def window(flags, input, H=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'window '
-    if H:
-        cmd_str += f'-H {H} '
-    cmd_str += "flags input output "
-    cfl.writecfl('flags', flags)
+    flag_str = ''
+
+    opt_args = f''
+
+    if H != None:
+        flag_str += f'-H {H} '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{flags} input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3322,33 +4366,50 @@ Expected dimensions:
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'wshfl '
-    if R:
-        cmd_str += f'-R {R} '
-    if b:
-        cmd_str += f'-b {b} '
-    if i:
-        cmd_str += f'-i {i} '
-    if j:
-        cmd_str += f'-j {j} '
-    if s:
-        cmd_str += f'-s {s} '
-    if e:
-        cmd_str += f'-e {e} '
-    if F:
-        cmd_str += f'-F {F} '
-    if O:
-        cmd_str += f'-O {O} '
-    if t:
-        cmd_str += f'-t {t} '
-    if g:
-        cmd_str += f'-g '
-    if K:
-        cmd_str += f'-K '
-    if H:
-        cmd_str += f'-H '
-    if v:
-        cmd_str += f'-v '
-    cmd_str += "maps wave phi reorder table output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if R != None:
+        flag_str += f'-R {R} '
+
+    if b != None:
+        flag_str += f'-b {b} '
+
+    if i != None:
+        flag_str += f'-i {i} '
+
+    if j != None:
+        flag_str += f'-j {j} '
+
+    if s != None:
+        flag_str += f'-s {s} '
+
+    if e != None:
+        flag_str += f'-e {e} '
+
+    if F != None:
+        flag_str += f'-F {F} '
+
+    if O != None:
+        flag_str += f'-O {O} '
+
+    if t != None:
+        flag_str += f'-t {t} '
+
+    if g != None:
+        flag_str += f'-g '
+
+    if K != None:
+        flag_str += f'-K '
+
+    if H != None:
+        flag_str += f'-H '
+
+    if v != None:
+        flag_str += f'-v '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"maps wave phi reorder table output  "
     cfl.writecfl('maps', maps)
     cfl.writecfl('wave', wave)
     cfl.writecfl('phi', phi)
@@ -3361,7 +4422,29 @@ Expected dimensions:
 
     return cfl.readcfl('output')
 
- 
+def zeros(dims, dim):
+    """
+    Create a zero-filled array with {dims} dimensions of size {dim1} to {dimn}.
+
+	:param dims long:
+	:param dim tuple:
+
+    """
+    usage_string = "zeros dims dim1 ... dimN output"
+
+    cmd_str = f'{BART_PATH} '
+    cmd_str += 'zeros '
+    flag_str = ''
+
+    opt_args = f''
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{dims} {' '.join([str(arg) for arg in dim])} output  "
+
+    print(cmd_str)
+
+    os.system(cmd_str)
+
+    return cfl.readcfl('output')
 
 def zexp(input, i=None):
     """
@@ -3375,9 +4458,14 @@ def zexp(input, i=None):
 
     cmd_str = f'{BART_PATH} '
     cmd_str += 'zexp '
-    if i:
-        cmd_str += f'-i '
-    cmd_str += "input output "
+    flag_str = ''
+
+    opt_args = f''
+
+    if i != None:
+        flag_str += f'-i '
+    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"input output  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
