@@ -121,27 +121,39 @@ def parse_pos_args(pos_str: str):
         if required_str == 'true':
             required = True
         if arg_type == 'ARG_TUPLE' and num_arg != '1':
-            print(args)
             parse_tuple = True
-        elif 'ARG' in arg_type:
-            opt_type, _, arg_name = [x.strip() for x in args[-3:]]
-            opt_type = re.sub('OPT_', '', opt_type)
-            type_str = opt_type if opt_type not in TYPE_MAP.keys() else TYPE_MAP[opt_type]
-            if arg_type == 'ARG_TUPLE':
-                type_str = 'tuple'
-            is_input = True
-            if opt_type == 'OUTFILE':
-                is_input = False
-            arg_list.append({
-                'name': format_string(arg_name),
-                'required': required,
-                'input': is_input,
-                'type': type_str,
-                'opt': False,
-            })
+        elif 'ARG' in arg_type and not parse_tuple:
+            arg_dict = create_arg_dict(args[-3:], arg_type, required)
+            arg_list.append(arg_dict)
+        elif parse_tuple and num_tuples:
+            arg_dict = create_arg_dict(args, arg_type, required)
+            num_tuple = num_tuples - 1
+            arg_list.append(arg_dict)
     return arg_list
 
-        
+
+def create_arg_dict(arg_data, arg_type, required):
+    """
+    Create formatted arg dictionary
+    """
+    opt_type, _, arg_name = [x.strip() for x in arg_data]
+    opt_type = re.sub('OPT_', '', opt_type)
+    type_str = opt_type if opt_type not in TYPE_MAP.keys() else TYPE_MAP[opt_type]
+    if arg_type == 'ARG_TUPLE':
+        type_str = 'tuple'
+    is_input = True
+    if opt_type == 'OUTFILE':
+        is_input = False
+    arg_dict = {
+        'name': format_string(arg_name),
+        'required': required,
+        'input': is_input,
+        'type': type_str,
+        'opt': False,
+    }
+    return arg_dict
+
+
 def parse_opt_args(opt_str: str):
     """
     Parse optional args
@@ -312,8 +324,6 @@ def create_template(tool: str):
             arg_names += "{" + arg['name'] + "} "
 
     template += f'\n    cmd_str += f\"{arg_names} \"'
-    if 'bitmask' in tool:
-        print(kwarg_list)
 
     for arg in arg_list:
         name = arg['name']
