@@ -22,10 +22,12 @@ def avg(bitmask, input, w=None):
 
     opt_args = f''
 
+    multituples = []
+
     if w != None:
         flag_str += f'-w '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -51,6 +53,8 @@ def bench(T=None, S=None, s=None):
 
     opt_args = f''
 
+    multituples = []
+
     if T != None:
         flag_str += f'-T '
 
@@ -60,7 +64,7 @@ def bench(T=None, S=None, s=None):
     if s != None:
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f" "
+    cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -92,6 +96,8 @@ def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=No
 
     opt_args = f''
 
+    multituples = []
+
     if l != None:
         flag_str += f'-l {l} '
 
@@ -116,7 +122,7 @@ def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=No
     if A != None:
         flag_str += f'-A {A} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"label src dst  "
+    cmd_str += f"label src dst {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('label', label)
     cfl.writecfl('src', src)
 
@@ -142,13 +148,15 @@ def bitmask(dim=None, b=None):
 
     opt_args = f''
 
+    multituples = []
+
     if dim != None:
         opt_args += f"{' '.join([str(arg) for arg in dim])} "
 
     if b != None:
         flag_str += f'-b '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f" "
+    cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -168,8 +176,10 @@ def cabs(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -196,8 +206,10 @@ calibration region is automatically determined but limited by
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{cal_size} input output  "
+    cmd_str += f"{cal_size} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -226,6 +238,8 @@ def calmat(kspace, k=None, K=None, r=None, R=None, C=None):
 
     opt_args = f''
 
+    multituples = []
+
     if k != None:
         flag_str += f'-k {k} '
 
@@ -241,7 +255,7 @@ def calmat(kspace, k=None, K=None, r=None, R=None, C=None):
     if C != None:
         flag_str += f'-C '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace calibration_matrix  "
+    cmd_str += f"kspace calibration_matrix {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -264,8 +278,10 @@ def carg(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -274,11 +290,12 @@ def carg(input):
 
     return cfl.readcfl('output')
 
-def casorati(input):
+def casorati(dim, kern):
     """
     Casorati matrix with kernel (kern1, ..., kernN) along dimensions (dim1, ..., dimN).
 
-	:param input array:
+	:param dim multituple:
+	:param kern multituple:
 
     """
     usage_string = "casorati dim1 kern1 ... dimN kernN input output"
@@ -288,15 +305,16 @@ def casorati(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    multituples.append(kern)
+    cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
     os.system(cmd_str)
-
-    return cfl.readcfl('output')
 
 def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
     """
@@ -320,6 +338,8 @@ def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if p != None:
         flag_str += f'-p {p} '
@@ -345,7 +365,7 @@ def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
     if E != None:
         flag_str += f'-E '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace coeff_proj_kspace  "
+    cmd_str += f"kspace coeff_proj_kspace {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -376,6 +396,8 @@ def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
 
     opt_args = f''
 
+    multituples = []
+
     if p != None:
         flag_str += f'-p {p} '
 
@@ -394,7 +416,7 @@ def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
     if E != None:
         flag_str += f'-E '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace cc_matrix proj_kspace  "
+    cmd_str += f"kspace cc_matrix proj_kspace {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('cc_matrix', cc_matrix)
 
@@ -421,10 +443,12 @@ def cdf97(bitmask, input, i=None):
 
     opt_args = f''
 
+    multituples = []
+
     if i != None:
         flag_str += f'-i '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -449,8 +473,10 @@ def circshift(dim, shift, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dim} {shift} input output  "
+    cmd_str += f"{dim} {shift} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -473,8 +499,10 @@ def conj(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -499,8 +527,10 @@ def conv(bitmask, input, kernel):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input kernel output  "
+    cmd_str += f"{bitmask} input kernel output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
     cfl.writecfl('kernel', kernel)
 
@@ -527,13 +557,15 @@ def conway(input, P=None, n=None):
 
     opt_args = f''
 
+    multituples = []
+
     if P != None:
         flag_str += f'-P '
 
     if n != None:
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -542,12 +574,12 @@ def conway(input, P=None, n=None):
 
     return cfl.readcfl('output')
 
-def copy(input, output):
+def copy(dim=None, pos=None):
     """
     Copy an array (to a given position in the output file - which then must exist).
 
-	:param input array:
-	:param output INOUTFILE:
+	:param dim multituple: None 
+	:param pos multituple: None 
 
     """
     usage_string = "copy [dim1 pos1 ... dimN posN ] input output"
@@ -557,9 +589,14 @@ def copy(input, output):
     flag_str = ''
 
     opt_args = f''
-    cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input {output}  "
-    cfl.writecfl('input', input)
+
+    multituples = []
+
+    if dim != None:
+        multituples.append(dim)
+    if pos != None:
+        multituples.append(pos)    cmd_str += flag_str + opt_args + ' '
+    cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -579,8 +616,10 @@ def cpyphs(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -603,8 +642,10 @@ def creal(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -629,8 +670,10 @@ def crop(dimension, size, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dimension} {size} input output  "
+    cmd_str += f"{dimension} {size} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -655,8 +698,10 @@ def delta(dims, flags, size):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dims} {flags} {size} out  "
+    cmd_str += f"{dims} {flags} {size} out {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -701,6 +746,8 @@ Optionally outputs the eigenvalue maps.
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if t != None:
         flag_str += f'-t {t} '
@@ -768,7 +815,7 @@ Optionally outputs the eigenvalue maps.
     if d != None:
         flag_str += f'-d {d} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace sensitivities  "
+    cmd_str += f"kspace sensitivities {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -801,6 +848,8 @@ Optionally outputs the eigenvalue maps.
 
     opt_args = f''
 
+    multituples = []
+
     if c != None:
         flag_str += f'-c {c} '
 
@@ -816,7 +865,7 @@ Optionally outputs the eigenvalue maps.
     if g != None:
         flag_str += f'-g '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{x} {y} {z} input sensitivities  "
+    cmd_str += f"{x} {y} {z} input sensitivities {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -855,6 +904,8 @@ def epg(C=None, M=None, H=None, F=None, S=None, B=None, _1=None, _2=None, b=None
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if C != None:
         flag_str += f'-C '
@@ -907,7 +958,7 @@ def epg(C=None, M=None, H=None, F=None, S=None, B=None, _1=None, _2=None, b=None
     if v != None:
         flag_str += f'-v {v} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"signal_intensity  "
+    cmd_str += f"signal_intensity {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -935,6 +986,8 @@ def estdelay(trajectory, data, R=None, p=None, n=None, r=None):
 
     opt_args = f''
 
+    multituples = []
+
     if R != None:
         flag_str += f'-R '
 
@@ -947,7 +1000,7 @@ def estdelay(trajectory, data, R=None, p=None, n=None, r=None):
     if r != None:
         flag_str += f'-r {r} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"trajectory data  "
+    cmd_str += f"trajectory data {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('trajectory', trajectory)
     cfl.writecfl('data', data)
 
@@ -972,8 +1025,10 @@ Assume trajectory scaled to -DIM/2 to DIM/2 (ie dk=1/FOV=1)
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"traj  "
+    cmd_str += f"traj {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('traj', traj)
 
     print(cmd_str)
@@ -996,8 +1051,10 @@ def estshift(flags, arg1, arg2):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{flags} arg1 arg2  "
+    cmd_str += f"{flags} arg1 arg2 {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('arg1', arg1)
     cfl.writecfl('arg2', arg2)
 
@@ -1024,6 +1081,8 @@ def estvar(kspace, k=None, K=None, r=None, R=None):
 
     opt_args = f''
 
+    multituples = []
+
     if k != None:
         flag_str += f'-k {k} '
 
@@ -1036,18 +1095,20 @@ def estvar(kspace, k=None, K=None, r=None, R=None):
     if R != None:
         flag_str += f'-R {R} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace  "
+    cmd_str += f"kspace {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
 
     os.system(cmd_str)
 
-def extract(input):
+def extract(dim, start, end):
     """
     Extracts a sub-array along dims from index start to (not including) end.
 
-	:param input array:
+	:param dim multituple:
+	:param start multituple:
+	:param end multituple:
 
     """
     usage_string = "xtract dim1 start1 end1 ... dimN startN endN input output"
@@ -1057,15 +1118,17 @@ def extract(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    multituples.append(start)
+    multituples.append(end)
+    cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
     os.system(cmd_str)
-
-    return cfl.readcfl('output')
 
 def fakeksp(image, kspace, sens, output, r=None):
     """
@@ -1086,10 +1149,12 @@ def fakeksp(image, kspace, sens, output, r=None):
 
     opt_args = f''
 
+    multituples = []
+
     if r != None:
         flag_str += f'-r '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"image kspace sens output  "
+    cmd_str += f"image kspace sens output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('image', image)
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sens', sens)
@@ -1118,6 +1183,8 @@ def fft(bitmask, input, u=None, i=None, n=None):
 
     opt_args = f''
 
+    multituples = []
+
     if u != None:
         flag_str += f'-u '
 
@@ -1127,7 +1194,7 @@ def fft(bitmask, input, u=None, i=None, n=None):
     if n != None:
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1154,13 +1221,15 @@ def fftmod(bitmask, input, b=None, i=None):
 
     opt_args = f''
 
+    multituples = []
+
     if b != None:
         flag_str += f'-b '
 
     if i != None:
         flag_str += f'-i '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1186,8 +1255,10 @@ def fftrot(dim1, dim2, theta, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dim1} {dim2} {theta} input output  "
+    cmd_str += f"{dim1} {dim2} {theta} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1213,10 +1284,12 @@ def fftshift(bitmask, input, b=None):
 
     opt_args = f''
 
+    multituples = []
+
     if b != None:
         flag_str += f'-b '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1242,13 +1315,15 @@ def filter(input, m=None, l=None):
 
     opt_args = f''
 
+    multituples = []
+
     if m != None:
         flag_str += f'-m {m} '
 
     if l != None:
         flag_str += f'-l {l} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1271,8 +1346,10 @@ def flatten(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1296,8 +1373,10 @@ def flip(bitmask, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1326,6 +1405,8 @@ If <input2> is not specified, assume all-ones.
 
     opt_args = f''
 
+    multituples = []
+
     if input2 != None:
         opt_args += {input2}
 
@@ -1338,7 +1419,7 @@ If <input2> is not specified, assume all-ones.
     if s != None:
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input1 output  "
+    cmd_str += f"input1 output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input1', input1)
 
     print(cmd_str)
@@ -1369,6 +1450,8 @@ def homodyne(dim, fraction, input, r=None, I=None, C=None, P=None, n=None):
 
     opt_args = f''
 
+    multituples = []
+
     if r != None:
         flag_str += f'-r {r} '
 
@@ -1384,7 +1467,7 @@ def homodyne(dim, fraction, input, r=None, I=None, C=None, P=None, n=None):
     if n != None:
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dim} {fraction} input output  "
+    cmd_str += f"{dim} {fraction} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1408,8 +1491,10 @@ def index(dim, size):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dim} {size} name  "
+    cmd_str += f"{dim} {size} name {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -1431,8 +1516,10 @@ def invert(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1459,8 +1546,10 @@ with l2-regularization.
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{alpha} sensitivities kspace pattern output  "
+    cmd_str += f"{alpha} sensitivities kspace pattern output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('sensitivities', sensitivities)
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('pattern', pattern)
@@ -1491,10 +1580,12 @@ def join(dimension, input, output, a=None):
 
     opt_args = f''
 
+    multituples = []
+
     if a != None:
         flag_str += f'-a '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dimension} {' '.join([str(arg) for arg in input])} {output}  "
+    cmd_str += f"{dimension} {' '.join([str(arg) for arg in input])} {output} {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -1517,13 +1608,15 @@ def looklocker(input, t=None, D=None):
 
     opt_args = f''
 
+    multituples = []
+
     if t != None:
         flag_str += f'-t {t} '
 
     if D != None:
         flag_str += f'-D {D} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1561,6 +1654,8 @@ def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=No
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if d != None:
         flag_str += f'-d '
@@ -1607,7 +1702,7 @@ def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=No
     if g != None:
         flag_str += f'-g '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1636,6 +1731,8 @@ def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None):
 
     opt_args = f''
 
+    multituples = []
+
     if s != None:
         flag_str += f'-s {s} '
 
@@ -1654,7 +1751,7 @@ def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None):
     if i != None:
         flag_str += f'-i {i} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"output  "
+    cmd_str += f"output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -1680,13 +1777,15 @@ def mip(bitmask, input, m=None, a=None):
 
     opt_args = f''
 
+    multituples = []
+
     if m != None:
         flag_str += f'-m '
 
     if a != None:
         flag_str += f'-a '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -1744,6 +1843,8 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if r != None:
         flag_str += f'-r {r} '
@@ -1847,7 +1948,7 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
     if fat_spec_0 != None:
         flag_str += f'--fat_spec_0 '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace TI_TE output  "
+    cmd_str += f"kspace TI_TE output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('TI_TE', TI_TE)
 
@@ -1878,6 +1979,8 @@ def mobafit(TE, echo_images, G=None, m=None, i=None, p=None, g=None):
 
     opt_args = f''
 
+    multituples = []
+
     if G != None:
         flag_str += f'-G '
 
@@ -1893,7 +1996,7 @@ def mobafit(TE, echo_images, G=None, m=None, i=None, p=None, g=None):
     if g != None:
         flag_str += f'-g '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"TE echo_images  "
+    cmd_str += f"TE echo_images {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('TE', TE)
     cfl.writecfl('echo_images', echo_images)
 
@@ -1940,6 +2043,8 @@ the sensitivities.
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if i != None:
         flag_str += f'-i {i} '
@@ -2004,7 +2109,7 @@ the sensitivities.
     if lowmem != None:
         flag_str += f'--lowmem '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace output  "
+    cmd_str += f"kspace output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -2032,6 +2137,8 @@ def noise(input, s=None, S=None, r=None, n=None):
 
     opt_args = f''
 
+    multituples = []
+
     if s != None:
         flag_str += f'-s {s} '
 
@@ -2044,7 +2151,7 @@ def noise(input, s=None, S=None, r=None, n=None):
     if n != None:
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2070,10 +2177,12 @@ def normalize(flags, input, b=None):
 
     opt_args = f''
 
+    multituples = []
+
     if b != None:
         flag_str += f'-b '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{flags} input output  "
+    cmd_str += f"{flags} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2101,13 +2210,15 @@ i.e. norm(input - ref) / norm(ref)
 
     opt_args = f''
 
+    multituples = []
+
     if t != None:
         flag_str += f'-t {t} '
 
     if s != None:
         flag_str += f'-s '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"reference input  "
+    cmd_str += f"reference input {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('reference', reference)
     cfl.writecfl('input', input)
 
@@ -2144,6 +2255,8 @@ def nufft(traj, input, a=None, i=None, d=None, D=None, t=None, r=None, c=None, l
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if a != None:
         flag_str += f'-a '
@@ -2187,7 +2300,7 @@ def nufft(traj, input, a=None, i=None, d=None, D=None, t=None, r=None, c=None, l
     if lowmem != None:
         flag_str += f'--lowmem '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"traj input output  "
+    cmd_str += f"traj input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('traj', traj)
     cfl.writecfl('input', input)
 
@@ -2212,8 +2325,10 @@ def ones(dims, dim):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dims} {' '.join([str(arg) for arg in dim])} output  "
+    cmd_str += f"{dims} {' '.join([str(arg) for arg in dim])} output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -2237,10 +2352,12 @@ def pattern(kspace, s=None):
 
     opt_args = f''
 
+    multituples = []
+
     if s != None:
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace pattern  "
+    cmd_str += f"kspace pattern {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -2278,6 +2395,8 @@ def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=No
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if s != None:
         flag_str += f'-s {s} '
@@ -2327,7 +2446,7 @@ def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=No
     if r != None:
         flag_str += f'-r {r} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"output  "
+    cmd_str += f"output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -2388,6 +2507,8 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if l != None:
         flag_str += f'-l {l} '
@@ -2503,7 +2624,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
     if lowmem != None:
         flag_str += f'--lowmem '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace sensitivities output  "
+    cmd_str += f"kspace sensitivities output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sensitivities', sensitivities)
 
@@ -2535,6 +2656,8 @@ def pocsense(kspace, sensitivities, i=None, r=None, l=None, g=None, o=None, m=No
 
     opt_args = f''
 
+    multituples = []
+
     if i != None:
         flag_str += f'-i {i} '
 
@@ -2553,7 +2676,7 @@ def pocsense(kspace, sensitivities, i=None, r=None, l=None, g=None, o=None, m=No
     if m != None:
         flag_str += f'-m {m} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace sensitivities output  "
+    cmd_str += f"kspace sensitivities output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sensitivities', sensitivities)
 
@@ -2589,6 +2712,8 @@ def poisson(Y=None, Z=None, y=None, z=None, C=None, v=None, V=None, e=None, D=No
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if Y != None:
         flag_str += f'-Y {Y} '
@@ -2629,7 +2754,7 @@ def poisson(Y=None, Z=None, y=None, z=None, C=None, v=None, V=None, e=None, D=No
     if s != None:
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"output  "
+    cmd_str += f"output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -2654,13 +2779,15 @@ def pol2mask(poly, X=None, Y=None):
 
     opt_args = f''
 
+    multituples = []
+
     if X != None:
         flag_str += f'-X {X} '
 
     if Y != None:
         flag_str += f'-Y {Y} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"poly output  "
+    cmd_str += f"poly output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('poly', poly)
 
     print(cmd_str)
@@ -2685,8 +2812,10 @@ def poly(L, N, a_):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{L} {N} {' '.join([str(arg) for arg in a_])} output  "
+    cmd_str += f"{L} {N} {' '.join([str(arg) for arg in a_])} output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -2710,8 +2839,10 @@ def repmat(dimension, repetitions, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dimension} {repetitions} input output  "
+    cmd_str += f"{dimension} {repetitions} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2736,8 +2867,10 @@ def reshape(flags, dim, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{flags} {' '.join([str(arg) for arg in dim])} input output  "
+    cmd_str += f"{flags} {' '.join([str(arg) for arg in dim])} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2746,11 +2879,12 @@ def reshape(flags, dim, input):
 
     return cfl.readcfl('output')
 
-def resize(input, c=None):
+def resize(dim, size, c=None):
     """
     Resizes an array along dimensions to sizes by truncating or zero-padding.
 
-	:param input array:
+	:param dim multituple:
+	:param size multituple:
 	:param c bool: center 
 
     """
@@ -2762,17 +2896,18 @@ def resize(input, c=None):
 
     opt_args = f''
 
+    multituples = []
+
     if c != None:
         flag_str += f'-c '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    multituples.append(size)
+    cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
     os.system(cmd_str)
-
-    return cfl.readcfl('output')
 
 def rmfreq(traj, k, N=None):
     """
@@ -2791,10 +2926,12 @@ def rmfreq(traj, k, N=None):
 
     opt_args = f''
 
+    multituples = []
+
     if N != None:
         flag_str += f'-N {N} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"traj k k_cor  "
+    cmd_str += f"traj k k_cor {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('traj', traj)
     cfl.writecfl('k', k)
 
@@ -2820,8 +2957,10 @@ def rof(llambda, flags, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{llambda} {flags} input output  "
+    cmd_str += f"{llambda} {flags} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2853,6 +2992,8 @@ def roistat(roi, input, b=None, C=None, S=None, M=None, D=None, E=None, V=None):
 
     opt_args = f''
 
+    multituples = []
+
     if b != None:
         flag_str += f'-b '
 
@@ -2874,7 +3015,7 @@ def roistat(roi, input, b=None, C=None, S=None, M=None, D=None, E=None, V=None):
     if V != None:
         flag_str += f'-V '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"roi input  "
+    cmd_str += f"roi input {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('roi', roi)
     cfl.writecfl('input', input)
 
@@ -2899,8 +3040,10 @@ def rss(bitmask, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -2947,6 +3090,8 @@ the sensitivities.
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if i != None:
         flag_str += f'-i {i} '
@@ -3014,7 +3159,7 @@ the sensitivities.
     if s != None:
         flag_str += f'-s '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace output  "
+    cmd_str += f"kspace output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -3042,6 +3187,8 @@ data using low-rank matrix completion.
 
     opt_args = f''
 
+    multituples = []
+
     if i != None:
         flag_str += f'-i {i} '
 
@@ -3051,7 +3198,7 @@ data using low-rank matrix completion.
     if o != None:
         flag_str += f'-o {o} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace output  "
+    cmd_str += f"kspace output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
 
     print(cmd_str)
@@ -3076,8 +3223,10 @@ def saxpy(scale, input1, input2):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{scale} input1 input2 output  "
+    cmd_str += f"{scale} input1 input2 output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input1', input1)
     cfl.writecfl('input2', input2)
 
@@ -3102,8 +3251,10 @@ def scale(factor, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{factor} input output  "
+    cmd_str += f"{factor} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3127,8 +3278,10 @@ def sdot(input1, input2):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input1 input2  "
+    cmd_str += f"input1 input2 {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input1', input1)
     cfl.writecfl('input2', input2)
 
@@ -3155,6 +3308,8 @@ def show(input, m=None, d=None, s=None, f=None):
 
     opt_args = f''
 
+    multituples = []
+
     if m != None:
         flag_str += f'-m '
 
@@ -3167,7 +3322,7 @@ def show(input, m=None, d=None, s=None, f=None):
     if f != None:
         flag_str += f'-f {f} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input  "
+    cmd_str += f"input {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3205,6 +3360,8 @@ def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if F != None:
         flag_str += f'-F '
@@ -3260,7 +3417,7 @@ def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=
     if b != None:
         flag_str += f'-b {b} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"basis_functions  "
+    cmd_str += f"basis_functions {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -3268,11 +3425,12 @@ def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=
 
     return cfl.readcfl('basis_functions')
 
-def slice(input):
+def slice(dim, pos):
     """
     Extracts a slice from positions along dimensions.
 
-	:param input array:
+	:param dim multituple:
+	:param pos multituple:
 
     """
     usage_string = "lice dim1 pos1 ... dimN posN input output"
@@ -3282,15 +3440,16 @@ def slice(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    multituples.append(pos)
+    cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
     os.system(cmd_str)
-
-    return cfl.readcfl('output')
 
 def spow(exponent, input):
     """
@@ -3307,8 +3466,10 @@ def spow(exponent, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{exponent} input output  "
+    cmd_str += f"{exponent} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3355,6 +3516,8 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if l != None:
         flag_str += f'-l {l} '
@@ -3425,7 +3588,7 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
     if S != None:
         flag_str += f'-S '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"kspace sensitivities output  "
+    cmd_str += f"kspace sensitivities output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('kspace', kspace)
     cfl.writecfl('sensitivities', sensitivities)
 
@@ -3449,8 +3612,10 @@ def squeeze(input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3480,6 +3645,8 @@ def ssa(src, w=None, z=None, m=None, n=None, r=None, g=None):
 
     opt_args = f''
 
+    multituples = []
+
     if w != None:
         flag_str += f'-w {w} '
 
@@ -3498,7 +3665,7 @@ def ssa(src, w=None, z=None, m=None, n=None, r=None, g=None):
     if g != None:
         flag_str += f'-g {g} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"src EOF  "
+    cmd_str += f"src EOF {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('src', src)
 
     print(cmd_str)
@@ -3522,8 +3689,10 @@ def std(bitmask, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3548,10 +3717,12 @@ def svd(input, e=None):
 
     opt_args = f''
 
+    multituples = []
+
     if e != None:
         flag_str += f'-e '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input U S VH  "
+    cmd_str += f"input U S VH {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3576,8 +3747,10 @@ def tgv(llambda, flags, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{llambda} {flags} input output  "
+    cmd_str += f"{llambda} {flags} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3609,6 +3782,8 @@ def threshold(llambda, input, H=None, W=None, L=None, D=None, B=None, j=None, b=
 
     opt_args = f''
 
+    multituples = []
+
     if H != None:
         flag_str += f'-H '
 
@@ -3630,7 +3805,7 @@ def threshold(llambda, input, H=None, W=None, L=None, D=None, B=None, j=None, b=
     if b != None:
         flag_str += f'-b {b} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{llambda} input output  "
+    cmd_str += f"{llambda} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3663,6 +3838,8 @@ will be looped over.
 
     opt_args = f''
 
+    multituples = []
+
     if g != None:
         flag_str += f'-g {g} '
 
@@ -3681,7 +3858,7 @@ will be looped over.
     if W != None:
         flag_str += f'-W '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output_prefix  "
+    cmd_str += f"input output_prefix {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3727,6 +3904,8 @@ def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None,
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if x != None:
         flag_str += f'-x {x} '
@@ -3800,7 +3979,7 @@ def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None,
     if V != None:
         flag_str += f'-V {V} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"output  "
+    cmd_str += f"output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -3824,8 +4003,10 @@ def transpose(dim1, dim2, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dim1} {dim2} input output  "
+    cmd_str += f"{dim1} {dim2} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3861,6 +4042,8 @@ def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
 
     if x != None:
         flag_str += f'-x {x} '
@@ -3901,7 +4084,7 @@ def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n
     if M != None:
         flag_str += f'-M '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"dat_file output  "
+    cmd_str += f"dat_file output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('dat_file', dat_file)
 
     print(cmd_str)
@@ -3929,6 +4112,8 @@ def upat(Y=None, Z=None, y=None, z=None, c=None):
 
     opt_args = f''
 
+    multituples = []
+
     if Y != None:
         flag_str += f'-Y {Y} '
 
@@ -3944,7 +4129,7 @@ def upat(Y=None, Z=None, y=None, z=None, c=None):
     if c != None:
         flag_str += f'-c {c} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"output  "
+    cmd_str += f"output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -3967,8 +4152,10 @@ def var(bitmask, input):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -3991,8 +4178,10 @@ def vec(val):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{' '.join([str(arg) for arg in val])} output  "
+    cmd_str += f"{' '.join([str(arg) for arg in val])} output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -4021,6 +4210,8 @@ def walsh(input, r=None, R=None, b=None, B=None):
 
     opt_args = f''
 
+    multituples = []
+
     if r != None:
         flag_str += f'-r {r} '
 
@@ -4033,7 +4224,7 @@ def walsh(input, r=None, R=None, b=None, B=None):
     if B != None:
         flag_str += f'-B {B} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -4085,6 +4276,8 @@ Expected dimensions:
 
     opt_args = f''
 
+    multituples = []
+
     if r != None:
         flag_str += f'-r {r} '
 
@@ -4124,7 +4317,7 @@ Expected dimensions:
     if l != None:
         flag_str += f'-l '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"maps wave kspace output  "
+    cmd_str += f"maps wave kspace output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('maps', maps)
     cfl.writecfl('wave', wave)
     cfl.writecfl('kspace', kspace)
@@ -4153,13 +4346,15 @@ def wavelet(bitmask, input, dim=None, a=None):
 
     opt_args = f''
 
+    multituples = []
+
     if dim != None:
         opt_args += f"{' '.join([str(arg) for arg in dim])} "
 
     if a != None:
         flag_str += f'-a '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{bitmask} input output  "
+    cmd_str += f"{bitmask} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -4200,6 +4395,8 @@ bart fmac wY wZ wYZ
 
     opt_args = f''
 
+    multituples = []
+
     if c != None:
         flag_str += f'-c '
 
@@ -4227,7 +4424,7 @@ bart fmac wY wZ wYZ
     if n != None:
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"output  "
+    cmd_str += f"output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -4255,6 +4452,8 @@ Optionally output whitening matrix and noise covariance matrix
 
     opt_args = f''
 
+    multituples = []
+
     if o != None:
         flag_str += f'-o {o} '
 
@@ -4264,7 +4463,7 @@ Optionally output whitening matrix and noise covariance matrix
     if n != None:
         flag_str += f'-n '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input ndata output  "
+    cmd_str += f"input ndata output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
     cfl.writecfl('ndata', ndata)
 
@@ -4291,10 +4490,12 @@ def window(flags, input, H=None):
 
     opt_args = f''
 
+    multituples = []
+
     if H != None:
         flag_str += f'-H {H} '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{flags} input output  "
+    cmd_str += f"{flags} input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)
@@ -4370,6 +4571,8 @@ Expected dimensions:
 
     opt_args = f''
 
+    multituples = []
+
     if R != None:
         flag_str += f'-R {R} '
 
@@ -4409,7 +4612,7 @@ Expected dimensions:
     if v != None:
         flag_str += f'-v '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"maps wave phi reorder table output  "
+    cmd_str += f"maps wave phi reorder table output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('maps', maps)
     cfl.writecfl('wave', wave)
     cfl.writecfl('phi', phi)
@@ -4437,8 +4640,10 @@ def zeros(dims, dim):
     flag_str = ''
 
     opt_args = f''
+
+    multituples = []
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"{dims} {' '.join([str(arg) for arg in dim])} output  "
+    cmd_str += f"{dims} {' '.join([str(arg) for arg in dim])} output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
 
@@ -4462,10 +4667,12 @@ def zexp(input, i=None):
 
     opt_args = f''
 
+    multituples = []
+
     if i != None:
         flag_str += f'-i '
     cmd_str += flag_str + opt_args + ' '
-    cmd_str += f"input output  "
+    cmd_str += f"input output {' '.join([' '.join(arg) for arg in zip(multituples)])}  "
     cfl.writecfl('input', input)
 
     print(cmd_str)

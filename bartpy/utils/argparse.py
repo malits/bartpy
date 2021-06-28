@@ -108,7 +108,7 @@ def parse_pos_args(pos_str: str):
     # pos_str = re.sub(r"\}", r")", pos_str)
     parse_tuple = False
     num_tuples = 0
-    positional_args = pos_str.split("\n")[1:]
+    positional_args = pos_str.split("\n{")[1:]
     for arg in positional_args:
         if not arg:
             continue
@@ -122,12 +122,14 @@ def parse_pos_args(pos_str: str):
             required = True
         if arg_type == 'ARG_TUPLE' and num_arg != '1':
             parse_tuple = True
+            tuple_args = [x.strip() for x in arg.split('\n\t')[1:]]
+            tuple_arg_lists = [[s.strip() for s in lst.split(",")] for lst in tuple_args]
+            arg_list.extend([create_arg_dict(lst, 'ARG_MULTITUPLE', required) for lst in tuple_arg_lists])
         elif 'ARG' in arg_type and not parse_tuple:
             arg_dict = create_arg_dict(args[-3:], arg_type, required)
             arg_list.append(arg_dict)
         elif parse_tuple and num_tuples:
-            arg_dict = create_arg_dict(args, arg_type, required)
-            num_tuple = num_tuples - 1
+            arg_dict = create_arg_dict(args[:3], arg_type, required)
             arg_list.append(arg_dict)
     return arg_list
 
@@ -141,6 +143,8 @@ def create_arg_dict(arg_data, arg_type, required):
     type_str = opt_type if opt_type not in TYPE_MAP.keys() else TYPE_MAP[opt_type]
     if arg_type == 'ARG_TUPLE':
         type_str = 'tuple'
+    if arg_type == 'ARG_MULTITUPLE':
+        type_str = 'multituple'
     is_input = True
     if opt_type == 'OUTFILE':
         is_input = False
@@ -291,6 +295,9 @@ def create_template(tool: str):
     template += f"\n    flag_str = ''\n"
     template += f"\n    opt_args = f''\n"
 
+    has_multituple = False
+    template += f"\n    multituples = []\n"
+
     for kwarg in kwarg_list:
         if kwarg['opt']:
             flag = kwarg['flag']
@@ -309,6 +316,8 @@ def create_template(tool: str):
             template += f"\n    if " + name + " != None:\n        "
             if kwarg['type'] == 'tuple':
                 template += "opt_args += f\"{" + f"\' \'.join([str(arg) for arg in {name}])" + "} \"\n"
+            elif kwarg['type'] == 'multituple':
+                template += f"multituples.append({name})"
             else:
                 template += "opt_args += {" + name + "}\n" 
             
@@ -319,9 +328,13 @@ def create_template(tool: str):
         if arg['type'] == 'array' or arg['type'] == 'OUTFILE':
             arg_names += arg['name'] + " "
         elif arg['input'] and arg['type'] == 'tuple':
-            arg_names += "{" + f"' '.join([str(arg) for arg in {arg['name']}])" + "} "
+            arg_names += "{" + f"' '.join([str(arg) for arg in {arg['name']}])" + "} " 
+        elif arg['input'] and arg['type'] == 'multituple':
+            template += f"\n    multituples.append({arg['name']})"
         else:
             arg_names += "{" + arg['name'] + "} "
+    
+    arg_names += "{" + f"' '.join([' '.join(arg) for arg in zip(multituples)])" + "} "
 
     template += f'\n    cmd_str += f\"{arg_names} \"'
 
