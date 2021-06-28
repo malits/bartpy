@@ -317,7 +317,7 @@ def create_template(tool: str):
             if kwarg['type'] == 'tuple':
                 template += "opt_args += f\"{" + f"\' \'.join([str(arg) for arg in {name}])" + "} \"\n"
             elif kwarg['type'] == 'multituple':
-                template += f"multituples.append({name})"
+                template += f"multituples.append({name}) \n"
             else:
                 template += "opt_args += {" + name + "}\n" 
             
@@ -330,7 +330,7 @@ def create_template(tool: str):
         elif arg['input'] and arg['type'] == 'tuple':
             arg_names += "{" + f"' '.join([str(arg) for arg in {arg['name']}])" + "} " 
         elif arg['input'] and arg['type'] == 'multituple':
-            template += f"\n    multituples.append({arg['name']})"
+            template += f"\n    multituples.append({arg['name']})\n   "
         else:
             arg_names += "{" + arg['name'] + "} "
     

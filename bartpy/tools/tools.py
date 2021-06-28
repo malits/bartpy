@@ -309,7 +309,9 @@ def casorati(dim, kern):
     multituples = []
     cmd_str += flag_str + opt_args + ' '
     multituples.append(dim)
+   
     multituples.append(kern)
+   
     cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
@@ -593,9 +595,11 @@ def copy(dim=None, pos=None):
     multituples = []
 
     if dim != None:
-        multituples.append(dim)
+        multituples.append(dim) 
+
     if pos != None:
-        multituples.append(pos)    cmd_str += flag_str + opt_args + ' '
+        multituples.append(pos) 
+    cmd_str += flag_str + opt_args + ' '
     cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
@@ -1122,8 +1126,11 @@ def extract(dim, start, end):
     multituples = []
     cmd_str += flag_str + opt_args + ' '
     multituples.append(dim)
+   
     multituples.append(start)
+   
     multituples.append(end)
+   
     cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
@@ -2902,7 +2909,9 @@ def resize(dim, size, c=None):
         flag_str += f'-c '
     cmd_str += flag_str + opt_args + ' '
     multituples.append(dim)
+   
     multituples.append(size)
+   
     cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
@@ -3444,7 +3453,9 @@ def slice(dim, pos):
     multituples = []
     cmd_str += flag_str + opt_args + ' '
     multituples.append(dim)
+   
     multituples.append(pos)
+   
     cmd_str += f"{' '.join([' '.join(arg) for arg in zip(multituples)])}  "
 
     print(cmd_str)
