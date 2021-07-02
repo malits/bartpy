@@ -4,10 +4,8 @@ import re
 import subprocess
 
 
-TOOLS_PATH = '../tools/tools.py'
+TOOLS_PATH = 'bartpy/tools/tools.py'
 BART_PATH = os.environ['TOOLBOX_PATH']
-
-# TODO: better handling for OPT SELECT
 
 ARG_MAP = {}
 TYPE_MAP = {
@@ -21,18 +19,6 @@ TYPE_MAP = {
     "LONG": 'long',
     "TUPLE": 'tuple',
 }
-
-def argparse(**kwargs):
-    """
-    Parse Pythonic keyword args to command-line flags
-    """
-    argv = ""
-    argc = 1
-    for flag, value in kwargs.items():
-        argv += f"-{flag} {value} "
-        argc += 1
-    return argc, argv.rstrip()
-
 
 def get_tools():
     """
@@ -65,9 +51,9 @@ def get_interface_docstring(tool: str):
     # first element of these arrays is empty str
     name, usage_str, docstring, pos_str, opt_args = docs[1:]
     arg_list = parse_pos_args(pos_str)
-    #TODO: remove when tuples are handled
-    if not arg_list:
-        return
+    # #TODO: remove when tuples are handled
+    # if not arg_list:
+    #     return
     arg_list = arg_list + parse_opt_args(opt_args)
     pos_args, kw_args = [], []
     has_output = False
@@ -122,14 +108,12 @@ def parse_pos_args(pos_str: str):
             required = True
         if arg_type == 'ARG_TUPLE' and num_arg != '1':
             parse_tuple = True
+            num_tuples = int(num_tuples)
             tuple_args = [x.strip() for x in arg.split('\n\t')[1:]]
             tuple_arg_lists = [[s.strip() for s in lst.split(",")] for lst in tuple_args]
             arg_list.extend([create_arg_dict(lst, 'ARG_MULTITUPLE', required) for lst in tuple_arg_lists])
-        elif 'ARG' in arg_type and not parse_tuple:
+        elif 'ARG' in arg_type:
             arg_dict = create_arg_dict(args[-3:], arg_type, required)
-            arg_list.append(arg_dict)
-        elif parse_tuple and num_tuples:
-            arg_dict = create_arg_dict(args[:3], arg_type, required)
             arg_list.append(arg_dict)
     return arg_list
 
@@ -323,7 +307,8 @@ def create_template(tool: str):
             
     template += "    cmd_str += flag_str + opt_args + ' '"
 
-    arg_names = ""
+    arg_names = "{" + f"' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()" + "} "
+
     for arg in arg_list:
         if arg['type'] == 'array' or arg['type'] == 'OUTFILE':
             arg_names += arg['name'] + " "
@@ -334,8 +319,6 @@ def create_template(tool: str):
         else:
             arg_names += "{" + arg['name'] + "} "
     
-    arg_names += "{" + f"' '.join([' '.join(arg) for arg in zip(multituples)])" + "} "
-
     template += f'\n    cmd_str += f\"{arg_names} \"'
 
     for arg in arg_list:
@@ -343,7 +326,7 @@ def create_template(tool: str):
         if arg['input'] and arg['type'] == 'array':
             template += f"\n    cfl.writecfl(\'{name}\', {name})"
 
-    template += "\n\n    print(cmd_str)\n\n    os.system(cmd_str)\n"
+    template += "\n\n    os.system(cmd_str)\n"
 
     # TODO: fix optional output (estdelay)
     if template_dict['has_output']:

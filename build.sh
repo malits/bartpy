@@ -1,2 +1,2 @@
 cd bartpy/utils
-python3 argparse.py
+python3 build.py

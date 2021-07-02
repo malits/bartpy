@@ -5,6 +5,8 @@ import sys
 
 import numpy as np
 
+from build_tools.utils import write_tool_methods
+
 #os.environ['CC'] = 'gcc-mp-6'
 
 BART_PATH = os.environ['TOOLBOX_PATH']
@@ -70,6 +72,10 @@ iter_module = Extension('_italgos',
                                    'openblas', 'fftw3f', 'fftw3', 'fftw3f_threads',],
                      library_dirs=[f'{BART_PATH}/lib/', '/opt/local/include/', '/opt/local/lib/'],)
 
+print('[INFO] Writing Tool Methods')
+write_tool_methods()
+print('[INFO] Complete')
+print('[INFO] Installing Library')
 setup(
     name="bartpy",
     version="0.0",
