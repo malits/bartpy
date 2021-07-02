@@ -25,7 +25,7 @@ For users looking to integrate BART functions into existing Python workflows, an
 
 [BART](https://github.com/mrirecon/bart) version 0.7.00. It is important that running a bart command with the `--interface` option is successful. For example, you should see something like the following for running `bart fft --interface`:
 
-[interface](assets/interface.png)
+![interface](assets/interface.png)
 
 Ensure you have Python >= 3.6 and run `pip install -r requirements.txt` to install necessary dependencies.
 
