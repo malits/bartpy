@@ -180,7 +180,8 @@ def parse_opt_args(opt_str: str):
             'type': type_str,
             'opt': True,
             'desc': desc,
-            'is_long_opt': is_long_opt
+            'is_long_opt': is_long_opt,
+            'input': True,
         })
     return opt_list
 
@@ -224,12 +225,17 @@ def create_arg_str(arg_dict, kwarg_dict):
     """
     arg_str = '('
     formatted_args = []
+    input_args = []
     for arg in arg_dict:
         if arg['type'] == 'OUTFILE':
             continue
         arg_name = arg['name']
-        formatted_args.append(arg_name)
-        ARG_MAP[arg_name] = arg_name
+        if arg['input'] and arg['type'] == 'array':
+            input_args.append(arg_name)
+        else:
+            formatted_args.append(arg_name)
+            ARG_MAP[arg_name] = arg_name
+    formatted_args = input_args + formatted_args
     #arg_list = varlen_to_arr(formatted_args)
     arg_list = formatted_args
     if len(arg_list) > 0:
@@ -286,28 +292,46 @@ def create_template(tool: str):
         if kwarg['opt']:
             flag = kwarg['flag']
             arg_name = kwarg['name']
-            template += f"\n    if " + arg_name + " != None:\n    "
+            if kwarg['type'] == 'array':
+                template += f"\n    if not isinstance({arg_name}, type(None)):\n    "
+                template += f"    cfl.writecfl(\'{arg_name}\', {arg_name})\n    "
+            else:
+                template += f"\n    if " + arg_name + " != None:\n    "
             if kwarg['is_long_opt']:
                 template += f"    flag_str += f'--{flag} "
+            elif kwarg['type'] == 'array':
+                template += f"    flag_str += '-{flag} "
             else:
                 template += f"    flag_str += f'-{flag} "
-            if kwarg['type'] != 'bool':
-                template += '{' + arg_name + "} '\n"
+            
+            if kwarg['type'] == 'array':
+                template += arg_name + " '\n"
+            elif kwarg['type'] == 'VEC3':
+                template +=  "{" + f"\":\".join([str(x) for x in {arg_name}])" + "}" + " '\n"
+            elif kwarg['type'] == 'bool':
+                template += "'\n"    
             else:
-                template += "'\n"
+                template += '{' + arg_name + "} '\n"
+            
         if not kwarg['opt']:
             name = kwarg['name']
-            template += f"\n    if " + name + " != None:\n        "
+            if kwarg['type'] == 'array':
+                template += f"\n    if not isinstance({name}, type(None)):\n    "
+            else:
+                template += f"\n    if " + name + " != None:\n        "
             if kwarg['type'] == 'tuple':
                 template += "opt_args += f\"{" + f"\' \'.join([str(arg) for arg in {name}])" + "} \"\n"
             elif kwarg['type'] == 'multituple':
                 template += f"multituples.append({name}) \n"
             else:
-                template += "opt_args += {" + name + "}\n" 
+                template += "    opt_args += '{" + name + "}'\n" 
             
-    template += "    cmd_str += flag_str + opt_args + ' '"
+    template += "    cmd_str += flag_str + opt_args + '  '\n"
 
     arg_names = "{" + f"' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()" + "} "
+
+    output_names = ""
+    input_names = ""
 
     for arg in arg_list:
         if arg['type'] == 'array' or arg['type'] == 'OUTFILE':
@@ -326,6 +350,8 @@ def create_template(tool: str):
         if arg['input'] and arg['type'] == 'array':
             template += f"\n    cfl.writecfl(\'{name}\', {name})"
 
+    template += "\n\n    if DEBUG:"
+    template += "\n        print(cmd_str)\n"
     template += "\n\n    os.system(cmd_str)\n"
 
     # TODO: fix optional output (estdelay)
@@ -349,6 +375,8 @@ def write_tool_methods():
             pass
     template_str = 'from ..utils import cfl\nimport os\n\n\n'
     template_str += "BART_PATH=os.environ['TOOLBOX_PATH'] + '/bart'\n\n\n"
+    template_str += "DEBUG=False\n\n\n"
+    template_str += "def set_debug(status):\n\n    global DEBUG\n    DEBUG=status\n\n\n"
     tool_lst = get_tools()[4:]
     for tool in tool_lst:
         template_str += create_template(tool)
