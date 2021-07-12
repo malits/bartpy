@@ -296,7 +296,7 @@ def create_template(tool: str):
                 template += f"\n    if not isinstance({arg_name}, type(None)):\n    "
                 template += f"    cfl.writecfl(\'{arg_name}\', {arg_name})\n    "
             else:
-                template += f"\n    if " + arg_name + " != None:\n    "
+                template += f"\n    if " + arg_name + " is not None:\n    "
             if kwarg['is_long_opt']:
                 template += f"    flag_str += f'--{flag} "
             elif kwarg['type'] == 'array':
