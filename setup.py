@@ -78,7 +78,7 @@ print('[INFO] Complete')
 print('[INFO] Installing Library')
 setup(
     name="bartpy",
-    version="0.0",
+    version="0.1",
     author="mrirecon",
     author_email="mrirecon@lists.eecs.berkeley.edu",
     description="Python interface for BART: the Berkeley Advanced Reconstruction Toolbox",
@@ -89,7 +89,7 @@ setup(
         "Operating System :: OS X",
         "Operating System :: Linux"
     ],
-#     ext_modules = [simu, fft, linops, iter_module],
+    ext_modules = [iter_module],
     package_dir = {},
     packages = ["bartpy", "bartpy.utils", "bartpy.tools"],
 )

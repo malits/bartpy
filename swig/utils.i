@@ -77,7 +77,7 @@
     }
 
 
-%typemap(in) bool bool_in
+%typemap(in) (bool bool_in)
     (int bool_var)
     {
         bool_var = PyObject_IsTrue($input);
