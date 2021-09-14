@@ -1,2 +1,1 @@
-cd bartpy/utils
-python3 build.py
+python3 build_tools/utils.py

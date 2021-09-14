@@ -25,7 +25,8 @@ TYPE_MAP = {
     "TUPLE": 'tuple',
     "ARG_TUPLE": 'tuple',
     "ARG_MULTITUPLE": 'multituple',
-    "VEC3": 'list'
+    "VEC3": 'list',
+    "CLEAR": 'bool'
 }
 
 def get_tools():
@@ -62,7 +63,6 @@ def parse_interface(tool: str):
 
     returns: dictionary to create template
     """
-
     docs_out = subprocess.Popen([f'{BART_PATH}/bart', tool, '--interface'], stdout=subprocess.PIPE).communicate()
     docs = docs_out[0].decode('utf-8')
     docs = re.split(r'name:|usage_str:|help_str:|positional\ arguments:|options:', docs)
@@ -77,6 +77,8 @@ def parse_interface(tool: str):
             pos_args.append(arg)
         elif not arg['required'] and arg['type'] != 'OUTFILE':
             kw_args.append(arg)
+        elif not arg['required'] and arg['type'] == 'OUTFILE':
+            pos_args.append(arg)
         if arg['type'] == 'OUTFILE':
             has_output = True
     
@@ -341,13 +343,16 @@ def create_template(tool: str):
     has_multituple = False
     template += f"\n\tmultituples = []\n"
 
+    template += f"\n\tif not os.path.exists('tmp'):"
+    template += f"\n\t\tos.makedirs('tmp')\n"
+
     for kwarg in kwarg_list:
         if kwarg['opt']:
             flag = kwarg['flag']
             arg_name = kwarg['name']
             if kwarg['type'] == 'array':
                 template += f"\n\tif not isinstance({arg_name}, type(None)):\n\t"
-                template += f"\tcfl.writecfl(\'{arg_name}\', {arg_name})\n\t"
+                template += f"\tcfl.writecfl(\'tmp/{arg_name}\', {arg_name})\n\t"
             else:
                 template += f"\n\tif " + arg_name + " is not None:\n\t"
             if kwarg['is_long_opt']:
@@ -401,7 +406,7 @@ def create_template(tool: str):
     for arg in arg_list:
         name = arg['name']
         if arg['input'] and arg['type'] == 'array':
-            template += f"\n\tcfl.writecfl(\'{name}\', {name})"
+            template += f"\n\tcfl.writecfl(\'tmp/{name}\', {name})"
 
     template += "\n\n\tif DEBUG:"
     template += "\n\t\tprint(cmd_str)\n"
@@ -409,12 +414,17 @@ def create_template(tool: str):
 
     # TODO: fix optional output (estdelay)
     if template_dict['has_output']:
-        return_str = '\n\treturn '
+        output_str = '\n\toutputs = '
+        clean_str = ""
+        return_str = '\n\treturn outputs'
         for arg in arg_list:
             name = arg['name']
             if not arg['input']:
-                return_str += f"cfl.readcfl('{name}'), "
-        template += return_str.rstrip(', ')
+                output_str += f"cfl.readcfl('tmp/{name}'), "
+                clean_str += f"\n\tos.remove(\'tmp/{name}\')"
+        template += output_str.rstrip(', ')
+        template += clean_str
+        template += return_str
 
     return template.strip()
 
