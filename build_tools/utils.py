@@ -124,20 +124,20 @@ def parse_pos_args(pos_str: str):
             continue
         
         required_str, arg_type, num_arg = [x.strip() for x in args[:3]]
-        
+
         required = False       
         if required_str == 'true':
             required = True
         
         # num_arg > 1 indicates a multituple (more than one arg/tuple required)
         if arg_type == 'ARG_TUPLE' and num_arg != '1': 
+
             num_tuples = int(num_tuples)
             # tuple_args is a list of tuple argument interface strings
             # each element of tuple_arg_lists is a list of the form [OPTION_TYPE, SIZE, NAME]
             tuple_args = [x.strip() for x in arg.split('\n\t')[1:]]
             tuple_arg_lists = [[s.strip() for s in lst.split(",")] for lst in tuple_args]
-            arg_list.extend([create_arg_dict(lst, 'ARG_MULTITUPLE', required) for lst in tuple_arg_lists])
-
+            arg_list.extend([create_arg_dict(lst, 'ARG_MULTITUPLE', required) for lst in tuple_arg_lists])      
         elif 'ARG' in arg_type:
             # for non-multituple args, last three elements of the 'arg' output are OPTION_TYPE, SIZE, and NAME
             arg_dict = create_arg_dict(args[-3:], arg_type, required)
@@ -167,6 +167,12 @@ def create_arg_dict(arg_data, arg_type, required):
     is_input = True
     if opt_type == 'OUTFILE':
         is_input = False
+
+    # Edge cases to handle multituples
+    if arg_type == 'ARG_MULTITUPLE':
+        type_str = 'multituple'
+    elif arg_type == 'ARG_TUPLE':
+        type_str = 'tuple'
     
     arg_dict = {
         'name': format_string(arg_name),
@@ -352,7 +358,7 @@ def create_template(tool: str):
             arg_name = kwarg['name']
             if kwarg['type'] == 'array':
                 template += f"\n\tif not isinstance({arg_name}, type(None)):\n\t"
-                template += f"\tcfl.writecfl(\'{arg_name}\', {arg_name})\n\t"
+                template += f"\tcfl.writecfl(NAME + \'{arg_name}\', {arg_name})\n\t"
             else:
                 template += f"\n\tif " + arg_name + " is not None:\n\t"
             if kwarg['is_long_opt']:
@@ -370,7 +376,7 @@ def create_template(tool: str):
                 template += "'\n"    
             else:
                 template += '{' + arg_name + "} '\n"
-            
+
         if not kwarg['opt']:
             name = kwarg['name']
             if kwarg['type'] == 'array':
@@ -381,6 +387,8 @@ def create_template(tool: str):
                 template += "opt_args += f\"{" + f"\' \'.join([str(arg) for arg in {name}])" + "} \"\n"
             elif kwarg['type'] == 'multituple':
                 template += f"multituples.append({name}) \n"
+            elif kwarg['type'] == 'array':
+                template += "\topt_args += 'NAME + {" + name + "}'\n" 
             else:
                 template += "\topt_args += '{" + name + "}'\n" 
             
@@ -393,7 +401,7 @@ def create_template(tool: str):
 
     for arg in arg_list:
         if arg['type'] == 'array' or arg['type'] == 'OUTFILE':
-            arg_names += arg['name'] + " "
+            arg_names += "{NAME}" + arg['name'] + " "
         elif arg['input'] and arg['type'] == 'tuple':
             arg_names += "{" + f"' '.join([str(arg) for arg in {arg['name']}])" + "} " 
         elif arg['input'] and arg['type'] == 'multituple':
@@ -406,7 +414,7 @@ def create_template(tool: str):
     for arg in arg_list:
         name = arg['name']
         if arg['input'] and arg['type'] == 'array':
-            template += f"\n\tcfl.writecfl(\'{name}\', {name})"
+            template += f"\n\tcfl.writecfl(NAME + \'{name}\', {name})"
 
     template += "\n\n\tif DEBUG:"
     template += "\n\t\tprint(cmd_str)\n"
@@ -420,9 +428,9 @@ def create_template(tool: str):
         for arg in arg_list:
             name = arg['name']
             if not arg['input']:
-                output_str += f"cfl.readcfl('{name}'), "
-                clean_str += f"\n\tos.remove(\'{name}.hdr\')"
-                clean_str += f"\n\tos.remove(\'{name}.cfl\')"
+                output_str += f"cfl.readcfl(NAME + '{name}'), "
+                # clean_str += f"\n\tos.remove(\'{name}.hdr\')"
+                # clean_str += f"\n\tos.remove(\'{name}.cfl\')"
         template += output_str.rstrip(', ')
         template += clean_str
         template += return_str
@@ -437,10 +445,11 @@ def write_tool_methods():
     if not os.path.exists(TOOLS_PATH):
         with open(TOOLS_PATH, 'w+'):
             pass
-    template_str = 'from ..utils import cfl\nimport os\n\n\n'
-    template_str += "BART_PATH=os.environ['TOOLBOX_PATH'] + '/bart'\n\n\n"
-    template_str += "DEBUG=False\n\n\n"
-    template_str += "def set_debug(status):\n\n\tglobal DEBUG\n\tDEBUG=status\n\n\n"
+    template_str = 'from ..utils import cfl\nimport os\nimport tempfile as tmp\n\n'
+    template_str += "BART_PATH=os.environ['TOOLBOX_PATH'] + '/bart'\n"
+    template_str += "DEBUG=False\n"
+    template_str += "NAME=tmp.NamedTemporaryFile().name\n\n"
+    template_str += "def set_debug(status):\n\tglobal DEBUG\n\tDEBUG=status\n\n\n"
     tool_lst = get_tools()[4:]
     for tool in tool_lst:
         template_str += create_template(tool)

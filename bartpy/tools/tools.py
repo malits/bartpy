@@ -1,15 +1,12 @@
 from ..utils import cfl
 import os
-
+import tempfile as tmp
 
 BART_PATH=os.environ['TOOLBOX_PATH'] + '/bart'
-
-
 DEBUG=False
-
+NAME=tmp.NamedTemporaryFile().name
 
 def set_debug(status):
-
     global DEBUG
     DEBUG=status
 
@@ -37,8 +34,8 @@ def avg(input, bitmask, w=None):
         flag_str += f'-w '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -46,9 +43,7 @@ def avg(input, bitmask, w=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def bench(T=None, S=None, s=None):
@@ -80,7 +75,7 @@ def bench(T=None, S=None, s=None):
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -88,9 +83,7 @@ def bench(T=None, S=None, s=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=None):
@@ -145,9 +138,9 @@ def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=No
         flag_str += f'-A {A} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} label src dst x  "
-    cfl.writecfl('label', label)
-    cfl.writecfl('src', src)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}label {NAME}src {NAME}dst {NAME}x  "
+    cfl.writecfl(NAME + 'label', label)
+    cfl.writecfl(NAME + 'src', src)
 
     if DEBUG:
         print(cmd_str)
@@ -155,16 +148,14 @@ def bin(label, src, l=None, o=None, R=None, C=None, r=None, c=None, a=None, A=No
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('dst')
-    os.remove('dst.hdr')
-    os.remove('dst.cfl')
+    outputs = cfl.readcfl(NAME + 'dst')
     return outputs
 
 def bitmask(dim=None, b=None):
     """
     Convert between a bitmask and set of dimensions.
 
-    :param dim long: None 
+    :param dim tuple: None 
     :param b bool: dimensions from bitmask use with exaclty one argument 
 
     """
@@ -179,7 +170,7 @@ def bitmask(dim=None, b=None):
     multituples = []
 
     if dim != None:
-            opt_args += '{dim}'
+        opt_args += f"{' '.join([str(arg) for arg in dim])} "
 
     if b is not None:
         flag_str += f'-b '
@@ -211,8 +202,8 @@ def cabs(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -220,9 +211,7 @@ def cabs(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def caldir(input, cal_size):
@@ -247,8 +236,8 @@ calibration region is automatically determined but limited by
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {cal_size} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {cal_size} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -256,9 +245,7 @@ calibration region is automatically determined but limited by
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def calmat(kspace, k=None, K=None, r=None, R=None, C=None):
@@ -299,8 +286,8 @@ def calmat(kspace, k=None, K=None, r=None, R=None, C=None):
         flag_str += f'-C '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace calibration_matrix  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}calibration_matrix  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -308,9 +295,7 @@ def calmat(kspace, k=None, K=None, r=None, R=None, C=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('calibration_matrix')
-    os.remove('calibration_matrix.hdr')
-    os.remove('calibration_matrix.cfl')
+    outputs = cfl.readcfl(NAME + 'calibration_matrix')
     return outputs
 
 def carg(input):
@@ -331,8 +316,8 @@ def carg(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -340,17 +325,15 @@ def carg(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def casorati(input, dim, kern):
     """
     Casorati matrix with kernel (kern1, ..., kernN) along dimensions (dim1, ..., dimN).
 
-    :param dim int:
-    :param kern int:
+    :param dim multituple:
+    :param kern multituple:
     :param input array:
 
     """
@@ -365,8 +348,12 @@ def casorati(input, dim, kern):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {kern} input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    
+    multituples.append(kern)
+    
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -374,9 +361,7 @@ def casorati(input, dim, kern):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
@@ -429,8 +414,8 @@ def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
         flag_str += f'-E '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace coeff_proj_kspace  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}coeff_proj_kspace  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -438,9 +423,7 @@ def cc(kspace, p=None, M=None, r=None, R=None, A=None, S=None, G=None, E=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('coeff_proj_kspace')
-    os.remove('coeff_proj_kspace.hdr')
-    os.remove('coeff_proj_kspace.cfl')
+    outputs = cfl.readcfl(NAME + 'coeff_proj_kspace')
     return outputs
 
 def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
@@ -486,9 +469,9 @@ def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
         flag_str += f'-E '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace cc_matrix proj_kspace  "
-    cfl.writecfl('kspace', kspace)
-    cfl.writecfl('cc_matrix', cc_matrix)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}cc_matrix {NAME}proj_kspace  "
+    cfl.writecfl(NAME + 'kspace', kspace)
+    cfl.writecfl(NAME + 'cc_matrix', cc_matrix)
 
     if DEBUG:
         print(cmd_str)
@@ -496,9 +479,7 @@ def ccapply(kspace, cc_matrix, p=None, u=None, t=None, S=None, G=None, E=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('proj_kspace')
-    os.remove('proj_kspace.hdr')
-    os.remove('proj_kspace.cfl')
+    outputs = cfl.readcfl(NAME + 'proj_kspace')
     return outputs
 
 def cdf97(input, bitmask, i=None):
@@ -524,8 +505,8 @@ def cdf97(input, bitmask, i=None):
         flag_str += f'-i '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -533,9 +514,7 @@ def cdf97(input, bitmask, i=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def circshift(input, dim, shift):
@@ -558,8 +537,8 @@ def circshift(input, dim, shift):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {shift} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {shift} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -567,9 +546,7 @@ def circshift(input, dim, shift):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def conj(input):
@@ -590,8 +567,8 @@ def conj(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -599,9 +576,7 @@ def conj(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def conv(input, kernel, bitmask):
@@ -624,9 +599,9 @@ def conv(input, kernel, bitmask):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input kernel output  "
-    cfl.writecfl('input', input)
-    cfl.writecfl('kernel', kernel)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}kernel {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
+    cfl.writecfl(NAME + 'kernel', kernel)
 
     if DEBUG:
         print(cmd_str)
@@ -634,9 +609,7 @@ def conv(input, kernel, bitmask):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def conway(input, P=None, n=None):
@@ -665,8 +638,8 @@ def conway(input, P=None, n=None):
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -674,9 +647,7 @@ def conway(input, P=None, n=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def copy(input, output, dim=None, pos=None):
@@ -685,8 +656,8 @@ def copy(input, output, dim=None, pos=None):
 
     :param input array:
     :param output INOUTFILE:
-    :param dim long: None 
-    :param pos long: None 
+    :param dim multituple: None 
+    :param pos multituple: None 
 
     """
     usage_string = "copy [dim1 pos1 ... dimN posN ] input output"
@@ -700,14 +671,14 @@ def copy(input, output, dim=None, pos=None):
     multituples = []
 
     if dim != None:
-            opt_args += '{dim}'
+        multituples.append(dim) 
 
     if pos != None:
-            opt_args += '{pos}'
+        multituples.append(pos) 
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input {output}  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {output}  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -733,8 +704,8 @@ def cpyphs(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -742,9 +713,7 @@ def cpyphs(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def creal(input):
@@ -765,8 +734,8 @@ def creal(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -774,9 +743,7 @@ def creal(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def crop(input, dimension, size):
@@ -799,8 +766,8 @@ def crop(input, dimension, size):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dimension} {size} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dimension} {size} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -808,9 +775,7 @@ def crop(input, dimension, size):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def delta(dims, flags, size):
@@ -833,7 +798,7 @@ def delta(dims, flags, size):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dims} {flags} {size} out  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dims} {flags} {size} {NAME}out  "
 
     if DEBUG:
         print(cmd_str)
@@ -841,9 +806,7 @@ def delta(dims, flags, size):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('out')
-    os.remove('out.hdr')
-    os.remove('out.cfl')
+    outputs = cfl.readcfl(NAME + 'out')
     return outputs
 
 def ecalib(kspace, t=None, c=None, k=None, K=None, r=None, R=None, m=None, S=None, W=None, I=None, _1=None, P=None, O=None, b=None, V=None, C=None, g=None, p=None, n=None, v=None, a=None, d=None):
@@ -953,8 +916,8 @@ Optionally outputs the eigenvalue maps.
         flag_str += f'-d {d} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace sensitivities ev_maps  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}sensitivities {NAME}ev_maps  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -962,11 +925,7 @@ Optionally outputs the eigenvalue maps.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('sensitivities'), cfl.readcfl('ev_maps')
-    os.remove('sensitivities.hdr')
-    os.remove('sensitivities.cfl')
-    os.remove('ev_maps.hdr')
-    os.remove('ev_maps.cfl')
+    outputs = cfl.readcfl(NAME + 'sensitivities'), cfl.readcfl(NAME + 'ev_maps')
     return outputs
 
 def ecaltwo(input, x, y, z, c=None, m=None, S=None, O=None, g=None):
@@ -1011,8 +970,8 @@ Optionally outputs the eigenvalue maps.
         flag_str += f'-g '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {x} {y} {z} input sensitivities ev_maps  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {x} {y} {z} {NAME}input {NAME}sensitivities {NAME}ev_maps  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1020,11 +979,7 @@ Optionally outputs the eigenvalue maps.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('sensitivities'), cfl.readcfl('ev_maps')
-    os.remove('sensitivities.hdr')
-    os.remove('sensitivities.cfl')
-    os.remove('ev_maps.hdr')
-    os.remove('ev_maps.cfl')
+    outputs = cfl.readcfl(NAME + 'sensitivities'), cfl.readcfl(NAME + 'ev_maps')
     return outputs
 
 def epg(C=None, M=None, H=None, F=None, S=None, B=None, _1=None, _2=None, b=None, o=None, r=None, e=None, f=None, s=None, n=None, u=None, v=None):
@@ -1112,7 +1067,7 @@ def epg(C=None, M=None, H=None, F=None, S=None, B=None, _1=None, _2=None, b=None
         flag_str += f'-v {v} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} signal_intensity configuration_states _rel___signal_derivatives configuration_derivatives  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}signal_intensity {NAME}configuration_states {NAME}_rel___signal_derivatives {NAME}configuration_derivatives  "
 
     if DEBUG:
         print(cmd_str)
@@ -1120,15 +1075,7 @@ def epg(C=None, M=None, H=None, F=None, S=None, B=None, _1=None, _2=None, b=None
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('signal_intensity'), cfl.readcfl('configuration_states'), cfl.readcfl('_rel___signal_derivatives'), cfl.readcfl('configuration_derivatives')
-    os.remove('signal_intensity.hdr')
-    os.remove('signal_intensity.cfl')
-    os.remove('configuration_states.hdr')
-    os.remove('configuration_states.cfl')
-    os.remove('_rel___signal_derivatives.hdr')
-    os.remove('_rel___signal_derivatives.cfl')
-    os.remove('configuration_derivatives.hdr')
-    os.remove('configuration_derivatives.cfl')
+    outputs = cfl.readcfl(NAME + 'signal_intensity'), cfl.readcfl(NAME + 'configuration_states'), cfl.readcfl(NAME + '_rel___signal_derivatives'), cfl.readcfl(NAME + 'configuration_derivatives')
     return outputs
 
 def estdelay(trajectory, data, R=None, p=None, n=None, r=None):
@@ -1166,9 +1113,9 @@ def estdelay(trajectory, data, R=None, p=None, n=None, r=None):
         flag_str += f'-r {r} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} trajectory data qf  "
-    cfl.writecfl('trajectory', trajectory)
-    cfl.writecfl('data', data)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}trajectory {NAME}data {NAME}qf  "
+    cfl.writecfl(NAME + 'trajectory', trajectory)
+    cfl.writecfl(NAME + 'data', data)
 
     if DEBUG:
         print(cmd_str)
@@ -1176,9 +1123,7 @@ def estdelay(trajectory, data, R=None, p=None, n=None, r=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('qf')
-    os.remove('qf.hdr')
-    os.remove('qf.cfl')
+    outputs = cfl.readcfl(NAME + 'qf')
     return outputs
 
 def estdims(traj):
@@ -1200,8 +1145,8 @@ Assume trajectory scaled to -DIM/2 to DIM/2 (ie dk=1/FOV=1)
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} traj  "
-    cfl.writecfl('traj', traj)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}traj  "
+    cfl.writecfl(NAME + 'traj', traj)
 
     if DEBUG:
         print(cmd_str)
@@ -1229,9 +1174,9 @@ def estshift(arg1, arg2, flags):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} arg1 arg2  "
-    cfl.writecfl('arg1', arg1)
-    cfl.writecfl('arg2', arg2)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} {NAME}arg1 {NAME}arg2  "
+    cfl.writecfl(NAME + 'arg1', arg1)
+    cfl.writecfl(NAME + 'arg2', arg2)
 
     if DEBUG:
         print(cmd_str)
@@ -1273,8 +1218,8 @@ def estvar(kspace, k=None, K=None, r=None, R=None):
         flag_str += f'-R {":".join([str(x) for x in R])} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -1286,9 +1231,9 @@ def extract(input, dim, start, end):
     """
     Extracts a sub-array along dims from index start to (not including) end.
 
-    :param dim long:
-    :param start long:
-    :param end long:
+    :param dim multituple:
+    :param start multituple:
+    :param end multituple:
     :param input array:
 
     """
@@ -1303,8 +1248,14 @@ def extract(input, dim, start, end):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {start} {end} input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    
+    multituples.append(start)
+    
+    multituples.append(end)
+    
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1312,9 +1263,7 @@ def extract(input, dim, start, end):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def fakeksp(image, kspace, sens, output, r=None):
@@ -1342,11 +1291,11 @@ def fakeksp(image, kspace, sens, output, r=None):
         flag_str += f'-r '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} image kspace sens output  "
-    cfl.writecfl('image', image)
-    cfl.writecfl('kspace', kspace)
-    cfl.writecfl('sens', sens)
-    cfl.writecfl('output', output)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}image {NAME}kspace {NAME}sens {NAME}output  "
+    cfl.writecfl(NAME + 'image', image)
+    cfl.writecfl(NAME + 'kspace', kspace)
+    cfl.writecfl(NAME + 'sens', sens)
+    cfl.writecfl(NAME + 'output', output)
 
     if DEBUG:
         print(cmd_str)
@@ -1385,8 +1334,8 @@ def fft(input, bitmask, u=None, i=None, n=None):
         flag_str += f'-n '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1394,9 +1343,7 @@ def fft(input, bitmask, u=None, i=None, n=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def fftmod(input, bitmask, b=None, i=None):
@@ -1426,8 +1373,8 @@ def fftmod(input, bitmask, b=None, i=None):
         flag_str += f'-i '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1435,9 +1382,7 @@ def fftmod(input, bitmask, b=None, i=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def fftrot(input, dim1, dim2, theta):
@@ -1461,8 +1406,8 @@ def fftrot(input, dim1, dim2, theta):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim1} {dim2} {theta} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim1} {dim2} {theta} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1470,9 +1415,7 @@ def fftrot(input, dim1, dim2, theta):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def fftshift(input, bitmask, b=None):
@@ -1498,8 +1441,8 @@ def fftshift(input, bitmask, b=None):
         flag_str += f'-b '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1507,9 +1450,7 @@ def fftshift(input, bitmask, b=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def filter(input, m=None, l=None):
@@ -1538,8 +1479,8 @@ def filter(input, m=None, l=None):
         flag_str += f'-l {l} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1547,9 +1488,7 @@ def filter(input, m=None, l=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def flatten(input):
@@ -1570,8 +1509,8 @@ def flatten(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1579,9 +1518,7 @@ def flatten(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def flip(input, bitmask):
@@ -1603,8 +1540,8 @@ def flip(input, bitmask):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1612,9 +1549,7 @@ def flip(input, bitmask):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def fmac(input1, input2=None, A=None, C=None, s=None):
@@ -1640,7 +1575,7 @@ If <input2> is not specified, assume all-ones.
     multituples = []
 
     if not isinstance(input2, type(None)):
-        opt_args += '{input2}'
+        opt_args += 'NAME + {input2}'
 
     if A is not None:
         flag_str += f'-A '
@@ -1652,8 +1587,8 @@ If <input2> is not specified, assume all-ones.
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input1 output  "
-    cfl.writecfl('input1', input1)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input1 {NAME}output  "
+    cfl.writecfl(NAME + 'input1', input1)
 
     if DEBUG:
         print(cmd_str)
@@ -1661,9 +1596,7 @@ If <input2> is not specified, assume all-ones.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def homodyne(input, dim, fraction, r=None, I=None, C=None, P=None, n=None):
@@ -1700,15 +1633,15 @@ def homodyne(input, dim, fraction, r=None, I=None, C=None, P=None, n=None):
         flag_str += f'-C '
 
     if not isinstance(P, type(None)):
-        cfl.writecfl('P', P)
+        cfl.writecfl(NAME + 'P', P)
         flag_str += '-P P '
 
     if n is not None:
         flag_str += f'-n '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {fraction} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {fraction} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1716,9 +1649,7 @@ def homodyne(input, dim, fraction, r=None, I=None, C=None, P=None, n=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def index(dim, size):
@@ -1740,7 +1671,7 @@ def index(dim, size):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {size} name  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {size} {NAME}name  "
 
     if DEBUG:
         print(cmd_str)
@@ -1748,9 +1679,7 @@ def index(dim, size):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('name')
-    os.remove('name.hdr')
-    os.remove('name.cfl')
+    outputs = cfl.readcfl(NAME + 'name')
     return outputs
 
 def invert(input):
@@ -1771,8 +1700,8 @@ def invert(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1780,9 +1709,7 @@ def invert(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def itsense(sensitivities, kspace, pattern, alpha):
@@ -1807,10 +1734,10 @@ with l2-regularization.
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {alpha} sensitivities kspace pattern output  "
-    cfl.writecfl('sensitivities', sensitivities)
-    cfl.writecfl('kspace', kspace)
-    cfl.writecfl('pattern', pattern)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {alpha} {NAME}sensitivities {NAME}kspace {NAME}pattern {NAME}output  "
+    cfl.writecfl(NAME + 'sensitivities', sensitivities)
+    cfl.writecfl(NAME + 'kspace', kspace)
+    cfl.writecfl(NAME + 'pattern', pattern)
 
     if DEBUG:
         print(cmd_str)
@@ -1818,19 +1745,17 @@ with l2-regularization.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
-def join(input, dimension, output, a=None):
+def join(dimension, input, output, a=None):
     """
     Join input files along {dimensions}. All other dimensions must have the same size.
      Example 1: join 0 slice_001 slice_002 slice_003 full_data
      Example 2: join 0 `seq -f "slice_%%03g" 0 255` full_data
 
     :param dimension int:
-    :param input array:
+    :param input tuple:
     :param output INOUTFILE:
     :param a bool: append - only works for cfl files! 
 
@@ -1849,8 +1774,7 @@ def join(input, dimension, output, a=None):
         flag_str += f'-a '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dimension} input {output}  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dimension} {' '.join([str(arg) for arg in input])} {output}  "
 
     if DEBUG:
         print(cmd_str)
@@ -1884,8 +1808,8 @@ def looklocker(input, t=None, D=None):
         flag_str += f'-D {D} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1893,9 +1817,7 @@ def looklocker(input, t=None, D=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=None, l=None, u=None, v=None, H=None, p=None, n=None, g=None):
@@ -1977,8 +1899,8 @@ def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=No
         flag_str += f'-g '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output o  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output {NAME}o  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -1986,9 +1908,7 @@ def lrmatrix(input, d=None, i=None, m=None, f=None, j=None, k=None, N=None, s=No
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None):
@@ -2032,7 +1952,7 @@ def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None):
         flag_str += f'-i {i} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -2040,9 +1960,7 @@ def mandelbrot(s=None, n=None, t=None, z=None, r=None, i=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def mip(input, bitmask, m=None, a=None):
@@ -2072,8 +1990,8 @@ def mip(input, bitmask, m=None, a=None):
         flag_str += f'-a '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -2081,9 +1999,7 @@ def mip(input, bitmask, m=None, a=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, R=None, T=None, j=None, u=None, C=None, s=None, B=None, b=None, d=None, N=None, f=None, p=None, J=None, M=None, O=None, g=None, I=None, t=None, o=None, k=None, kfilter_1=None, kfilter_2=None, n=None, no_alpha_min_exp_decay=None, sobolev_a=None, sobolev_b=None, fat_spec_0=None):
@@ -2193,7 +2109,7 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
         flag_str += f'-f {f} '
 
     if not isinstance(p, type(None)):
-        cfl.writecfl('p', p)
+        cfl.writecfl(NAME + 'p', p)
         flag_str += '-p p '
 
     if J is not None:
@@ -2209,11 +2125,11 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
         flag_str += f'-g '
 
     if not isinstance(I, type(None)):
-        cfl.writecfl('I', I)
+        cfl.writecfl(NAME + 'I', I)
         flag_str += '-I I '
 
     if not isinstance(t, type(None)):
-        cfl.writecfl('t', t)
+        cfl.writecfl(NAME + 't', t)
         flag_str += '-t t '
 
     if o is not None:
@@ -2244,9 +2160,9 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
         flag_str += f'--fat_spec_0 '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace TI_TE output sensitivities  "
-    cfl.writecfl('kspace', kspace)
-    cfl.writecfl('TI_TE', TI_TE)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}TI_TE {NAME}output {NAME}sensitivities  "
+    cfl.writecfl(NAME + 'kspace', kspace)
+    cfl.writecfl(NAME + 'TI_TE', TI_TE)
 
     if DEBUG:
         print(cmd_str)
@@ -2254,11 +2170,7 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output'), cfl.readcfl('sensitivities')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
-    os.remove('sensitivities.hdr')
-    os.remove('sensitivities.cfl')
+    outputs = cfl.readcfl(NAME + 'output'), cfl.readcfl(NAME + 'sensitivities')
     return outputs
 
 def mobafit(TE, echo_images, G=None, m=None, i=None, p=None, g=None):
@@ -2300,9 +2212,9 @@ def mobafit(TE, echo_images, G=None, m=None, i=None, p=None, g=None):
         flag_str += f'-g '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} TE echo_images paramters  "
-    cfl.writecfl('TE', TE)
-    cfl.writecfl('echo_images', echo_images)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}TE {NAME}echo_images {NAME}paramters  "
+    cfl.writecfl(NAME + 'TE', TE)
+    cfl.writecfl(NAME + 'echo_images', echo_images)
 
     if DEBUG:
         print(cmd_str)
@@ -2310,9 +2222,7 @@ def mobafit(TE, echo_images, G=None, m=None, i=None, p=None, g=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('paramters')
-    os.remove('paramters.hdr')
-    os.remove('paramters.cfl')
+    outputs = cfl.readcfl(NAME + 'paramters')
     return outputs
 
 def nlinv(kspace, i=None, R=None, M=None, d=None, c=None, N=None, m=None, U=None, f=None, p=None, t=None, I=None, g=None, S=None, s=None, a=None, b=None, P=None, n=None, w=None, lowmem=None):
@@ -2383,15 +2293,15 @@ the sensitivities.
         flag_str += f'-f {f} '
 
     if not isinstance(p, type(None)):
-        cfl.writecfl('p', p)
+        cfl.writecfl(NAME + 'p', p)
         flag_str += '-p p '
 
     if not isinstance(t, type(None)):
-        cfl.writecfl('t', t)
+        cfl.writecfl(NAME + 't', t)
         flag_str += '-t t '
 
     if not isinstance(I, type(None)):
-        cfl.writecfl('I', I)
+        cfl.writecfl(NAME + 'I', I)
         flag_str += '-I I '
 
     if g is not None:
@@ -2422,8 +2332,8 @@ the sensitivities.
         flag_str += f'--lowmem '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace output sensitivities  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}output {NAME}sensitivities  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -2431,11 +2341,7 @@ the sensitivities.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output'), cfl.readcfl('sensitivities')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
-    os.remove('sensitivities.hdr')
-    os.remove('sensitivities.cfl')
+    outputs = cfl.readcfl(NAME + 'output'), cfl.readcfl(NAME + 'sensitivities')
     return outputs
 
 def noise(input, s=None, S=None, r=None, n=None):
@@ -2472,8 +2378,8 @@ def noise(input, s=None, S=None, r=None, n=None):
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -2481,9 +2387,7 @@ def noise(input, s=None, S=None, r=None, n=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def normalize(input, flags, b=None):
@@ -2509,8 +2413,8 @@ def normalize(input, flags, b=None):
         flag_str += f'-b '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -2518,9 +2422,7 @@ def normalize(input, flags, b=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def nrmse(reference, input, t=None, s=None):
@@ -2551,9 +2453,9 @@ i.e. norm(input - ref) / norm(ref)
         flag_str += f'-s '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} reference input  "
-    cfl.writecfl('reference', reference)
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}reference {NAME}input  "
+    cfl.writecfl(NAME + 'reference', reference)
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -2636,9 +2538,9 @@ def nufft(traj, input, a=None, i=None, d=None, D=None, t=None, r=None, c=None, l
         flag_str += f'--lowmem '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} traj input output  "
-    cfl.writecfl('traj', traj)
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}traj {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'traj', traj)
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -2646,9 +2548,7 @@ def nufft(traj, input, a=None, i=None, d=None, D=None, t=None, r=None, c=None, l
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def ones(dims, dim):
@@ -2656,7 +2556,7 @@ def ones(dims, dim):
     Create an array filled with ones with {dims} dimensions of size {dim1} to {dimn}.
 
     :param dims long:
-    :param dim long:
+    :param dim tuple:
 
     """
     usage_string = "ones dims dim1 ... dimN output"
@@ -2670,7 +2570,7 @@ def ones(dims, dim):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dims} {dim} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dims} {' '.join([str(arg) for arg in dim])} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -2678,9 +2578,7 @@ def ones(dims, dim):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def pattern(kspace, s=None):
@@ -2705,8 +2603,8 @@ def pattern(kspace, s=None):
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace pattern  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}pattern  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -2714,9 +2612,7 @@ def pattern(kspace, s=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('pattern')
-    os.remove('pattern.hdr')
-    os.remove('pattern.cfl')
+    outputs = cfl.readcfl(NAME + 'pattern')
     return outputs
 
 def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=None, N=None, B=None, x=None, g=None, _3=None, b=None, r=None):
@@ -2761,7 +2657,7 @@ def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=No
         flag_str += f'-k '
 
     if not isinstance(t, type(None)):
-        cfl.writecfl('t', t)
+        cfl.writecfl(NAME + 't', t)
         flag_str += '-t t '
 
     if c is not None:
@@ -2801,7 +2697,7 @@ def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=No
         flag_str += f'-r {r} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -2809,9 +2705,7 @@ def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=No
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, t=None, n=None, N=None, g=None, G=None, p=None, I=None, b=None, e=None, H=None, D=None, F=None, J=None, T=None, W=None, d=None, O=None, o=None, u=None, C=None, q=None, f=None, m=None, w=None, S=None, L=None, K=None, B=None, P=None, a=None, M=None, lowmem=None):
@@ -2889,7 +2783,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
         flag_str += f'-i {i} '
 
     if not isinstance(t, type(None)):
-        cfl.writecfl('t', t)
+        cfl.writecfl(NAME + 't', t)
         flag_str += '-t t '
 
     if n is not None:
@@ -2905,7 +2799,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
         flag_str += f'-G {G} '
 
     if not isinstance(p, type(None)):
-        cfl.writecfl('p', p)
+        cfl.writecfl(NAME + 'p', p)
         flag_str += '-p p '
 
     if I is not None:
@@ -2930,11 +2824,11 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
         flag_str += f'-J '
 
     if not isinstance(T, type(None)):
-        cfl.writecfl('T', T)
+        cfl.writecfl(NAME + 'T', T)
         flag_str += '-T T '
 
     if not isinstance(W, type(None)):
-        cfl.writecfl('W', W)
+        cfl.writecfl(NAME + 'W', W)
         flag_str += '-W W '
 
     if d is not None:
@@ -2974,7 +2868,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
         flag_str += f'-K '
 
     if not isinstance(B, type(None)):
-        cfl.writecfl('B', B)
+        cfl.writecfl(NAME + 'B', B)
         flag_str += '-B B '
 
     if P is not None:
@@ -2990,9 +2884,9 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
         flag_str += f'--lowmem '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace sensitivities output  "
-    cfl.writecfl('kspace', kspace)
-    cfl.writecfl('sensitivities', sensitivities)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}sensitivities {NAME}output  "
+    cfl.writecfl(NAME + 'kspace', kspace)
+    cfl.writecfl(NAME + 'sensitivities', sensitivities)
 
     if DEBUG:
         print(cmd_str)
@@ -3000,9 +2894,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def pocsense(kspace, sensitivities, i=None, r=None, l=None, g=None, o=None, m=None):
@@ -3048,9 +2940,9 @@ def pocsense(kspace, sensitivities, i=None, r=None, l=None, g=None, o=None, m=No
         flag_str += f'-m {m} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace sensitivities output  "
-    cfl.writecfl('kspace', kspace)
-    cfl.writecfl('sensitivities', sensitivities)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}sensitivities {NAME}output  "
+    cfl.writecfl(NAME + 'kspace', kspace)
+    cfl.writecfl(NAME + 'sensitivities', sensitivities)
 
     if DEBUG:
         print(cmd_str)
@@ -3058,9 +2950,7 @@ def pocsense(kspace, sensitivities, i=None, r=None, l=None, g=None, o=None, m=No
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def poisson(Y=None, Z=None, y=None, z=None, C=None, v=None, V=None, e=None, D=None, T=None, m=None, R=None, s=None):
@@ -3132,7 +3022,7 @@ def poisson(Y=None, Z=None, y=None, z=None, C=None, v=None, V=None, e=None, D=No
         flag_str += f'-s {s} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -3140,9 +3030,7 @@ def poisson(Y=None, Z=None, y=None, z=None, C=None, v=None, V=None, e=None, D=No
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def pol2mask(poly, X=None, Y=None):
@@ -3171,8 +3059,8 @@ def pol2mask(poly, X=None, Y=None):
         flag_str += f'-Y {Y} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} poly output  "
-    cfl.writecfl('poly', poly)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}poly {NAME}output  "
+    cfl.writecfl(NAME + 'poly', poly)
 
     if DEBUG:
         print(cmd_str)
@@ -3180,9 +3068,7 @@ def pol2mask(poly, X=None, Y=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def poly(L, N, a_):
@@ -3191,7 +3077,7 @@ def poly(L, N, a_):
 
     :param L int:
     :param N int:
-    :param a_ float:
+    :param a_ tuple:
 
     """
     usage_string = "poly L N a_1 ... a_N output"
@@ -3205,7 +3091,7 @@ def poly(L, N, a_):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {L} {N} {a_} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {L} {N} {' '.join([str(arg) for arg in a_])} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -3213,9 +3099,7 @@ def poly(L, N, a_):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def repmat(input, dimension, repetitions):
@@ -3238,8 +3122,8 @@ def repmat(input, dimension, repetitions):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dimension} {repetitions} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dimension} {repetitions} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3247,9 +3131,7 @@ def repmat(input, dimension, repetitions):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def reshape(input, flags, dim):
@@ -3257,7 +3139,7 @@ def reshape(input, flags, dim):
     Reshape selected dimensions.
 
     :param flags long:
-    :param dim long:
+    :param dim tuple:
     :param input array:
 
     """
@@ -3272,8 +3154,8 @@ def reshape(input, flags, dim):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} {dim} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} {' '.join([str(arg) for arg in dim])} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3281,17 +3163,15 @@ def reshape(input, flags, dim):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def resize(input, dim, size, c=None):
     """
     Resizes an array along dimensions to sizes by truncating or zero-padding.
 
-    :param dim int:
-    :param size int:
+    :param dim multituple:
+    :param size multituple:
     :param input array:
     :param c bool: center 
 
@@ -3310,8 +3190,12 @@ def resize(input, dim, size, c=None):
         flag_str += f'-c '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {size} input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    
+    multituples.append(size)
+    
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3319,9 +3203,7 @@ def resize(input, dim, size, c=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def rmfreq(traj, k, N=None):
@@ -3347,9 +3229,9 @@ def rmfreq(traj, k, N=None):
         flag_str += f'-N {N} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} traj k k_cor  "
-    cfl.writecfl('traj', traj)
-    cfl.writecfl('k', k)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}traj {NAME}k {NAME}k_cor  "
+    cfl.writecfl(NAME + 'traj', traj)
+    cfl.writecfl(NAME + 'k', k)
 
     if DEBUG:
         print(cmd_str)
@@ -3357,9 +3239,7 @@ def rmfreq(traj, k, N=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('k_cor')
-    os.remove('k_cor.hdr')
-    os.remove('k_cor.cfl')
+    outputs = cfl.readcfl(NAME + 'k_cor')
     return outputs
 
 def rof(input, llambda, flags):
@@ -3382,8 +3262,8 @@ def rof(input, llambda, flags):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {llambda} {flags} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {llambda} {flags} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3391,9 +3271,7 @@ def rof(input, llambda, flags):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def roistat(roi, input, b=None, C=None, S=None, M=None, D=None, E=None, V=None):
@@ -3443,9 +3321,9 @@ def roistat(roi, input, b=None, C=None, S=None, M=None, D=None, E=None, V=None):
         flag_str += f'-V '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} roi input output  "
-    cfl.writecfl('roi', roi)
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}roi {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'roi', roi)
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3453,9 +3331,7 @@ def roistat(roi, input, b=None, C=None, S=None, M=None, D=None, E=None, V=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def rss(input, bitmask):
@@ -3477,8 +3353,8 @@ def rss(input, bitmask):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3486,9 +3362,7 @@ def rss(input, bitmask):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def rtnlinv(kspace, i=None, R=None, M=None, d=None, c=None, N=None, m=None, U=None, f=None, p=None, t=None, I=None, C=None, g=None, S=None, a=None, b=None, T=None, w=None, x=None, A=None, s=None):
@@ -3560,19 +3434,19 @@ the sensitivities.
         flag_str += f'-f {f} '
 
     if not isinstance(p, type(None)):
-        cfl.writecfl('p', p)
+        cfl.writecfl(NAME + 'p', p)
         flag_str += '-p p '
 
     if not isinstance(t, type(None)):
-        cfl.writecfl('t', t)
+        cfl.writecfl(NAME + 't', t)
         flag_str += '-t t '
 
     if not isinstance(I, type(None)):
-        cfl.writecfl('I', I)
+        cfl.writecfl(NAME + 'I', I)
         flag_str += '-I I '
 
     if not isinstance(C, type(None)):
-        cfl.writecfl('C', C)
+        cfl.writecfl(NAME + 'C', C)
         flag_str += '-C C '
 
     if g is not None:
@@ -3603,8 +3477,8 @@ the sensitivities.
         flag_str += f'-s '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace output sensitivities  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}output {NAME}sensitivities  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -3612,11 +3486,7 @@ the sensitivities.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output'), cfl.readcfl('sensitivities')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
-    os.remove('sensitivities.hdr')
-    os.remove('sensitivities.cfl')
+    outputs = cfl.readcfl(NAME + 'output'), cfl.readcfl(NAME + 'sensitivities')
     return outputs
 
 def sake(kspace, i=None, s=None, o=None):
@@ -3650,8 +3520,8 @@ data using low-rank matrix completion.
         flag_str += f'-o {o} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace output  "
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}output  "
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -3659,9 +3529,7 @@ data using low-rank matrix completion.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def saxpy(input1, input2, scale):
@@ -3684,9 +3552,9 @@ def saxpy(input1, input2, scale):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {scale} input1 input2 output  "
-    cfl.writecfl('input1', input1)
-    cfl.writecfl('input2', input2)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {scale} {NAME}input1 {NAME}input2 {NAME}output  "
+    cfl.writecfl(NAME + 'input1', input1)
+    cfl.writecfl(NAME + 'input2', input2)
 
     if DEBUG:
         print(cmd_str)
@@ -3694,9 +3562,7 @@ def saxpy(input1, input2, scale):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def scale(input, factor):
@@ -3718,8 +3584,8 @@ def scale(input, factor):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {factor} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {factor} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3727,9 +3593,7 @@ def scale(input, factor):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def sdot(input1, input2):
@@ -3751,9 +3615,9 @@ def sdot(input1, input2):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input1 input2  "
-    cfl.writecfl('input1', input1)
-    cfl.writecfl('input2', input2)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input1 {NAME}input2  "
+    cfl.writecfl(NAME + 'input1', input1)
+    cfl.writecfl(NAME + 'input2', input2)
 
     if DEBUG:
         print(cmd_str)
@@ -3795,8 +3659,8 @@ def show(input, m=None, d=None, s=None, f=None):
         flag_str += f'-f {f} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3893,7 +3757,7 @@ def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=
         flag_str += f'-b {b} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} basis_functions  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}basis_functions  "
 
     if DEBUG:
         print(cmd_str)
@@ -3901,17 +3765,15 @@ def signal(F=None, B=None, T=None, M=None, G=None, fat=None, I=None, s=None, _0=
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('basis_functions')
-    os.remove('basis_functions.hdr')
-    os.remove('basis_functions.cfl')
+    outputs = cfl.readcfl(NAME + 'basis_functions')
     return outputs
 
 def slice(input, dim, pos):
     """
     Extracts a slice from positions along dimensions.
 
-    :param dim long:
-    :param pos long:
+    :param dim multituple:
+    :param pos multituple:
     :param input array:
 
     """
@@ -3926,8 +3788,12 @@ def slice(input, dim, pos):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim} {pos} input output  "
-    cfl.writecfl('input', input)
+    multituples.append(dim)
+    
+    multituples.append(pos)
+    
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3935,9 +3801,7 @@ def slice(input, dim, pos):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def spow(input, exponent):
@@ -3959,8 +3823,8 @@ def spow(input, exponent):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {exponent} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {exponent} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -3968,9 +3832,7 @@ def spow(input, exponent):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None, n=None, g=None, p=None, I=None, b=None, e=None, H=None, F=None, T=None, W=None, d=None, u=None, C=None, f=None, m=None, w=None, S=None):
@@ -4030,7 +3892,7 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
         flag_str += f'-i {i} '
 
     if not isinstance(t, type(None)):
-        cfl.writecfl('t', t)
+        cfl.writecfl(NAME + 't', t)
         flag_str += '-t t '
 
     if n is not None:
@@ -4040,7 +3902,7 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
         flag_str += f'-g '
 
     if not isinstance(p, type(None)):
-        cfl.writecfl('p', p)
+        cfl.writecfl(NAME + 'p', p)
         flag_str += '-p p '
 
     if I is not None:
@@ -4059,11 +3921,11 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
         flag_str += f'-F '
 
     if not isinstance(T, type(None)):
-        cfl.writecfl('T', T)
+        cfl.writecfl(NAME + 'T', T)
         flag_str += '-T T '
 
     if not isinstance(W, type(None)):
-        cfl.writecfl('W', W)
+        cfl.writecfl(NAME + 'W', W)
         flag_str += '-W W '
 
     if d is not None:
@@ -4088,9 +3950,9 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
         flag_str += f'-S '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} kspace sensitivities output  "
-    cfl.writecfl('kspace', kspace)
-    cfl.writecfl('sensitivities', sensitivities)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}kspace {NAME}sensitivities {NAME}output  "
+    cfl.writecfl(NAME + 'kspace', kspace)
+    cfl.writecfl(NAME + 'sensitivities', sensitivities)
 
     if DEBUG:
         print(cmd_str)
@@ -4098,9 +3960,7 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def squeeze(input):
@@ -4121,8 +3981,8 @@ def squeeze(input):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4130,9 +3990,7 @@ def squeeze(input):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def ssa(src, w=None, z=None, m=None, n=None, r=None, g=None):
@@ -4177,8 +4035,8 @@ def ssa(src, w=None, z=None, m=None, n=None, r=None, g=None):
         flag_str += f'-g {g} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} src EOF S backprojection  "
-    cfl.writecfl('src', src)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}src {NAME}EOF {NAME}S {NAME}backprojection  "
+    cfl.writecfl(NAME + 'src', src)
 
     if DEBUG:
         print(cmd_str)
@@ -4186,13 +4044,7 @@ def ssa(src, w=None, z=None, m=None, n=None, r=None, g=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('EOF'), cfl.readcfl('S'), cfl.readcfl('backprojection')
-    os.remove('EOF.hdr')
-    os.remove('EOF.cfl')
-    os.remove('S.hdr')
-    os.remove('S.cfl')
-    os.remove('backprojection.hdr')
-    os.remove('backprojection.cfl')
+    outputs = cfl.readcfl(NAME + 'EOF'), cfl.readcfl(NAME + 'S'), cfl.readcfl(NAME + 'backprojection')
     return outputs
 
 def std(input, bitmask):
@@ -4214,8 +4066,8 @@ def std(input, bitmask):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4223,9 +4075,7 @@ def std(input, bitmask):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def svd(input, e=None):
@@ -4250,8 +4100,8 @@ def svd(input, e=None):
         flag_str += f'-e '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input U S VH  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}U {NAME}S {NAME}VH  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4259,13 +4109,7 @@ def svd(input, e=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('U'), cfl.readcfl('S'), cfl.readcfl('VH')
-    os.remove('U.hdr')
-    os.remove('U.cfl')
-    os.remove('S.hdr')
-    os.remove('S.cfl')
-    os.remove('VH.hdr')
-    os.remove('VH.cfl')
+    outputs = cfl.readcfl(NAME + 'U'), cfl.readcfl(NAME + 'S'), cfl.readcfl(NAME + 'VH')
     return outputs
 
 def tgv(input, llambda, flags):
@@ -4288,8 +4132,8 @@ def tgv(input, llambda, flags):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {llambda} {flags} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {llambda} {flags} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4297,9 +4141,7 @@ def tgv(input, llambda, flags):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def threshold(input, llambda, H=None, W=None, L=None, D=None, B=None, j=None, b=None):
@@ -4349,8 +4191,8 @@ def threshold(input, llambda, H=None, W=None, L=None, D=None, B=None, j=None, b=
         flag_str += f'-b {b} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {llambda} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {llambda} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4358,9 +4200,7 @@ def threshold(input, llambda, H=None, W=None, L=None, D=None, B=None, j=None, b=
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def toimg(input, g=None, c=None, w=None, d=None, m=None, W=None):
@@ -4408,8 +4248,8 @@ will be looped over.
         flag_str += f'-W '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output_prefix  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output_prefix  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4417,9 +4257,7 @@ will be looped over.
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output_prefix')
-    os.remove('output_prefix.hdr')
-    os.remove('output_prefix.cfl')
+    outputs = cfl.readcfl(NAME + 'output_prefix')
     return outputs
 
 def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None, r=None, G=None, H=None, s=None, D=None, R=None, q=None, Q=None, O=None, _3=None, c=None, E=None, z=None, C=None, V=None):
@@ -4529,15 +4367,15 @@ def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None,
         flag_str += f'-z {z} '
 
     if not isinstance(C, type(None)):
-        cfl.writecfl('C', C)
+        cfl.writecfl(NAME + 'C', C)
         flag_str += '-C C '
 
     if not isinstance(V, type(None)):
-        cfl.writecfl('V', V)
+        cfl.writecfl(NAME + 'V', V)
         flag_str += '-V V '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -4545,9 +4383,7 @@ def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None,
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def transpose(input, dim1, dim2):
@@ -4570,8 +4406,8 @@ def transpose(input, dim1, dim2):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim1} {dim2} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dim1} {dim2} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4579,9 +4415,7 @@ def transpose(input, dim1, dim2):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n=None, a=None, A=None, L=None, P=None, M=None):
@@ -4654,8 +4488,8 @@ def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n
         flag_str += f'-M '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} dat_file output  "
-    cfl.writecfl('dat_file', dat_file)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}dat_file {NAME}output  "
+    cfl.writecfl(NAME + 'dat_file', dat_file)
 
     if DEBUG:
         print(cmd_str)
@@ -4663,9 +4497,7 @@ def twixread(dat_file, x=None, r=None, y=None, z=None, s=None, v=None, c=None, n
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def upat(Y=None, Z=None, y=None, z=None, c=None):
@@ -4705,7 +4537,7 @@ def upat(Y=None, Z=None, y=None, z=None, c=None):
         flag_str += f'-c {c} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -4713,9 +4545,7 @@ def upat(Y=None, Z=None, y=None, z=None, c=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def var(input, bitmask):
@@ -4737,8 +4567,8 @@ def var(input, bitmask):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4746,16 +4576,14 @@ def var(input, bitmask):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def vec(val):
     """
     Create a vector of values.
 
-    :param val CFL:
+    :param val tuple:
 
     """
     usage_string = "vec val1 ... valN output"
@@ -4769,7 +4597,7 @@ def vec(val):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {val} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {' '.join([str(arg) for arg in val])} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -4777,9 +4605,7 @@ def vec(val):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def version(t=None, V=None):
@@ -4854,8 +4680,8 @@ def walsh(input, r=None, R=None, b=None, B=None):
         flag_str += f'-B {":".join([str(x) for x in B])} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -4863,9 +4689,7 @@ def walsh(input, r=None, R=None, b=None, B=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def wave(maps, wave, kspace, r=None, b=None, i=None, s=None, c=None, t=None, e=None, g=None, f=None, H=None, v=None, w=None, l=None):
@@ -4953,10 +4777,10 @@ Expected dimensions:
         flag_str += f'-l '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} maps wave kspace output  "
-    cfl.writecfl('maps', maps)
-    cfl.writecfl('wave', wave)
-    cfl.writecfl('kspace', kspace)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}maps {NAME}wave {NAME}kspace {NAME}output  "
+    cfl.writecfl(NAME + 'maps', maps)
+    cfl.writecfl(NAME + 'wave', wave)
+    cfl.writecfl(NAME + 'kspace', kspace)
 
     if DEBUG:
         print(cmd_str)
@@ -4964,9 +4788,7 @@ Expected dimensions:
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def wavelet(input, bitmask, dim=None, a=None):
@@ -4975,7 +4797,7 @@ def wavelet(input, bitmask, dim=None, a=None):
 
     :param bitmask int:
     :param input array:
-    :param dim long: None 
+    :param dim tuple: None 
     :param a bool: adjoint (specify dims) 
 
     """
@@ -4990,14 +4812,14 @@ def wavelet(input, bitmask, dim=None, a=None):
     multituples = []
 
     if dim != None:
-            opt_args += '{dim}'
+        opt_args += f"{' '.join([str(arg) for arg in dim])} "
 
     if a is not None:
         flag_str += f'-a '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {bitmask} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -5005,9 +4827,7 @@ def wavelet(input, bitmask, dim=None, a=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def wavepsf(c=None, x=None, y=None, r=None, a=None, t=None, g=None, s=None, n=None):
@@ -5072,7 +4892,7 @@ bart fmac wY wZ wYZ
         flag_str += f'-n {n} '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -5080,9 +4900,7 @@ bart fmac wY wZ wYZ
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def whiten(input, ndata, o=None, c=None, n=None):
@@ -5108,20 +4926,20 @@ Optionally output whitening matrix and noise covariance matrix
     multituples = []
 
     if not isinstance(o, type(None)):
-        cfl.writecfl('o', o)
+        cfl.writecfl(NAME + 'o', o)
         flag_str += '-o o '
 
     if not isinstance(c, type(None)):
-        cfl.writecfl('c', c)
+        cfl.writecfl(NAME + 'c', c)
         flag_str += '-c c '
 
     if n is not None:
         flag_str += f'-n '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input ndata output optmat_out covar_out  "
-    cfl.writecfl('input', input)
-    cfl.writecfl('ndata', ndata)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}ndata {NAME}output {NAME}optmat_out {NAME}covar_out  "
+    cfl.writecfl(NAME + 'input', input)
+    cfl.writecfl(NAME + 'ndata', ndata)
 
     if DEBUG:
         print(cmd_str)
@@ -5129,13 +4947,7 @@ Optionally output whitening matrix and noise covariance matrix
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output'), cfl.readcfl('optmat_out'), cfl.readcfl('covar_out')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
-    os.remove('optmat_out.hdr')
-    os.remove('optmat_out.cfl')
-    os.remove('covar_out.hdr')
-    os.remove('covar_out.cfl')
+    outputs = cfl.readcfl(NAME + 'output'), cfl.readcfl(NAME + 'optmat_out'), cfl.readcfl(NAME + 'covar_out')
     return outputs
 
 def window(input, flags, H=None):
@@ -5161,8 +4973,8 @@ def window(input, flags, H=None):
         flag_str += f'-H '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {flags} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -5170,9 +4982,7 @@ def window(input, flags, H=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def wshfl(maps, wave, phi, reorder, table, R=None, b=None, i=None, j=None, s=None, e=None, F=None, O=None, t=None, g=None, K=None, H=None, v=None):
@@ -5263,11 +5073,11 @@ Expected dimensions:
         flag_str += f'-e {e} '
 
     if not isinstance(F, type(None)):
-        cfl.writecfl('F', F)
+        cfl.writecfl(NAME + 'F', F)
         flag_str += '-F F '
 
     if not isinstance(O, type(None)):
-        cfl.writecfl('O', O)
+        cfl.writecfl(NAME + 'O', O)
         flag_str += '-O O '
 
     if t is not None:
@@ -5286,12 +5096,12 @@ Expected dimensions:
         flag_str += f'-v '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} maps wave phi reorder table output  "
-    cfl.writecfl('maps', maps)
-    cfl.writecfl('wave', wave)
-    cfl.writecfl('phi', phi)
-    cfl.writecfl('reorder', reorder)
-    cfl.writecfl('table', table)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}maps {NAME}wave {NAME}phi {NAME}reorder {NAME}table {NAME}output  "
+    cfl.writecfl(NAME + 'maps', maps)
+    cfl.writecfl(NAME + 'wave', wave)
+    cfl.writecfl(NAME + 'phi', phi)
+    cfl.writecfl(NAME + 'reorder', reorder)
+    cfl.writecfl(NAME + 'table', table)
 
     if DEBUG:
         print(cmd_str)
@@ -5299,9 +5109,7 @@ Expected dimensions:
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def zeros(dims, dim):
@@ -5309,7 +5117,7 @@ def zeros(dims, dim):
     Create a zero-filled array with {dims} dimensions of size {dim1} to {dimn}.
 
     :param dims long:
-    :param dim long:
+    :param dim tuple:
 
     """
     usage_string = "zeros dims dim1 ... dimN output"
@@ -5323,7 +5131,7 @@ def zeros(dims, dim):
     multituples = []
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dims} {dim} output  "
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {dims} {' '.join([str(arg) for arg in dim])} {NAME}output  "
 
     if DEBUG:
         print(cmd_str)
@@ -5331,9 +5139,7 @@ def zeros(dims, dim):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
 def zexp(input, i=None):
@@ -5358,8 +5164,8 @@ def zexp(input, i=None):
         flag_str += f'-i '
     cmd_str += flag_str + opt_args + '  '
 
-    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} input output  "
-    cfl.writecfl('input', input)
+    cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}input {NAME}output  "
+    cfl.writecfl(NAME + 'input', input)
 
     if DEBUG:
         print(cmd_str)
@@ -5367,8 +5173,6 @@ def zexp(input, i=None):
 
     os.system(cmd_str)
 
-    outputs = cfl.readcfl('output')
-    os.remove('output.hdr')
-    os.remove('output.cfl')
+    outputs = cfl.readcfl(NAME + 'output')
     return outputs
 
