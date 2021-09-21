@@ -1,3 +1,11 @@
+# Copyright 2021. The Regents of the University of California.
+# All rights reserved. Use of this source code is governed by 
+# a BSD-style license which can be found in the LICENSE file.
+#
+# Authors: 
+# 2021 Max Litster <litster@berkeley.edu>
+
+
 from distutils.core import setup, Extension
 import os
 import re
@@ -78,7 +86,7 @@ print('[INFO] Complete')
 print('[INFO] Installing Library')
 setup(
     name="bartpy",
-    version="0.1",
+    version="1.0",
     author="mrirecon",
     author_email="mrirecon@lists.eecs.berkeley.edu",
     description="Python interface for BART: the Berkeley Advanced Reconstruction Toolbox",
@@ -91,5 +99,5 @@ setup(
     ],
     ext_modules = [],
     package_dir = {},
-    packages = ["bartpy", "bartpy.utils", "bartpy.tools"],
+    packages = ["bartpy", "bartpy.utils", "bartpy.tools", "bartpy.wrapper"],
 )

@@ -1634,7 +1634,7 @@ def homodyne(input, dim, fraction, r=None, I=None, C=None, P=None, n=None):
 
     if not isinstance(P, type(None)):
         cfl.writecfl(NAME + 'P', P)
-        flag_str += '-P P '
+        flag_str += f'-P {NAME}P '
 
     if n is not None:
         flag_str += f'-n '
@@ -2110,7 +2110,7 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
 
     if not isinstance(p, type(None)):
         cfl.writecfl(NAME + 'p', p)
-        flag_str += '-p p '
+        flag_str += f'-p {NAME}p '
 
     if J is not None:
         flag_str += f'-J '
@@ -2126,11 +2126,11 @@ def moba(kspace, TI_TE, r=None, L=None, F=None, G=None, m=None, l=None, i=None, 
 
     if not isinstance(I, type(None)):
         cfl.writecfl(NAME + 'I', I)
-        flag_str += '-I I '
+        flag_str += f'-I {NAME}I '
 
     if not isinstance(t, type(None)):
         cfl.writecfl(NAME + 't', t)
-        flag_str += '-t t '
+        flag_str += f'-t {NAME}t '
 
     if o is not None:
         flag_str += f'-o {o} '
@@ -2294,15 +2294,15 @@ the sensitivities.
 
     if not isinstance(p, type(None)):
         cfl.writecfl(NAME + 'p', p)
-        flag_str += '-p p '
+        flag_str += f'-p {NAME}p '
 
     if not isinstance(t, type(None)):
         cfl.writecfl(NAME + 't', t)
-        flag_str += '-t t '
+        flag_str += f'-t {NAME}t '
 
     if not isinstance(I, type(None)):
         cfl.writecfl(NAME + 'I', I)
-        flag_str += '-I I '
+        flag_str += f'-I {NAME}I '
 
     if g is not None:
         flag_str += f'-g '
@@ -2658,7 +2658,7 @@ def phantom(s=None, S=None, k=None, t=None, c=None, a=None, m=None, G=None, T=No
 
     if not isinstance(t, type(None)):
         cfl.writecfl(NAME + 't', t)
-        flag_str += '-t t '
+        flag_str += f'-t {NAME}t '
 
     if c is not None:
         flag_str += f'-c '
@@ -2784,7 +2784,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
 
     if not isinstance(t, type(None)):
         cfl.writecfl(NAME + 't', t)
-        flag_str += '-t t '
+        flag_str += f'-t {NAME}t '
 
     if n is not None:
         flag_str += f'-n '
@@ -2800,7 +2800,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
 
     if not isinstance(p, type(None)):
         cfl.writecfl(NAME + 'p', p)
-        flag_str += '-p p '
+        flag_str += f'-p {NAME}p '
 
     if I is not None:
         flag_str += f'-I '
@@ -2825,11 +2825,11 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
 
     if not isinstance(T, type(None)):
         cfl.writecfl(NAME + 'T', T)
-        flag_str += '-T T '
+        flag_str += f'-T {NAME}T '
 
     if not isinstance(W, type(None)):
         cfl.writecfl(NAME + 'W', W)
-        flag_str += '-W W '
+        flag_str += f'-W {NAME}W '
 
     if d is not None:
         flag_str += f'-d {d} '
@@ -2869,7 +2869,7 @@ def pics(kspace, sensitivities, l=None, r=None, R=None, c=None, s=None, i=None, 
 
     if not isinstance(B, type(None)):
         cfl.writecfl(NAME + 'B', B)
-        flag_str += '-B B '
+        flag_str += f'-B {NAME}B '
 
     if P is not None:
         flag_str += f'-P {P} '
@@ -3435,19 +3435,19 @@ the sensitivities.
 
     if not isinstance(p, type(None)):
         cfl.writecfl(NAME + 'p', p)
-        flag_str += '-p p '
+        flag_str += f'-p {NAME}p '
 
     if not isinstance(t, type(None)):
         cfl.writecfl(NAME + 't', t)
-        flag_str += '-t t '
+        flag_str += f'-t {NAME}t '
 
     if not isinstance(I, type(None)):
         cfl.writecfl(NAME + 'I', I)
-        flag_str += '-I I '
+        flag_str += f'-I {NAME}I '
 
     if not isinstance(C, type(None)):
         cfl.writecfl(NAME + 'C', C)
-        flag_str += '-C C '
+        flag_str += f'-C {NAME}C '
 
     if g is not None:
         flag_str += f'-g '
@@ -3893,7 +3893,7 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
 
     if not isinstance(t, type(None)):
         cfl.writecfl(NAME + 't', t)
-        flag_str += '-t t '
+        flag_str += f'-t {NAME}t '
 
     if n is not None:
         flag_str += f'-n '
@@ -3903,7 +3903,7 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
 
     if not isinstance(p, type(None)):
         cfl.writecfl(NAME + 'p', p)
-        flag_str += '-p p '
+        flag_str += f'-p {NAME}p '
 
     if I is not None:
         flag_str += f'-I '
@@ -3922,11 +3922,11 @@ def sqpics(kspace, sensitivities, l=None, r=None, R=None, s=None, i=None, t=None
 
     if not isinstance(T, type(None)):
         cfl.writecfl(NAME + 'T', T)
-        flag_str += '-T T '
+        flag_str += f'-T {NAME}T '
 
     if not isinstance(W, type(None)):
         cfl.writecfl(NAME + 'W', W)
-        flag_str += '-W W '
+        flag_str += f'-W {NAME}W '
 
     if d is not None:
         flag_str += f'-d {d} '
@@ -4368,11 +4368,11 @@ def traj(x=None, y=None, d=None, e=None, a=None, t=None, m=None, l=None, g=None,
 
     if not isinstance(C, type(None)):
         cfl.writecfl(NAME + 'C', C)
-        flag_str += '-C C '
+        flag_str += f'-C {NAME}C '
 
     if not isinstance(V, type(None)):
         cfl.writecfl(NAME + 'V', V)
-        flag_str += '-V V '
+        flag_str += f'-V {NAME}V '
     cmd_str += flag_str + opt_args + '  '
 
     cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()} {NAME}output  "
@@ -4927,11 +4927,11 @@ Optionally output whitening matrix and noise covariance matrix
 
     if not isinstance(o, type(None)):
         cfl.writecfl(NAME + 'o', o)
-        flag_str += '-o o '
+        flag_str += f'-o {NAME}o '
 
     if not isinstance(c, type(None)):
         cfl.writecfl(NAME + 'c', c)
-        flag_str += '-c c '
+        flag_str += f'-c {NAME}c '
 
     if n is not None:
         flag_str += f'-n '
@@ -5074,11 +5074,11 @@ Expected dimensions:
 
     if not isinstance(F, type(None)):
         cfl.writecfl(NAME + 'F', F)
-        flag_str += '-F F '
+        flag_str += f'-F {NAME}F '
 
     if not isinstance(O, type(None)):
         cfl.writecfl(NAME + 'O', O)
-        flag_str += '-O O '
+        flag_str += f'-O {NAME}O '
 
     if t is not None:
         flag_str += f'-t {t} '

@@ -1,3 +1,11 @@
+# Copyright 2021. The Regents of the University of California.
+# All rights reserved. Use of this source code is governed by 
+# a BSD-style license which can be found in the LICENSE file.
+#
+# Authors: 
+# 2021 Max Litster <litster@berkeley.edu>
+
+
 import json
 import os
 import re
@@ -364,12 +372,12 @@ def create_template(tool: str):
             if kwarg['is_long_opt']:
                 template += f"\tflag_str += f'--{flag} "
             elif kwarg['type'] == 'array':
-                template += f"\tflag_str += '-{flag} "
+                template += f"\tflag_str += f'-{flag} "
             else:
                 template += f"\tflag_str += f'-{flag} "
             
             if kwarg['type'] == 'array':
-                template += arg_name + " '\n"
+                template += '{NAME}' + arg_name + " '\n"
             elif kwarg['type'] == 'list':
                 template +=  "{" + f"\":\".join([str(x) for x in {arg_name}])" + "}" + " '\n"
             elif kwarg['type'] == 'bool':
