@@ -424,9 +424,11 @@ def create_template(tool: str):
         if arg['input'] and arg['type'] == 'array':
             template += f"\n\tcfl.writecfl(NAME + \'{name}\', {name})"
 
-    template += "\n\n\tif DEBUG:"
-    template += "\n\t\tprint(cmd_str)\n"
-    template += "\n\n\tos.system(cmd_str)\n"
+    # bitmask hotfix
+    if tool != 'bitmask':
+        template += "\n\n\tif DEBUG:"
+        template += "\n\t\tprint(cmd_str)\n"
+        template += "\n\n\tos.system(cmd_str)\n"
 
     # TODO: fix optional output (estdelay)
     if template_dict['has_output']:
@@ -443,6 +445,11 @@ def create_template(tool: str):
         template += clean_str
         template += return_str
 
+    # bitmask hotfix
+    if tool == 'bitmask':
+        template += "\n\n\tval = subprocess.Popen(cmd_str.split(), stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()\n"
+        template += '\n\treturn [int(d) for d in val.split()] if len(val.split()) > 1 else int(val)\n'
+
     return template.strip()
 
 
@@ -453,7 +460,7 @@ def write_tool_methods():
     if not os.path.exists(TOOLS_PATH):
         with open(TOOLS_PATH, 'w+'):
             pass
-    template_str = 'from ..utils import cfl\nimport os\nimport tempfile as tmp\n\n'
+    template_str = 'from ..utils import cfl\nimport os\nimport subprocess\nimport tempfile as tmp\n\n'
     template_str += "BART_PATH=os.environ['TOOLBOX_PATH'] + '/bart'\n"
     template_str += "DEBUG=False\n"
     template_str += "NAME=tmp.NamedTemporaryFile().name\n\n"

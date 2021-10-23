@@ -1,5 +1,6 @@
 from ..utils import cfl
 import os
+import subprocess
 import tempfile as tmp
 
 BART_PATH=os.environ['TOOLBOX_PATH'] + '/bart'
@@ -178,11 +179,9 @@ def bitmask(dim=None, b=None):
 
     cmd_str += f"{' '.join([' '.join([str(x) for x in arg]) for arg in zip(*multituples)]).strip()}  "
 
-    if DEBUG:
-        print(cmd_str)
+    val = subprocess.Popen(cmd_str.split(), stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
 
-
-    os.system(cmd_str)
+    return [int(d) for d in val.split()] if len(val.split()) > 1 else int(val)
 
 def cabs(input):
     """
